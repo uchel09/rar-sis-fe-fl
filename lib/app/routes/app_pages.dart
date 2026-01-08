@@ -43,7 +43,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.HOME_ADMIN_DASHBOARD,
-      page: () => const HomeAdminDashboardView(),
+      page: () => HomeAdminDashboardView(),
       binding: HomeAdminDashboardBinding(),
     ),
   ];
