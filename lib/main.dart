@@ -5,7 +5,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:rar_sis_fe_fl/app/controllers/school_controller.dart';
-import 'package:rar_sis_fe_fl/app/controllers/theme_controller.dart';
 import 'app/routes/app_pages.dart';
 
 void main() async {
@@ -26,7 +25,7 @@ void main() async {
   );
 
   Get.put(SchoolController(), permanent: true);
-  Get.put(ThemeController());
+  
 
   runApp(const MyApp());
 }

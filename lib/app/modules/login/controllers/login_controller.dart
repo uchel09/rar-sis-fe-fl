@@ -51,7 +51,6 @@ class LoginController extends GetxController {
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
-      print(user["role"]);
 
       // ➡️ Redirect ke dashboard sesuai role
       switch (user['role']) {
@@ -65,7 +64,7 @@ class LoginController extends GetxController {
           Get.offAllNamed("/home-student-dashboard");
           break;
         default:
-          Get.offAllNamed('/home');
+          Get.offAllNamed('/login');
       }
     } on DioException catch (e) {
       Get.snackbar(

@@ -1,23 +1,39 @@
 import 'package:get/get.dart';
+// Import BaseDashboardController yang kita buat tadi
+import '../../../core/base/base_dashboard_controller.dart';
 
-class HomeTeacherDashboardController extends GetxController {
-  //TODO: Implement HomeTeacherDashboardController
-
-  final count = 0.obs;
+class HomeTeacherDashboardController extends BaseDashboardController {
+  var openMenuId = "".obs;
   @override
   void onInit() {
     super.onInit();
+    fetchDashboardStats();
+    _syncMenuWithUrl();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
+  // --- LOGIKA SPESIFIK ADMIN ---
+  void _syncMenuWithUrl() {
+    final currentPath = Get.rootDelegate.currentConfiguration?.location ?? '';
+    if (currentPath.contains('student'))
+      activeMenuKey.value = "2-1";
+    else if (currentPath.contains('teacher'))
+      activeMenuKey.value = "2-2";
+    else if (currentPath.contains('class'))
+      activeMenuKey.value = "2-3";
+    else
+      activeMenuKey.value = "1";
   }
 
-  @override
-  void onClose() {
-    super.onClose();
+  void onMenuSelected(String key, String route) {
+    activeMenuKey.value = key;
+    Get.rootDelegate.toNamed(route); // Navigasi ke route anak
   }
 
-  void increment() => count.value++;
+  Future<void> fetchDashboardStats() async {
+    try {
+      // var response = await _dio.get('/admin/stats');
+    } catch (e) {
+      print("Error fetching stats: $e");
+    }
+  }
 }
