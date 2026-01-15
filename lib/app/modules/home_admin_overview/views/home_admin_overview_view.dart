@@ -50,18 +50,6 @@ class HomeAdminOverviewView extends GetView<HomeAdminOverviewController> {
                       Icons.assignment_ind,
                       Colors.green,
                     ),
-                    DashboardComponents.statCard(
-                      "Pemasukan",
-                      "Rp 45M",
-                      Icons.account_balance_wallet,
-                      Colors.orange,
-                    ),
-                    DashboardComponents.statCard(
-                      "Kehadiran",
-                      "98%",
-                      Icons.check_circle,
-                      Colors.purple,
-                    ),
                   ],
                 );
               },
