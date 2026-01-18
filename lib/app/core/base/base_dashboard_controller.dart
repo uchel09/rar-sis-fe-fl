@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../app/providers/api_provider.dart';
+import 'package:rar_sis_fe_fl/app/services/auth/auth_service.dart'; // Sesuaikan path ini
 
 abstract class BaseDashboardController extends GetxController {
-  // --- UI STATE (Sama untuk semua User) ---
+  // --- AMBIL INSTANCE SERVICE ---
+  // Karena di main.dart kamu pakai Get.putAsync<BaseApiService>,
+  // kita panggil di sini supaya logout() bisa akses .dio
+
+  final AuthService _authService = Get.put(AuthService());
+
+  // --- UI STATE ---
   var isCollapsed = false.obs;
   var themeColor = 'putih'.obs;
   var activeMenuKey = '1'.obs;
 
-  // --- THEME DATA (Global agar konsisten) ---
+  // --- THEME DATA ---
   final Map<String, Map<String, Color>> themes = {
     'putih': {
       'header': const Color(0xFFffffff),
@@ -54,7 +60,8 @@ abstract class BaseDashboardController extends GetxController {
 
   Future<void> logout() async {
     try {
-      var res = await ApiProvider.dio.post('/auth/logout');
+      // ✅ Sekarang pakai instance apiProvider (bukan static class)
+      final res = await _authService.logout();
       print(res);
     } catch (e) {
       print("Logout API error: $e");

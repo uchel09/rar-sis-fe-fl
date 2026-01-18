@@ -1,11 +1,13 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:rar_sis_fe_fl/app/controllers/school_controller.dart';
+import 'package:rar_sis_fe_fl/app/controllers/global_loading_controller.dart';
+import 'package:rar_sis_fe_fl/app/widgets/global_loading.dart';
 import 'app/routes/app_pages.dart';
+import 'app/providers/base_api_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,19 +16,10 @@ void main() async {
   await GetStorage.init();
 
   // INJEKSI DIO DI SINI (Menjawab error "Dio not found")
-  Get.put(
-    Dio(
-      BaseOptions(
-        baseUrl: dotenv.env['API_URL'] ?? 'http://localhost:3000',
-        connectTimeout: const Duration(seconds: 10),
-      ),
-    ),
-    permanent: true,
-  );
+  await Get.putAsync(() => BaseApiService().init());
 
   Get.put(SchoolController(), permanent: true);
-  
-
+  Get.put(GlobalLoadingController(), permanent: true);
   runApp(const MyApp());
 }
 
@@ -47,7 +40,7 @@ class MyApp extends StatelessWidget {
         // Ini kunci agar Shadcn UI bisa merender Overlay (seperti Select/Modal)
         // di atas halaman GetX Anda
         builder: (context, child) {
-          return child!;
+          return GlobalLoadingWidget(child: child!);
         },
       ),
     );

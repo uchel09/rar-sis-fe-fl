@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import 'package:dio/dio.dart';
 import 'package:rar_sis_fe_fl/app/controllers/school_controller.dart';
-import '../../../providers/api_provider.dart';
+import 'package:rar_sis_fe_fl/app/services/school/school_service.dart'; // Import service
 
 class HomeController extends GetxController {
   final schoolController = TextEditingController();
   final isLoading = false.obs;
 
+  // 1. Inject Service & Global Controller
+  final SchoolService _schoolService = Get.put(SchoolService());
   final school = Get.find<SchoolController>();
 
   void submitSchool() async {
@@ -28,22 +28,19 @@ class HomeController extends GetxController {
     isLoading.value = true;
 
     try {
-      // 🔥 VALIDASI KE BACKEND
-      await ApiProvider.dio.post('/schools/check', data: {'code': code});
+      // 2. Panggil Service (Logika API & Mapping Manual ada di dalam sini)
+      final success = await _schoolService.checkSchoolCode(code);
 
-      // ✅ kalau lolos, simpan
+      if (success) {
+        // 3. Simpan secara lokal jika berhasil
+        school.saveSchoolCode(code);
 
-      school.saveSchoolCode(code);
-      // ➡️ ke login
-      Get.offAllNamed('/login');
-    } on DioException catch (e) {
-      Get.snackbar(
-        'Gagal',
-        e.response?.data['message'] ?? 'Kode sekolah tidak valid',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+        // 4. Navigasi ke login
+        Get.offAllNamed('/login');
+      }
+    } catch (e) {
+      // Error handling sudah dicover oleh Interceptor di BaseApiService
+      // Jika ingin log tambahan bisa di sini
     } finally {
       isLoading.value = false;
     }

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 // Import komponen dashboard agar statCard dan komponen lainnya bisa dipakai
-import '../../../widgets/dashboard_components.dart';
+import '../../../../../widgets/dashboard_components.dart';
 import '../controllers/home_admin_overview_controller.dart';
 
 class HomeAdminOverviewView extends GetView<HomeAdminOverviewController> {

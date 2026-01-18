@@ -9,6 +9,14 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Buka Modal Create Admin (Mapping Manual 11 field)
+          Get.toNamed('/login');
+        },
+        backgroundColor: Colors.blueAccent,
+        child: const Icon(Icons.add),
+      ),
       backgroundColor: const Color(0xFFF5F7FA),
       body: Center(
         child: ResponsiveWrapper(

@@ -39,6 +39,7 @@ class HomeAdminDashboardView extends GetView<HomeAdminDashboardController> {
               _subMenuItem("Siswa", "2-1", Routes.STUDENT),
               _subMenuItem("Guru", "2-2", Routes.TEACHER),
               _subMenuItem("Kelas", "2-3", Routes.CLASS),
+              _subMenuItem("Staff", "2-4", Routes.STAFF),
             ],
           ),
           // _buildMenuSection("KEUANGAN"),

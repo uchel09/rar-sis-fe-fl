@@ -20,6 +20,8 @@ class HomeAdminDashboardController extends BaseDashboardController {
       activeMenuKey.value = "2-2";
     else if (currentPath.contains('class'))
       activeMenuKey.value = "2-3";
+    else if (currentPath.contains('staff'))
+      activeMenuKey.value = "2-4";
     else
       activeMenuKey.value = "1";
   }
