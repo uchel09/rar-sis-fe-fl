@@ -9,26 +9,35 @@ abstract class Routes {
   static const HOME_STUDENT_DASHBOARD = _Paths.HOME_STUDENT_DASHBOARD;
   static const HOME_STUDENT_OVERVIEW =
       _Paths.HOME_STUDENT_DASHBOARD + _Paths.HOME_STUDENT_OVERVIEW;
+  static const STUDENT_PROFILE = _Paths.HOME_STUDENT_DASHBOARD + _Paths.PROFILE;
+
   // Teacher Dashboard
   static const HOME_TEACHER_DASHBOARD = _Paths.HOME_TEACHER_DASHBOARD;
   static const HOME_TEACHER_OVERVIEW =
       _Paths.HOME_TEACHER_DASHBOARD + _Paths.HOME_TEACHER_OVERVIEW;
+  static const TEACHER_PROFILE = _Paths.HOME_TEACHER_DASHBOARD + _Paths.PROFILE;
+
   // Admin Dashboard
   static const HOME_ADMIN_DASHBOARD = _Paths.HOME_ADMIN_DASHBOARD;
   static const HOME_ADMIN_OVERVIEW =
       _Paths.HOME_ADMIN_DASHBOARD + _Paths.HOME_ADMIN_OVERVIEW;
+  static const ADMIN_PROFILE = _Paths.HOME_ADMIN_DASHBOARD + _Paths.PROFILE;
   static const TEACHER = _Paths.HOME_ADMIN_DASHBOARD + _Paths.TEACHER;
   static const STUDENT = _Paths.HOME_ADMIN_DASHBOARD + _Paths.STUDENT;
   static const CLASS = _Paths.HOME_ADMIN_DASHBOARD + _Paths.CLASS;
   static const STAFF = _Paths.HOME_ADMIN_DASHBOARD + _Paths.STAFF;
+
   // Staff Dashboard
   static const HOME_STAFF_DASHBOARD = _Paths.HOME_STAFF_DASHBOARD;
   static const HOME_STAFF_OVERVIEW =
       _Paths.HOME_STAFF_DASHBOARD + _Paths.HOME_STAFF_OVERVIEW;
+  static const STAFF_PROFILE = _Paths.HOME_STAFF_DASHBOARD + _Paths.PROFILE;
+
   // Super Admin Dashboard
   static const HOME_SUPAD_DASHBOARD = _Paths.HOME_SUPAD_DASHBOARD;
   static const HOME_SUPAD_OVERVIEW =
       _Paths.HOME_SUPAD_DASHBOARD + _Paths.HOME_SUPAD_OVERVIEW;
+  static const SUPAD_PROFILE = _Paths.HOME_SUPAD_DASHBOARD + _Paths.PROFILE;
   static const SUPAD_ADMIN = _Paths.HOME_SUPAD_DASHBOARD + _Paths.SUPAD_ADMIN;
   static const SUPAD_SCHOOL_LEVEL =
       _Paths.HOME_SUPAD_DASHBOARD + _Paths.SUPAD_SCHOOL_LEVEL;
@@ -62,4 +71,5 @@ abstract class _Paths {
   static const SUPAD_ADMIN = '/supad-admin';
   static const SUPAD_SCHOOL_LEVEL = '/supad-school-level';
   static const SUPAD_CURRICULUM = '/supad-curriculum';
+  static const PROFILE = '/profile';
 }

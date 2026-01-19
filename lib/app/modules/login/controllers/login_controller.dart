@@ -6,6 +6,7 @@ import 'package:rar_sis_fe_fl/app/controllers/school_controller.dart';
 import 'package:rar_sis_fe_fl/app/controllers/global_loading_controller.dart';
 import 'package:rar_sis_fe_fl/app/services/auth/auth_service.dart'; // Sesuaikan path ini
 import 'package:rar_sis_fe_fl/app/routes/app_pages.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 class LoginController extends GetxController {
   final emailController = TextEditingController();
@@ -15,7 +16,7 @@ class LoginController extends GetxController {
   // Gunakan AuthService
   final AuthService _authService = Get.put(AuthService());
   final school = Get.find<SchoolController>();
-
+  final formKey = GlobalKey<ShadFormState>();
   @override
   void onClose() {
     emailController.dispose();

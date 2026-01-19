@@ -8,9 +8,7 @@ import '../controllers/home_staff_dashboard_controller.dart';
 import '../../../routes/app_pages.dart';
 
 class HomeStaffDashboardView extends GetView<HomeStaffDashboardController> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  HomeStaffDashboardView({super.key});
+  const HomeStaffDashboardView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +16,6 @@ class HomeStaffDashboardView extends GetView<HomeStaffDashboardController> {
       () => MainDashboardLayout(
         title: "Staff Panel",
         controller: controller,
-        scaffoldKey: _scaffoldKey,
         menuItems: [
           _buildMenuSection("UTAMA"),
           DashboardComponents.menuItem(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rar_sis_fe_fl/app/routes/app_pages.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../core/responsive_wrapper.dart';
 
@@ -8,7 +9,6 @@ class MainDashboardLayout extends StatelessWidget {
   final List<Widget> menuItems;
   final Widget body;
   final dynamic controller; // Harus extends BaseDashboardController
-  final GlobalKey<ScaffoldState> scaffoldKey;
 
   // Controller untuk ShadPopover
   final popoverController = ShadPopoverController();
@@ -19,7 +19,6 @@ class MainDashboardLayout extends StatelessWidget {
     required this.menuItems,
     required this.body,
     required this.controller,
-    required this.scaffoldKey,
   });
 
   // Fungsi Helper Manual untuk Kapitalisasi (Solusi error capitalizeFirst)
@@ -41,7 +40,7 @@ class MainDashboardLayout extends StatelessWidget {
     return Obx(() {
       final theme = controller.currentTheme;
       return Scaffold(
-        key: scaffoldKey,
+        key: controller.scaffoldKey,
         // floatingActionButton: FloatingActionButton(
         //   onPressed: () {
         //     // Buka Modal Create Admin (Mapping Manual 11 field)
@@ -144,7 +143,8 @@ class MainDashboardLayout extends StatelessWidget {
           if (isMobile)
             IconButton(
               icon: Icon(Icons.menu, color: textColor),
-              onPressed: () => scaffoldKey.currentState?.openDrawer(),
+              onPressed: () =>
+                  controller.scaffoldKey.currentState?.openDrawer(),
             ),
           const SizedBox(width: 12),
           Text(
@@ -202,7 +202,8 @@ class MainDashboardLayout extends StatelessWidget {
             ),
             const Divider(height: 1),
             _popoverItem(Icons.person_outline, "Profile", () {
-              print("ke Profile");
+              final currentPath = Get.currentRoute;
+              Get.rootDelegate.toNamed('$currentPath/profile');
             }),
             _popoverItem(Icons.settings_outlined, "Settings", () {
               print("ke Settings");

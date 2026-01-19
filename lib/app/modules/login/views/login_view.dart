@@ -8,7 +8,6 @@ class LoginView extends GetView<LoginController> {
   const LoginView({super.key});
 
   // Buat key untuk form agar bisa divalidasi
-  static final formKey = GlobalKey<ShadFormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +37,7 @@ class LoginView extends GetView<LoginController> {
         ),
         // --- BUNGKUS DENGAN SHADFORM ---
         child: ShadForm(
-          key: formKey,
+          key: controller.formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -87,7 +86,8 @@ class LoginView extends GetView<LoginController> {
                         ? null
                         : () {
                             // CEK VALIDASI SEBELUM LOGIN
-                            if (formKey.currentState!.saveAndValidate()) {
+                            if (controller.formKey.currentState!
+                                .saveAndValidate()) {
                               controller.login();
                             }
                           },

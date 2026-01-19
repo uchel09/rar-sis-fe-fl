@@ -6,13 +6,26 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart' as g;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 class BaseApiService extends g.GetxService {
   late Dio dio;
-  final cookieJar = CookieJar();
+  // final cookieJar = CookieJar();
+  late PersistCookieJar cookieJar;
   final box = GetStorage();
   bool _isDialogShowing = false;
   Future<BaseApiService> init() async {
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String appDocPath = appDocDir.path;
+
+    // Pakai PersistCookieJar supaya cookie ditulis ke file system
+    cookieJar = PersistCookieJar(
+      storage: FileStorage("$appDocPath/.cookies/"),
+      ignoreExpires:
+          true, // Biar gak gampang ilang kalau session server panjang
+    );
     dio = Dio(
       BaseOptions(
         baseUrl: dotenv.env['API_BASE_URL'] ?? 'http://localhost:8080/api',
@@ -27,18 +40,18 @@ class BaseApiService extends g.GetxService {
     dio.interceptors.add(
       InterceptorsWrapper(
         // Untuk cek cookie atau debug cookie =>
-        // onResponse: (response, handler) async {
-        //   // PRINT DISINI BOS
-        //   final cookies = await cookieJar.loadForRequest(
-        //     Uri.parse(dio.options.baseUrl),
-        //   );
-        //   print("======= DEBUG COOKIE START =======");
-        //   print("Path: ${response.requestOptions.path}");
-        //   print("Cookies in Jar: $cookies");
-        //   print("======= DEBUG COOKIE END =======");
+        onResponse: (response, handler) async {
+          // PRINT DISINI BOS
+          final cookies = await cookieJar.loadForRequest(
+            Uri.parse(dio.options.baseUrl),
+          );
+          print("======= DEBUG COOKIE START =======");
+          print("Path: ${response.requestOptions.path}");
+          print("Cookies in Jar: $cookies");
+          print("======= DEBUG COOKIE END =======");
 
-        //   return handler.next(response);
-        // },
+          return handler.next(response);
+        },
         onError: (DioException e, handler) {
           String errorMessage = "Terjadi kesalahan sistem";
           final bool isLoginPath = e.requestOptions.path.contains(
@@ -49,31 +62,37 @@ class BaseApiService extends g.GetxService {
               if (!_isDialogShowing) {
                 _isDialogShowing = true;
 
-                g.Get.dialog(
-                  AlertDialog(
+                showShadDialog(
+                  context: g.Get.context!,
+                  barrierDismissible: false,
+                  builder: (context) => ShadDialog(
                     title: const Text("Sesi Berakhir"),
-                    content: const Text(
-                      "Sesi Anda telah berakhir, Silakan login kembali.",
+                    description: const Text(
+                      "Sesi Anda telah berakhir. Silakan login kembali.",
                     ),
                     actions: [
-                      TextButton(
+                      ShadButton(
                         onPressed: () async {
                           _isDialogShowing = false;
-                          // Langsung tendang ke Login
-                          // 1. Clear Cookies
+
+                          // 1. Bersihkan session
+                          await cookieJar.deleteAll();
+
+                          // 2. Tutup dialog
+                          Navigator.of(context).pop();
+                          box.remove('profile');
                           box.remove('isLoggedIn');
                           box.remove('role');
-                          await cookieJar.deleteAll();
 
                           // 2. Clear Storage (isLoggedIn & role) lewat StorageService
                           // Supaya Middleware nendang user keluar secara permanen
                           g.Get.offAllNamed('/login');
+                          // 3. Tendang ke login
                         },
                         child: const Text("Kembali ke Login"),
                       ),
                     ],
                   ),
-                  barrierDismissible: false,
                 );
               }
             } else if (e.response?.data is Map) {

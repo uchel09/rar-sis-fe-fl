@@ -6,6 +6,17 @@ abstract class BaseDashboardController extends GetxController {
   // --- AMBIL INSTANCE SERVICE ---
   // Karena di main.dart kamu pakai Get.putAsync<BaseApiService>,
   // kita panggil di sini supaya logout() bisa akses .dio
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  @override
+  void onInit() {
+    super.onInit();
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    // Panggil API di sini agar lebih stabil setelah UI muncul
+  }
 
   final AuthService _authService = Get.put(AuthService());
 
@@ -13,6 +24,18 @@ abstract class BaseDashboardController extends GetxController {
   var isCollapsed = false.obs;
   var themeColor = 'putih'.obs;
   var activeMenuKey = '1'.obs;
+
+  // Future<void> loadDashboardData() async {
+  //   try {
+  //     // Panggil fetchMe yang sudah ada mapping manualnya
+  //     final userData = await _authService.fetchMe();
+  //     // print();
+  //     // Update state untuk ditampilkan di UI
+  //   } catch (e) {
+  //     print("Error loading dashboard data: $e");
+  //     // Jika error 401 atau token expired, biasanya ditangani interceptor dio
+  //   }
+  // }
 
   // --- THEME DATA ---
   final Map<String, Map<String, Color>> themes = {
@@ -59,14 +82,6 @@ abstract class BaseDashboardController extends GetxController {
   }
 
   Future<void> logout() async {
-    try {
-      // ✅ Sekarang pakai instance apiProvider (bukan static class)
-      final res = await _authService.logout();
-      print(res);
-    } catch (e) {
-      print("Logout API error: $e");
-    } finally {
-      Get.offAllNamed("/login");
-    }
+    await _authService.logout();
   }
 }

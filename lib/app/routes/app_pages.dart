@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:rar_sis_fe_fl/app/middleware/auth_middleware.dart';
 
+import '../middleware/auth_middleware.dart';
 import '../middleware/school_middleware.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
@@ -27,6 +27,12 @@ import '../modules/home_student_dashboard/views/home_student_dashboard_view.dart
 import '../modules/home_supad_dashboard/bindings/home_supad_dashboard_binding.dart';
 import '../modules/home_supad_dashboard/child_page/home_supad_overview/bindings/home_supad_overview_binding.dart';
 import '../modules/home_supad_dashboard/child_page/home_supad_overview/views/home_supad_overview_view.dart';
+import '../modules/home_supad_dashboard/child_page/supad_admin/bindings/supad_admin_binding.dart';
+import '../modules/home_supad_dashboard/child_page/supad_admin/views/supad_admin_view.dart';
+import '../modules/home_supad_dashboard/child_page/supad_curriculum/bindings/supad_curriculum_binding.dart';
+import '../modules/home_supad_dashboard/child_page/supad_curriculum/views/supad_curriculum_view.dart';
+import '../modules/home_supad_dashboard/child_page/supad_school_level/bindings/supad_school_level_binding.dart';
+import '../modules/home_supad_dashboard/child_page/supad_school_level/views/supad_school_level_view.dart';
 import '../modules/home_supad_dashboard/views/home_supad_dashboard_view.dart';
 import '../modules/home_teacher_dashboard/bindings/home_teacher_dashboard_binding.dart';
 import '../modules/home_teacher_dashboard/child_page/home_teacher_overview/bindings/home_teacher_overview_binding.dart';
@@ -34,12 +40,8 @@ import '../modules/home_teacher_dashboard/child_page/home_teacher_overview/views
 import '../modules/home_teacher_dashboard/views/home_teacher_dashboard_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
-import '../modules/home_supad_dashboard/child_page/supad_admin/bindings/supad_admin_binding.dart';
-import '../modules/home_supad_dashboard/child_page/supad_admin/views/supad_admin_view.dart';
-import '../modules/home_supad_dashboard/child_page/supad_curriculum/bindings/supad_curriculum_binding.dart';
-import '../modules/home_supad_dashboard/child_page/supad_curriculum/views/supad_curriculum_view.dart';
-import '../modules/home_supad_dashboard/child_page/supad_school_level/bindings/supad_school_level_binding.dart';
-import '../modules/home_supad_dashboard/child_page/supad_school_level/views/supad_school_level_view.dart';
+import '../modules/profile/bindings/profile_binding.dart';
+import '../modules/profile/views/profile_view.dart';
 
 part 'app_routes.dart';
 
@@ -72,6 +74,11 @@ class AppPages {
           page: () => const HomeTeacherOverviewView(),
           binding: HomeTeacherOverviewBinding(),
         ),
+        GetPage(
+          name: _Paths.PROFILE,
+          page: () => const ProfileView(),
+          binding: ProfileBinding(),
+        ),
       ],
     ),
     GetPage(
@@ -85,6 +92,11 @@ class AppPages {
           page: () => const HomeStudentOverviewView(),
           binding: HomeStudentOverviewBinding(),
         ),
+        GetPage(
+          name: _Paths.PROFILE,
+          page: () => const ProfileView(),
+          binding: ProfileBinding(),
+        ),
       ],
     ),
     GetPage(
@@ -97,6 +109,11 @@ class AppPages {
           name: _Paths.HOME_ADMIN_OVERVIEW,
           page: () => const HomeAdminOverviewView(),
           binding: HomeAdminOverviewBinding(),
+        ),
+        GetPage(
+          name: _Paths.PROFILE,
+          page: () => const ProfileView(),
+          binding: ProfileBinding(),
         ),
         GetPage(
           name: _Paths.TEACHER, // Mengambil 'teacher'
@@ -131,6 +148,11 @@ class AppPages {
           page: () => const HomeStaffOverviewView(),
           binding: HomeStaffOverviewBinding(),
         ),
+        GetPage(
+          name: _Paths.PROFILE,
+          page: () => const ProfileView(),
+          binding: ProfileBinding(),
+        ),
       ],
     ),
     GetPage(
@@ -143,6 +165,11 @@ class AppPages {
           name: _Paths.HOME_SUPAD_OVERVIEW,
           page: () => const HomeSupadOverviewView(),
           binding: HomeSupadOverviewBinding(),
+        ),
+        GetPage(
+          name: _Paths.PROFILE,
+          page: () => const ProfileView(),
+          binding: ProfileBinding(),
         ),
         GetPage(
           name: _Paths.SUPAD_ADMIN,

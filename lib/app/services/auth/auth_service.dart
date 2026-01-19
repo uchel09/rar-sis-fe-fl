@@ -1,16 +1,38 @@
 import 'package:dio/dio.dart';
-// Gunakan hide Response agar tidak bentrok dengan milik GetX
 import 'package:get/get.dart' hide Response;
 import 'package:rar_sis_fe_fl/app/controllers/global_loading_controller.dart';
-import '../../providers/base_api_service.dart'; // Import class baru kamu
+import 'package:rar_sis_fe_fl/app/services/auth/auth_model.dart';
+import '../../providers/base_api_service.dart';
 import 'package:get_storage/get_storage.dart';
 
 class AuthService extends GetxService {
   final BaseApiService _api = Get.find<BaseApiService>();
-
-  // State Profil User - Reaktif agar UI bisa otomatis update
   final box = GetStorage();
-  // --- 1. LOGIN ---
+
+  @override
+  void onInit() {
+    super.onInit();
+    // 1. Saat aplikasi dibuka pertama kali, hapus data lama (Sesuai request lu)
+    _initAuth();
+  }
+
+  Future<void> _initAuth() async {
+    // 1. Bersihkan data lama sesuai request lu
+    box.remove('profile');
+    print("AuthService: App dibuka, storage 'profile' dibersihkan.");
+
+    // 2. TUNGGU sampai BaseApiService benar-benar siap
+    // Kita pastikan cookieJar sudah selesai loading dari disk
+    // Jika di BaseApiService init() lu return 'this', ini akan sangat efektif.
+    await _api.init();
+
+    // 3. Baru jalankan fetchMe setelah cookie dipastikan ter-load
+    if (box.read('isLoggedIn') == true) {
+      print("AuthService: Cookie siap, menjalankan fetchMe...");
+      await fetchMe();
+    }
+  }
+
   Future<Response> login({
     required String email,
     required String password,
@@ -19,37 +41,44 @@ class AuthService extends GetxService {
       '/auth/login',
       data: {'email': email, 'password': password},
     );
-    // Jika login sukses, langsung tarik data profil
 
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      await fetchMe(forceRefresh: true);
+    }
     return response;
   }
 
-  // --- 2. FIND ME (Initialisasi Profil) ---
-  Future<void> fetchMe() async {
+  Future<void> fetchMe({bool forceRefresh = false}) async {
     try {
       GlobalLoadingController.to.show();
       final response = await _api.dio.get('/users/me');
-      return response.data['data'];
+
+      // Manual mapping
+      final rawDataMap = response.data["data"];
+      final rawData = UserProfileModel.fromJson(rawDataMap);
+
+      // Simpan ke Storage agar persistent (anti-null pas pindah page)
+      await box.write('profile', rawDataMap);
+      print(
+        "AuthService: Data user dimuat & disimpan di Storage -> ${rawData.fullName}",
+      );
     } finally {
       GlobalLoadingController.to.hide();
     }
   }
 
-  // --- 3. LOGOUT ---
-  Future<Response> logout() async {
+  Future<void> logout() async {
     try {
       GlobalLoadingController.to.show();
-      final response = await _api.dio.post(
-        '/auth/logout',
-        data: {},
-        options: Options(headers: {"Cache-Control": "no-cache"}),
-      );
-      return response;
+      await _api.dio.post('/auth/logout');
     } finally {
-      // Clear state apapun yang terjadi
+      // Tambahkan ini: Hapus data profile di storage saat logout
+      box.remove('profile');
       box.remove('isLoggedIn');
       box.remove('role');
+      await _api.cookieJar.deleteAll();
       GlobalLoadingController.to.hide();
+      Get.offAllNamed("/login");
     }
   }
 }

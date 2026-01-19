@@ -8,9 +8,7 @@ import '../controllers/home_supad_dashboard_controller.dart';
 import '../../../routes/app_pages.dart';
 
 class HomeSupadDashboardView extends GetView<HomeSupadDashboardController> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  HomeSupadDashboardView({super.key});
+  const HomeSupadDashboardView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +16,6 @@ class HomeSupadDashboardView extends GetView<HomeSupadDashboardController> {
       () => MainDashboardLayout(
         title: "Super Admin Panel",
         controller: controller,
-        scaffoldKey: _scaffoldKey,
         menuItems: [
           _buildMenuSection("UTAMA"),
           DashboardComponents.menuItem(

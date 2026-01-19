@@ -8,9 +8,7 @@ import '../controllers/home_teacher_dashboard_controller.dart';
 import '../../../routes/app_pages.dart';
 
 class HomeTeacherDashboardView extends GetView<HomeTeacherDashboardController> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  HomeTeacherDashboardView({super.key});
+  const HomeTeacherDashboardView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +16,6 @@ class HomeTeacherDashboardView extends GetView<HomeTeacherDashboardController> {
       () => MainDashboardLayout(
         title: "Teacher Panel",
         controller: controller,
-        scaffoldKey: _scaffoldKey,
         menuItems: [
           _buildMenuSection("UTAMA"),
           DashboardComponents.menuItem(
