@@ -9,6 +9,7 @@ import 'package:rar_sis_fe_fl/app/widgets/global_loading.dart';
 import 'app/routes/app_pages.dart';
 import 'app/providers/base_api_service.dart';
 import 'app/modules/profile/controllers/profile_controller.dart';
+import 'app/services/auth/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +19,7 @@ void main() async {
   await Get.putAsync(() => BaseApiService().init());
 
   // INJEKSI DIO DI SINI (Menjawab error "Dio not found")
-
+  Get.put(AuthService(), permanent: true);
   Get.put(SchoolController(), permanent: true);
   Get.put(GlobalLoadingController(), permanent: true);
   Get.put(ProfileController(), permanent: true);

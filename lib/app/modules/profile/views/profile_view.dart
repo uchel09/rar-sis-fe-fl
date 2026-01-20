@@ -4,6 +4,9 @@ import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../controllers/profile_controller.dart';
 import '../../../../app/core/responsive_wrapper.dart'; // Sesuaikan path wrapper kamu
+import '../../../core/drive_helper.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
@@ -64,19 +67,65 @@ class ProfileView extends GetView<ProfileController> {
                   const SizedBox(
                     width: 220,
                     height: 220,
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Center(
+                      child: SpinKitPouringHourGlass(
+                        color: Color.fromARGB(255, 2, 176, 235),
+                        size: 160.0,
+                      ),
+                    ),
                   )
                 else
-                  ShadAvatar(
-                    user?.imageUrl ?? 'https://github.com/shadcn.png',
-                    placeholder: const Text('AD'),
-                    size: const Size(220, 220),
+                  CachedNetworkImage(
+                    imageUrl: DriveHelper.getImageUrl(user?.imageUrl),
+                    imageBuilder: (context, imageProvider) => Container(
+                      width: 220,
+                      height: 220,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.grey.shade200,
+                          width: 2,
+                        ), // Biar ada garis tepi rapi
+                        image: DecorationImage(
+                          image: imageProvider, // Kunci caching di sini cok
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    placeholder: (context, url) => const SizedBox(
+                      width: 220,
+                      height: 220,
+                      child: Center(
+                        child: const SpinKitDualRing(
+                          color: Color.fromARGB(255, 2, 176, 235),
+                          size: 160.0,
+                        ),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      width: 220,
+                      height: 220,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.grey.shade200,
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'AD',
+                          style: TextStyle(
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ShadButton.secondary(
                   width: 32,
                   height: 32,
                   padding: EdgeInsets.zero,
-                  onPressed: controller.pickAndUploadImage,
+                  onPressed: controller.pickImage,
                   child: const Icon(Icons.camera_alt, size: 16),
                 ),
               ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-
+import '../../../../../widgets/reusable_shad_table.dart';
 import '../controllers/supad_curriculum_controller.dart';
 
 class SupadCurriculumView extends GetView<SupadCurriculumController> {
@@ -9,15 +9,11 @@ class SupadCurriculumView extends GetView<SupadCurriculumController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('SupadCurriculumView'),
-        centerTitle: true,
-      ),
-      body: const Center(
-        child: Text(
-          'SupadCurriculumView is working',
-          style: TextStyle(fontSize: 20),
-        ),
+      body: ReusablePlutoTable(
+        columns: controller.columns,
+        rows: controller.rows,
+        isLoading: controller.isLoading.value,
+        onCreate: controller.onCreate, // Ini aman, gak bentrok
       ),
     );
   }

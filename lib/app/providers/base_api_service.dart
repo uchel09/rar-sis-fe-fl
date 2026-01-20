@@ -14,6 +14,7 @@ class BaseApiService extends g.GetxService {
   late Dio dio;
   // final cookieJar = CookieJar();
   late PersistCookieJar cookieJar;
+
   final box = GetStorage();
   bool _isDialogShowing = false;
   Future<BaseApiService> init() async {
