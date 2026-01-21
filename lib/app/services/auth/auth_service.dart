@@ -17,16 +17,6 @@ class AuthService extends GetxService {
   }
 
   Future<void> _initAuth() async {
-    // 1. Bersihkan data lama sesuai request lu
-    box.remove('profile');
-    print("AuthService: App dibuka, storage 'profile' dibersihkan.");
-
-    // 2. TUNGGU sampai BaseApiService benar-benar siap
-    // Kita pastikan cookieJar sudah selesai loading dari disk
-    // Jika di BaseApiService init() lu return 'this', ini akan sangat efektif.
-    await _api.init();
-
-    // 3. Baru jalankan fetchMe setelah cookie dipastikan ter-load
     if (box.read('isLoggedIn') == true) {
       print("AuthService: Cookie siap, menjalankan fetchMe...");
       await fetchMe();
@@ -56,12 +46,16 @@ class AuthService extends GetxService {
       // Manual mapping
       final rawDataMap = response.data["data"];
       final rawData = UserProfileModel.fromJson(rawDataMap);
-
+      if (response.statusCode == 200) {
+        await box.remove('profile');
+        await box.remove('role');
+      }
       // Simpan ke Storage agar persistent (anti-null pas pindah page)
-      await box.write('profile', rawDataMap);
       print(
         "AuthService: Data user dimuat & disimpan di Storage -> ${rawData.fullName}",
       );
+      await box.write('role', rawData.role);
+      await box.write('profile', rawDataMap);
     } finally {
       GlobalLoadingController.to.hide();
     }
@@ -73,8 +67,8 @@ class AuthService extends GetxService {
       await _api.dio.post('/auth/logout');
     } finally {
       // Tambahkan ini: Hapus data profile di storage saat logout
-      box.remove('profile');
       box.remove('isLoggedIn');
+      box.remove('profile');
       box.remove('role');
       await _api.cookieJar.deleteAll();
       GlobalLoadingController.to.hide();

@@ -19,10 +19,9 @@ void main() async {
   await Get.putAsync(() => BaseApiService().init());
 
   // INJEKSI DIO DI SINI (Menjawab error "Dio not found")
+  Get.put(GlobalLoadingController(), permanent: true);
   Get.put(AuthService(), permanent: true);
   Get.put(SchoolController(), permanent: true);
-  Get.put(GlobalLoadingController(), permanent: true);
-  Get.put(ProfileController(), permanent: true);
   runApp(const MyApp());
 }
 

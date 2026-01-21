@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rar_sis_fe_fl/app/modules/profile/controllers/profile_controller.dart';
 import 'package:rar_sis_fe_fl/app/services/auth/auth_service.dart'; // Sesuaikan path ini
 
 abstract class BaseDashboardController extends GetxController {
   // --- AMBIL INSTANCE SERVICE ---
   // Karena di main.dart kamu pakai Get.putAsync<BaseApiService>,
   // kita panggil di sini supaya logout() bisa akses .dio
+  ProfileController get profile => Get.find<ProfileController>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void onInit() {

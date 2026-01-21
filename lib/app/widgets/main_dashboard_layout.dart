@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:rar_sis_fe_fl/app/routes/app_pages.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../core/responsive_wrapper.dart';
+import './circle_cache_avatar.dart';
 
 class MainDashboardLayout extends StatelessWidget {
   final String title;
@@ -220,9 +220,11 @@ class MainDashboardLayout extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: () => popoverController.toggle(),
-        child: const ShadAvatar(
-          'https://github.com/shadcn.png',
-          placeholder: Text('AD'),
+        child: GlobalAvatar(
+          imageUrl: controller.profile.userData.value?.imageUrl,
+          size: 50,
+          borderWidth: 1,
+          borderColor: const Color(0xFF64b5f6),
         ),
       ),
     );

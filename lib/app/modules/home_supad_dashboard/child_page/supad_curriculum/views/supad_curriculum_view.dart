@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import '../../../../../widgets/reusable_shad_table.dart';
+import '../../../../../widgets/reusable_pluto_table.dart';
 import '../controllers/supad_curriculum_controller.dart';
 
 class SupadCurriculumView extends GetView<SupadCurriculumController> {
@@ -14,6 +14,7 @@ class SupadCurriculumView extends GetView<SupadCurriculumController> {
         rows: controller.rows,
         isLoading: controller.isLoading.value,
         onCreate: controller.onCreate, // Ini aman, gak bentrok
+        dropdownItems: controller.dropdownItems,
       ),
     );
   }

@@ -48,9 +48,7 @@ class ProfileController extends GetxController {
   void onInit() {
     super.onInit();
     _initializeEmptyControllers();
-
-    // LANGSUNG AMBIL DARI BOX
-    loadDataFromStorage();
+    _loadDataFromStorage();
   }
 
   void _initializeEmptyControllers() {
@@ -62,8 +60,9 @@ class ProfileController extends GetxController {
   }
 
   // --- AMBIL DATA DARI STORAGE ---
-  void loadDataFromStorage() {
+  void _loadDataFromStorage() {
     final rawData = box.read('profile');
+
     if (rawData != null) {
       print("ProfileController: Ambil dari Box -> ${rawData['fullName']}");
       final user = UserProfileModel.fromJson(rawData);
@@ -72,9 +71,6 @@ class ProfileController extends GetxController {
       userData.value = user;
       nameController.text = user.fullName;
       emailController.text = user.email;
-    } else {
-      // Kalau box kosong, baru paksa fetch dari API
-      refreshProfileData();
     }
   }
 
@@ -83,7 +79,7 @@ class ProfileController extends GetxController {
     try {
       await _authService.fetchMe();
     } finally {
-      loadDataFromStorage();
+      _loadDataFromStorage();
     }
   }
 

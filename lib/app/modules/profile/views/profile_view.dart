@@ -4,8 +4,7 @@ import 'package:get/get.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../controllers/profile_controller.dart';
 import '../../../../app/core/responsive_wrapper.dart'; // Sesuaikan path wrapper kamu
-import '../../../core/drive_helper.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import '../../../widgets/circle_cache_avatar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ProfileView extends GetView<ProfileController> {
@@ -75,51 +74,11 @@ class ProfileView extends GetView<ProfileController> {
                     ),
                   )
                 else
-                  CachedNetworkImage(
-                    imageUrl: DriveHelper.getImageUrl(user?.imageUrl),
-                    imageBuilder: (context, imageProvider) => Container(
-                      width: 220,
-                      height: 220,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.grey.shade200,
-                          width: 2,
-                        ), // Biar ada garis tepi rapi
-                        image: DecorationImage(
-                          image: imageProvider, // Kunci caching di sini cok
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    placeholder: (context, url) => const SizedBox(
-                      width: 220,
-                      height: 220,
-                      child: Center(
-                        child: const SpinKitDualRing(
-                          color: Color.fromARGB(255, 2, 176, 235),
-                          size: 160.0,
-                        ),
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      width: 220,
-                      height: 220,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.grey.shade200,
-                      ),
-                      child: const Center(
-                        child: Text(
-                          'AD',
-                          style: TextStyle(
-                            fontSize: 40,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                    ),
+                  GlobalAvatar(
+                    imageUrl: user?.imageUrl,
+                    size: 220,
+                    borderWidth: 3,
+                    borderColor: const Color(0xFF64b5f6),
                   ),
                 ShadButton.secondary(
                   width: 32,
