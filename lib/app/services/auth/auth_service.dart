@@ -64,15 +64,17 @@ class AuthService extends GetxService {
   Future<void> logout() async {
     try {
       GlobalLoadingController.to.show();
-      await _api.dio.post('/auth/logout');
+      var res = await _api.dio.post('/auth/logout');
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        box.remove('isLoggedIn');
+        box.remove('profile');
+        box.remove('role');
+        await _api.cookieJar.deleteAll();
+        Get.offAllNamed("/login");
+      }
     } finally {
       // Tambahkan ini: Hapus data profile di storage saat logout
-      box.remove('isLoggedIn');
-      box.remove('profile');
-      box.remove('role');
-      await _api.cookieJar.deleteAll();
       GlobalLoadingController.to.hide();
-      Get.offAllNamed("/login");
     }
   }
 }

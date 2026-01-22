@@ -31,7 +31,7 @@ class MainDashboardLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return ResponsiveWrapper(
       mobile: (context) => _buildLayout(context, isMobile: true),
-      tablet: (context) => _buildLayout(context, isMobile: false),
+      tablet: (context) => _buildLayout(context, isMobile: true),
       desktop: (context) => _buildLayout(context, isMobile: false),
     );
   }

@@ -21,6 +21,9 @@ class GlobalAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       imageUrl: DriveHelper.getImageUrl(imageUrl),
+      memCacheHeight: 100, // Memaksa gambar di RAM hanya 100px (Hemat RAM!)
+      maxWidthDiskCache: 200, // Simpan di disk dengan ukuran kecil saja
+      fit: BoxFit.cover,
       imageBuilder: (context, imageProvider) => Container(
         width: size,
         height: size,

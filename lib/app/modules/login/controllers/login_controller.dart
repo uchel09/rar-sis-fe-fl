@@ -24,6 +24,11 @@ class LoginController extends GetxController {
     super.onClose();
   }
 
+  //cuma test
+  void deleteSchoolCode() {
+    school.clear();
+  }
+
   Future<void> login() async {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();

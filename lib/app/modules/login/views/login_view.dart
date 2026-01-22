@@ -12,6 +12,15 @@ class LoginView extends GetView<LoginController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          controller.deleteSchoolCode();
+          // Buka Modal Create Admin (Mapping Manual 11 field)
+          Get.toNamed('/home');
+        },
+        backgroundColor: Colors.blueAccent,
+        child: const Icon(Icons.add),
+      ),
       backgroundColor: const Color(0xFFF5F7FA),
       body: Center(
         child: ResponsiveWrapper(

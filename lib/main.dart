@@ -8,16 +8,17 @@ import 'package:rar_sis_fe_fl/app/controllers/global_loading_controller.dart';
 import 'package:rar_sis_fe_fl/app/widgets/global_loading.dart';
 import 'app/routes/app_pages.dart';
 import 'app/providers/base_api_service.dart';
-import 'app/modules/profile/controllers/profile_controller.dart';
 import 'app/services/auth/auth_service.dart';
+import 'app/services/db/database.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: ".env");
   await GetStorage.init();
+  final db = AppDatabase();
+  Get.put(db, permanent: true);
   await Get.putAsync(() => BaseApiService().init());
-
   // INJEKSI DIO DI SINI (Menjawab error "Dio not found")
   Get.put(GlobalLoadingController(), permanent: true);
   Get.put(AuthService(), permanent: true);

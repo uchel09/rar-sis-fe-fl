@@ -35,6 +35,7 @@ class ProfileController extends GetxController {
   var isImageLoading = false.obs;
   var isProcessing = false.obs; // Untuk status di dalam dialog
   final userData = Rxn<UserProfileModel>(); // Tetap Rxn biar UI Obx lu gak mati
+  var schoolId = "".obs;
   var selectedImageFile = Rxn<XFile>();
 
   // Text Controllers
@@ -47,6 +48,7 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    schoolId.value = box.read("school_id")?.toString() ?? "";
     _initializeEmptyControllers();
     _loadDataFromStorage();
   }

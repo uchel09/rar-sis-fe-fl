@@ -59,7 +59,13 @@ class BaseApiService extends g.GetxService {
             '/auth/login',
           );
           if (e.response != null) {
-            if (e.response?.statusCode == 401 && !isLoginPath) {
+            if (e.type == DioExceptionType.connectionError ||
+                e.type == DioExceptionType.sendTimeout) {
+              errorMessage =
+                  "Tidak dapat terhubung ke server. Periksa koneksi internet Anda.";
+            } else if (e.type == DioExceptionType.connectionTimeout) {
+              errorMessage = "Koneksi ke server terputus (Timeout)";
+            } else if (e.response?.statusCode == 401 && !isLoginPath) {
               if (!_isDialogShowing) {
                 _isDialogShowing = true;
 
@@ -103,8 +109,6 @@ class BaseApiService extends g.GetxService {
             } else {
               errorMessage = "Server Error: ${e.response?.statusCode}";
             }
-          } else if (e.type == DioExceptionType.connectionTimeout) {
-            errorMessage = "Koneksi ke server terputus (Timeout)";
           } else {
             return handler.next(e);
           }

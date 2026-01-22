@@ -108,6 +108,7 @@ class SupadCurriculumController extends GetxController {
                   Get.dialog(
                     RowDetailModal(
                       row: rendererContext.row,
+                      columns: columns,
                       hiddenFields: const ['no', 'actions', 'id'],
                     ),
                   ),

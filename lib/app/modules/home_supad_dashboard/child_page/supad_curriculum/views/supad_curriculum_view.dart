@@ -15,6 +15,7 @@ class SupadCurriculumView extends GetView<SupadCurriculumController> {
         isLoading: controller.isLoading.value,
         onCreate: controller.onCreate, // Ini aman, gak bentrok
         dropdownItems: controller.dropdownItems,
+        canExport: true,
       ),
     );
   }

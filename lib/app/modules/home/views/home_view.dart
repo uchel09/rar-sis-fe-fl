@@ -9,14 +9,14 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Buka Modal Create Admin (Mapping Manual 11 field)
-          Get.toNamed('/login');
-        },
-        backgroundColor: Colors.blueAccent,
-        child: const Icon(Icons.add),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     // Buka Modal Create Admin (Mapping Manual 11 field)
+      //     Get.toNamed('/login');
+      //   },
+      //   backgroundColor: Colors.blueAccent,
+      //   child: const Icon(Icons.add),
+      // ),
       backgroundColor: const Color(0xFFF5F7FA),
       body: Center(
         child: ResponsiveWrapper(
@@ -89,3 +89,15 @@ class HomeView extends GetView<HomeController> {
     );
   }
 }
+
+
+// nama get storage =
+// permanent
+
+// school_code 
+// school_id 
+
+// auth
+//  box.remove('isLoggedIn');
+//  box.remove('profile');
+//  box.remove('role');

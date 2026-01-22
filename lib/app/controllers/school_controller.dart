@@ -20,6 +20,7 @@ class SchoolController extends GetxController {
   void saveSchoolCode(String code) {
     schoolCode.value = code;
     box.write(_key, code);
+    // box.write(_key2, id);
   }
 
   void clear() {
