@@ -1,88 +1,98 @@
-import 'dart:convert';
 import 'package:rar_sis_fe_fl/app/core/enum.dart';
 
-// ==========================================
-// 2. REQUEST MODELS
-// ==========================================
-
 class CreateSchoolAdminRequest {
+  // user
   final String email;
-  final String password;
   final String fullName;
   final Gender gender;
-  final String? imageUrl;
+  final String address;
+  //profile data
   final String schoolId;
   final DateTime dob;
   final String birthPlace;
   final String nik;
+  final DateTime hireDate;
+  final String phone;
+  final bool isHonor;
   final List<String> schoolLevelAccessIds;
 
   CreateSchoolAdminRequest({
+    // user
     required this.email,
-    required this.password,
     required this.fullName,
     required this.gender,
-    this.imageUrl,
+    required this.address,
+    //profile data
     required this.schoolId,
     required this.dob,
     required this.birthPlace,
     required this.nik,
+    required this.hireDate,
+    required this.phone,
+    required this.isHonor,
     required this.schoolLevelAccessIds,
   });
 
   Map<String, dynamic> toJson() => {
     "email": email,
-    "password": password,
     "fullName": fullName,
     "gender": gender.name,
-    "imageUrl": imageUrl ?? "",
+    "address": address,
+    //==
     "schoolId": schoolId,
     "dob": dob.toIso8601String(),
     "birthPlace": birthPlace,
     "nik": nik,
+    "hireDate": hireDate.toIso8601String(),
+    "phone": phone,
+    "isHonor": isHonor,
     "schoolLevelAccessIds": schoolLevelAccessIds,
   };
 }
 
 class UpdateSchoolAdminRequest {
-  final String? email;
-  final String? password;
+  //user
   final String? fullName;
   final Gender? gender;
-  final String? imageUrl;
-  final String? schoolId;
+  final String? address;
+  //profile data
   final DateTime? dob;
   final String? birthPlace;
   final String? nik;
+  final String? nip;
   final EmployeeStatus? status;
+  final String? phone;
+  final bool? isHonor;
   final List<String>? schoolLevelAccessIds;
 
   UpdateSchoolAdminRequest({
-    this.email,
-    this.password,
     this.fullName,
     this.gender,
-    this.imageUrl,
-    this.schoolId,
+    this.address,
+
     this.dob,
     this.birthPlace,
     this.nik,
+    this.nip,
     this.status,
+    this.phone,
+    this.isHonor,
     this.schoolLevelAccessIds,
   });
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
-    if (email != null) data['email'] = email;
-    if (password != null) data['password'] = password;
     if (fullName != null) data['fullName'] = fullName;
     if (gender != null) data['gender'] = gender!.name;
-    if (imageUrl != null) data['imageUrl'] = imageUrl;
-    if (schoolId != null) data['schoolId'] = schoolId;
+    if (address != null) data['address'] = address;
+    //profile data
     if (dob != null) data['dob'] = dob!.toIso8601String();
     if (birthPlace != null) data['birthPlace'] = birthPlace;
     if (nik != null) data['nik'] = nik;
+    if (nip != null) data['nip'] = nip;
     if (status != null) data['status'] = status!.name;
+    if (phone != null) data['phone'] = phone;
+    if (isHonor != null) data['isHonor'] = isHonor;
     if (schoolLevelAccessIds != null)
       data['schoolLevelAccessIds'] = schoolLevelAccessIds;
     return data;
@@ -99,7 +109,12 @@ class SchoolAdminResponse {
   final DateTime dob;
   final String birthPlace;
   final String nik;
+  final String nip;
   final EmployeeStatus status;
+  final DateTime hireDate;
+  final String phone;
+  final bool isHonor;
+
   final UserInfo user;
   final List<SchoolLevelAccess> schoolLevelAccess;
   final DateTime createdAt;
@@ -111,7 +126,11 @@ class SchoolAdminResponse {
     required this.dob,
     required this.birthPlace,
     required this.nik,
+    required this.nip,
     required this.status,
+    required this.hireDate,
+    required this.phone,
+    required this.isHonor,
     required this.user,
     required this.schoolLevelAccess,
     required this.createdAt,
@@ -125,7 +144,11 @@ class SchoolAdminResponse {
         dob: DateTime.parse(json["dob"]),
         birthPlace: json["birthPlace"],
         nik: json["nik"],
+        nip: json["nip"],
         status: EmployeeStatus.values.byName(json["status"]),
+        hireDate: DateTime.parse(json["hireDate"]),
+        phone: json["phone"],
+        isHonor: json["isHonor"],
         user: UserInfo.fromJson(json["user"]),
         schoolLevelAccess: List<SchoolLevelAccess>.from(
           json["schoolLevelAccess"].map((x) => SchoolLevelAccess.fromJson(x)),
@@ -154,14 +177,20 @@ class UserInfo {
   final String fullName;
   final String email;
   final Gender gender;
+  final Role role;
   final String imageUrl;
+  final String fileUrl;
+  final String address;
 
   UserInfo({
     required this.id,
     required this.fullName,
     required this.email,
     required this.gender,
+    required this.role,
     required this.imageUrl,
+    required this.fileUrl,
+    required this.address,
   });
 
   factory UserInfo.fromJson(Map<String, dynamic> json) => UserInfo(
@@ -169,7 +198,10 @@ class UserInfo {
     fullName: json["fullName"],
     email: json["email"],
     gender: Gender.values.byName(json["gender"]),
-    imageUrl: json["imageUrl"] ?? "",
+    role: Role.values.byName(json["role"]),
+    imageUrl: json["imageUrl"],
+    fileUrl: json["fileUrl"],
+    address: json["address"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -177,39 +209,21 @@ class UserInfo {
     "fullName": fullName,
     "email": email,
     "gender": gender.name,
+    "role": role.name,
     "imageUrl": imageUrl,
+    "fileUrl": fileUrl,
+    "address": address,
   };
 }
 
 class SchoolLevelAccess {
   final String id;
   final String name;
-  final bool isMajor;
-  final bool isEnrollmentNumber;
-  final bool isActive;
 
-  SchoolLevelAccess({
-    required this.id,
-    required this.name,
-    required this.isMajor,
-    required this.isEnrollmentNumber,
-    required this.isActive,
-  });
+  SchoolLevelAccess({required this.id, required this.name});
 
   factory SchoolLevelAccess.fromJson(Map<String, dynamic> json) =>
-      SchoolLevelAccess(
-        id: json["id"],
-        name: json["name"],
-        isMajor: json["isMajor"],
-        isEnrollmentNumber: json["isEnrollmentNumber"],
-        isActive: json["isActive"],
-      );
+      SchoolLevelAccess(id: json["id"], name: json["name"]);
 
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "isMajor": isMajor,
-    "isEnrollmentNumber": isEnrollmentNumber,
-    "isActive": isActive,
-  };
+  Map<String, dynamic> toJson() => {"id": id, "name": name};
 }

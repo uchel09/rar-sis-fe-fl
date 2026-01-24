@@ -143,6 +143,13 @@ class _ReusablePlutoTableState extends State<ReusablePlutoTable> {
             ),
           )
         : const SizedBox.shrink();
+    final setButton = ShadTooltip(
+      builder: (context) => const Text("Atur Kolom"),
+      child: ShadButton.ghost(
+        child: const Icon(LucideIcons.squareDashedMousePointer600, size: 20),
+        onPressed: () => showSetColumnMenu(context),
+      ),
+    );
 
     // 1. Definisikan Filter Widgets (Search, Rows, Dropdown)
     final searchInput = SizedBox(
@@ -223,6 +230,7 @@ class _ReusablePlutoTableState extends State<ReusablePlutoTable> {
               refreshButton,
               if (widget.canRefresh) const SizedBox(width: 8),
               Expanded(child: searchInput),
+              setButton,
             ],
           ),
           const SizedBox(height: 10),
@@ -241,10 +249,10 @@ class _ReusablePlutoTableState extends State<ReusablePlutoTable> {
     // --- RENDER LAYOUT DESKTOP & TABLET ---
     return Row(
       children: [
-        const Icon(Icons.filter_list, size: 20, color: Color(0xFF64748B)),
         const SizedBox(width: 16),
         // Tombol Refresh diletakkan sebelum search
         refreshButton,
+        setButton,
         if (widget.canRefresh) const SizedBox(width: 12),
         searchInput,
         const SizedBox(width: 12),
@@ -258,6 +266,12 @@ class _ReusablePlutoTableState extends State<ReusablePlutoTable> {
           ..removeLast(),
       ],
     );
+  }
+
+  void showSetColumnMenu(BuildContext context) {
+    if (stateManager == null) return;
+
+    stateManager!.showSetColumnsPopup(context);
   }
 
   Widget _buildDropdown(String label, bool isMobile) {

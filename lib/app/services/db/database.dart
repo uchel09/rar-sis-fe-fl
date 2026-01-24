@@ -6,11 +6,14 @@ import 'package:path/path.dart' as p;
 
 // 1. Import definisi tabel admin yang sudah dibuat tadi
 import 'tables/school_admin_table.dart';
+import 'tables/school_level_table.dart';
 
 // 2. File generated (akan merah/error sebelum jalankan build_runner)
 part 'database.g.dart';
 
-@DriftDatabase(tables: [SchoolAdmins]) // Tambahkan semua class tabel di sini
+@DriftDatabase(
+  tables: [SchoolAdmins, SchoolLevels],
+) // Tambahkan semua class tabel di sini
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 

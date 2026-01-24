@@ -10,7 +10,16 @@ import 'app/routes/app_pages.dart';
 import 'app/providers/base_api_service.dart';
 import 'app/services/auth/auth_service.dart';
 import 'app/services/db/database.dart';
+// nama get storage =
+// permanent==
+// school_code
+// school_id
+// school_level
 
+// auth
+//  box.remove('isLoggedIn');
+//  box.remove('profile');
+//  box.remove('role');
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 

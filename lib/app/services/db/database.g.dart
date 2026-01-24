@@ -58,6 +58,15 @@ class $SchoolAdminsTable extends SchoolAdmins
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _nipMeta = const VerificationMeta('nip');
+  @override
+  late final GeneratedColumn<String> nip = GeneratedColumn<String>(
+    'nip',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumn<String> status = GeneratedColumn<String>(
@@ -66,6 +75,40 @@ class $SchoolAdminsTable extends SchoolAdmins
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
+  );
+  static const VerificationMeta _hireDateMeta = const VerificationMeta(
+    'hireDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> hireDate = GeneratedColumn<DateTime>(
+    'hire_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  @override
+  late final GeneratedColumn<String> phone = GeneratedColumn<String>(
+    'phone',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isHonorMeta = const VerificationMeta(
+    'isHonor',
+  );
+  @override
+  late final GeneratedColumn<bool> isHonor = GeneratedColumn<bool>(
+    'is_honor',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_honor" IN (0, 1))',
+    ),
   );
   static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
   @override
@@ -105,12 +148,43 @@ class $SchoolAdminsTable extends SchoolAdmins
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _roleMeta = const VerificationMeta('role');
+  @override
+  late final GeneratedColumn<String> role = GeneratedColumn<String>(
+    'role',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _imageUrlMeta = const VerificationMeta(
     'imageUrl',
   );
   @override
   late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
     'image_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fileUrlMeta = const VerificationMeta(
+    'fileUrl',
+  );
+  @override
+  late final GeneratedColumn<String> fileUrl = GeneratedColumn<String>(
+    'file_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _addressMeta = const VerificationMeta(
+    'address',
+  );
+  @override
+  late final GeneratedColumn<String> address = GeneratedColumn<String>(
+    'address',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -157,12 +231,19 @@ class $SchoolAdminsTable extends SchoolAdmins
     dob,
     birthPlace,
     nik,
+    nip,
     status,
+    hireDate,
+    phone,
+    isHonor,
     userId,
     fullName,
     email,
     gender,
+    role,
     imageUrl,
+    fileUrl,
+    address,
     schoolLevelAccess,
     createdAt,
     updatedAt,
@@ -216,6 +297,14 @@ class $SchoolAdminsTable extends SchoolAdmins
     } else if (isInserting) {
       context.missing(_nikMeta);
     }
+    if (data.containsKey('nip')) {
+      context.handle(
+        _nipMeta,
+        nip.isAcceptableOrUnknown(data['nip']!, _nipMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nipMeta);
+    }
     if (data.containsKey('status')) {
       context.handle(
         _statusMeta,
@@ -223,6 +312,30 @@ class $SchoolAdminsTable extends SchoolAdmins
       );
     } else if (isInserting) {
       context.missing(_statusMeta);
+    }
+    if (data.containsKey('hire_date')) {
+      context.handle(
+        _hireDateMeta,
+        hireDate.isAcceptableOrUnknown(data['hire_date']!, _hireDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_hireDateMeta);
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+        _phoneMeta,
+        phone.isAcceptableOrUnknown(data['phone']!, _phoneMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_phoneMeta);
+    }
+    if (data.containsKey('is_honor')) {
+      context.handle(
+        _isHonorMeta,
+        isHonor.isAcceptableOrUnknown(data['is_honor']!, _isHonorMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_isHonorMeta);
     }
     if (data.containsKey('user_id')) {
       context.handle(
@@ -256,6 +369,14 @@ class $SchoolAdminsTable extends SchoolAdmins
     } else if (isInserting) {
       context.missing(_genderMeta);
     }
+    if (data.containsKey('role')) {
+      context.handle(
+        _roleMeta,
+        role.isAcceptableOrUnknown(data['role']!, _roleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_roleMeta);
+    }
     if (data.containsKey('image_url')) {
       context.handle(
         _imageUrlMeta,
@@ -263,6 +384,22 @@ class $SchoolAdminsTable extends SchoolAdmins
       );
     } else if (isInserting) {
       context.missing(_imageUrlMeta);
+    }
+    if (data.containsKey('file_url')) {
+      context.handle(
+        _fileUrlMeta,
+        fileUrl.isAcceptableOrUnknown(data['file_url']!, _fileUrlMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fileUrlMeta);
+    }
+    if (data.containsKey('address')) {
+      context.handle(
+        _addressMeta,
+        address.isAcceptableOrUnknown(data['address']!, _addressMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_addressMeta);
     }
     if (data.containsKey('school_level_access')) {
       context.handle(
@@ -320,9 +457,25 @@ class $SchoolAdminsTable extends SchoolAdmins
         DriftSqlType.string,
         data['${effectivePrefix}nik'],
       )!,
+      nip: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}nip'],
+      )!,
       status: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}status'],
+      )!,
+      hireDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}hire_date'],
+      )!,
+      phone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}phone'],
+      )!,
+      isHonor: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_honor'],
       )!,
       userId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -340,9 +493,21 @@ class $SchoolAdminsTable extends SchoolAdmins
         DriftSqlType.string,
         data['${effectivePrefix}gender'],
       )!,
+      role: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}role'],
+      )!,
       imageUrl: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}image_url'],
+      )!,
+      fileUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_url'],
+      )!,
+      address: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}address'],
       )!,
       schoolLevelAccess: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -371,12 +536,19 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
   final DateTime dob;
   final String birthPlace;
   final String nik;
+  final String nip;
   final String status;
+  final DateTime hireDate;
+  final String phone;
+  final bool isHonor;
   final String userId;
   final String fullName;
   final String email;
   final String gender;
+  final String role;
   final String imageUrl;
+  final String fileUrl;
+  final String address;
   final String schoolLevelAccess;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -386,12 +558,19 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
     required this.dob,
     required this.birthPlace,
     required this.nik,
+    required this.nip,
     required this.status,
+    required this.hireDate,
+    required this.phone,
+    required this.isHonor,
     required this.userId,
     required this.fullName,
     required this.email,
     required this.gender,
+    required this.role,
     required this.imageUrl,
+    required this.fileUrl,
+    required this.address,
     required this.schoolLevelAccess,
     required this.createdAt,
     required this.updatedAt,
@@ -404,12 +583,19 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
     map['dob'] = Variable<DateTime>(dob);
     map['birth_place'] = Variable<String>(birthPlace);
     map['nik'] = Variable<String>(nik);
+    map['nip'] = Variable<String>(nip);
     map['status'] = Variable<String>(status);
+    map['hire_date'] = Variable<DateTime>(hireDate);
+    map['phone'] = Variable<String>(phone);
+    map['is_honor'] = Variable<bool>(isHonor);
     map['user_id'] = Variable<String>(userId);
     map['full_name'] = Variable<String>(fullName);
     map['email'] = Variable<String>(email);
     map['gender'] = Variable<String>(gender);
+    map['role'] = Variable<String>(role);
     map['image_url'] = Variable<String>(imageUrl);
+    map['file_url'] = Variable<String>(fileUrl);
+    map['address'] = Variable<String>(address);
     map['school_level_access'] = Variable<String>(schoolLevelAccess);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -423,12 +609,19 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
       dob: Value(dob),
       birthPlace: Value(birthPlace),
       nik: Value(nik),
+      nip: Value(nip),
       status: Value(status),
+      hireDate: Value(hireDate),
+      phone: Value(phone),
+      isHonor: Value(isHonor),
       userId: Value(userId),
       fullName: Value(fullName),
       email: Value(email),
       gender: Value(gender),
+      role: Value(role),
       imageUrl: Value(imageUrl),
+      fileUrl: Value(fileUrl),
+      address: Value(address),
       schoolLevelAccess: Value(schoolLevelAccess),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -446,12 +639,19 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
       dob: serializer.fromJson<DateTime>(json['dob']),
       birthPlace: serializer.fromJson<String>(json['birthPlace']),
       nik: serializer.fromJson<String>(json['nik']),
+      nip: serializer.fromJson<String>(json['nip']),
       status: serializer.fromJson<String>(json['status']),
+      hireDate: serializer.fromJson<DateTime>(json['hireDate']),
+      phone: serializer.fromJson<String>(json['phone']),
+      isHonor: serializer.fromJson<bool>(json['isHonor']),
       userId: serializer.fromJson<String>(json['userId']),
       fullName: serializer.fromJson<String>(json['fullName']),
       email: serializer.fromJson<String>(json['email']),
       gender: serializer.fromJson<String>(json['gender']),
+      role: serializer.fromJson<String>(json['role']),
       imageUrl: serializer.fromJson<String>(json['imageUrl']),
+      fileUrl: serializer.fromJson<String>(json['fileUrl']),
+      address: serializer.fromJson<String>(json['address']),
       schoolLevelAccess: serializer.fromJson<String>(json['schoolLevelAccess']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -466,12 +666,19 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
       'dob': serializer.toJson<DateTime>(dob),
       'birthPlace': serializer.toJson<String>(birthPlace),
       'nik': serializer.toJson<String>(nik),
+      'nip': serializer.toJson<String>(nip),
       'status': serializer.toJson<String>(status),
+      'hireDate': serializer.toJson<DateTime>(hireDate),
+      'phone': serializer.toJson<String>(phone),
+      'isHonor': serializer.toJson<bool>(isHonor),
       'userId': serializer.toJson<String>(userId),
       'fullName': serializer.toJson<String>(fullName),
       'email': serializer.toJson<String>(email),
       'gender': serializer.toJson<String>(gender),
+      'role': serializer.toJson<String>(role),
       'imageUrl': serializer.toJson<String>(imageUrl),
+      'fileUrl': serializer.toJson<String>(fileUrl),
+      'address': serializer.toJson<String>(address),
       'schoolLevelAccess': serializer.toJson<String>(schoolLevelAccess),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -484,12 +691,19 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
     DateTime? dob,
     String? birthPlace,
     String? nik,
+    String? nip,
     String? status,
+    DateTime? hireDate,
+    String? phone,
+    bool? isHonor,
     String? userId,
     String? fullName,
     String? email,
     String? gender,
+    String? role,
     String? imageUrl,
+    String? fileUrl,
+    String? address,
     String? schoolLevelAccess,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -499,12 +713,19 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
     dob: dob ?? this.dob,
     birthPlace: birthPlace ?? this.birthPlace,
     nik: nik ?? this.nik,
+    nip: nip ?? this.nip,
     status: status ?? this.status,
+    hireDate: hireDate ?? this.hireDate,
+    phone: phone ?? this.phone,
+    isHonor: isHonor ?? this.isHonor,
     userId: userId ?? this.userId,
     fullName: fullName ?? this.fullName,
     email: email ?? this.email,
     gender: gender ?? this.gender,
+    role: role ?? this.role,
     imageUrl: imageUrl ?? this.imageUrl,
+    fileUrl: fileUrl ?? this.fileUrl,
+    address: address ?? this.address,
     schoolLevelAccess: schoolLevelAccess ?? this.schoolLevelAccess,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -518,12 +739,19 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
           ? data.birthPlace.value
           : this.birthPlace,
       nik: data.nik.present ? data.nik.value : this.nik,
+      nip: data.nip.present ? data.nip.value : this.nip,
       status: data.status.present ? data.status.value : this.status,
+      hireDate: data.hireDate.present ? data.hireDate.value : this.hireDate,
+      phone: data.phone.present ? data.phone.value : this.phone,
+      isHonor: data.isHonor.present ? data.isHonor.value : this.isHonor,
       userId: data.userId.present ? data.userId.value : this.userId,
       fullName: data.fullName.present ? data.fullName.value : this.fullName,
       email: data.email.present ? data.email.value : this.email,
       gender: data.gender.present ? data.gender.value : this.gender,
+      role: data.role.present ? data.role.value : this.role,
       imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
+      fileUrl: data.fileUrl.present ? data.fileUrl.value : this.fileUrl,
+      address: data.address.present ? data.address.value : this.address,
       schoolLevelAccess: data.schoolLevelAccess.present
           ? data.schoolLevelAccess.value
           : this.schoolLevelAccess,
@@ -540,12 +768,19 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
           ..write('dob: $dob, ')
           ..write('birthPlace: $birthPlace, ')
           ..write('nik: $nik, ')
+          ..write('nip: $nip, ')
           ..write('status: $status, ')
+          ..write('hireDate: $hireDate, ')
+          ..write('phone: $phone, ')
+          ..write('isHonor: $isHonor, ')
           ..write('userId: $userId, ')
           ..write('fullName: $fullName, ')
           ..write('email: $email, ')
           ..write('gender: $gender, ')
+          ..write('role: $role, ')
           ..write('imageUrl: $imageUrl, ')
+          ..write('fileUrl: $fileUrl, ')
+          ..write('address: $address, ')
           ..write('schoolLevelAccess: $schoolLevelAccess, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -554,22 +789,29 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     id,
     schoolId,
     dob,
     birthPlace,
     nik,
+    nip,
     status,
+    hireDate,
+    phone,
+    isHonor,
     userId,
     fullName,
     email,
     gender,
+    role,
     imageUrl,
+    fileUrl,
+    address,
     schoolLevelAccess,
     createdAt,
     updatedAt,
-  );
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -579,12 +821,19 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
           other.dob == this.dob &&
           other.birthPlace == this.birthPlace &&
           other.nik == this.nik &&
+          other.nip == this.nip &&
           other.status == this.status &&
+          other.hireDate == this.hireDate &&
+          other.phone == this.phone &&
+          other.isHonor == this.isHonor &&
           other.userId == this.userId &&
           other.fullName == this.fullName &&
           other.email == this.email &&
           other.gender == this.gender &&
+          other.role == this.role &&
           other.imageUrl == this.imageUrl &&
+          other.fileUrl == this.fileUrl &&
+          other.address == this.address &&
           other.schoolLevelAccess == this.schoolLevelAccess &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -596,12 +845,19 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
   final Value<DateTime> dob;
   final Value<String> birthPlace;
   final Value<String> nik;
+  final Value<String> nip;
   final Value<String> status;
+  final Value<DateTime> hireDate;
+  final Value<String> phone;
+  final Value<bool> isHonor;
   final Value<String> userId;
   final Value<String> fullName;
   final Value<String> email;
   final Value<String> gender;
+  final Value<String> role;
   final Value<String> imageUrl;
+  final Value<String> fileUrl;
+  final Value<String> address;
   final Value<String> schoolLevelAccess;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -612,12 +868,19 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
     this.dob = const Value.absent(),
     this.birthPlace = const Value.absent(),
     this.nik = const Value.absent(),
+    this.nip = const Value.absent(),
     this.status = const Value.absent(),
+    this.hireDate = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.isHonor = const Value.absent(),
     this.userId = const Value.absent(),
     this.fullName = const Value.absent(),
     this.email = const Value.absent(),
     this.gender = const Value.absent(),
+    this.role = const Value.absent(),
     this.imageUrl = const Value.absent(),
+    this.fileUrl = const Value.absent(),
+    this.address = const Value.absent(),
     this.schoolLevelAccess = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -629,12 +892,19 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
     required DateTime dob,
     required String birthPlace,
     required String nik,
+    required String nip,
     required String status,
+    required DateTime hireDate,
+    required String phone,
+    required bool isHonor,
     required String userId,
     required String fullName,
     required String email,
     required String gender,
+    required String role,
     required String imageUrl,
+    required String fileUrl,
+    required String address,
     required String schoolLevelAccess,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -644,12 +914,19 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
        dob = Value(dob),
        birthPlace = Value(birthPlace),
        nik = Value(nik),
+       nip = Value(nip),
        status = Value(status),
+       hireDate = Value(hireDate),
+       phone = Value(phone),
+       isHonor = Value(isHonor),
        userId = Value(userId),
        fullName = Value(fullName),
        email = Value(email),
        gender = Value(gender),
+       role = Value(role),
        imageUrl = Value(imageUrl),
+       fileUrl = Value(fileUrl),
+       address = Value(address),
        schoolLevelAccess = Value(schoolLevelAccess),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
@@ -659,12 +936,19 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
     Expression<DateTime>? dob,
     Expression<String>? birthPlace,
     Expression<String>? nik,
+    Expression<String>? nip,
     Expression<String>? status,
+    Expression<DateTime>? hireDate,
+    Expression<String>? phone,
+    Expression<bool>? isHonor,
     Expression<String>? userId,
     Expression<String>? fullName,
     Expression<String>? email,
     Expression<String>? gender,
+    Expression<String>? role,
     Expression<String>? imageUrl,
+    Expression<String>? fileUrl,
+    Expression<String>? address,
     Expression<String>? schoolLevelAccess,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -676,12 +960,19 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
       if (dob != null) 'dob': dob,
       if (birthPlace != null) 'birth_place': birthPlace,
       if (nik != null) 'nik': nik,
+      if (nip != null) 'nip': nip,
       if (status != null) 'status': status,
+      if (hireDate != null) 'hire_date': hireDate,
+      if (phone != null) 'phone': phone,
+      if (isHonor != null) 'is_honor': isHonor,
       if (userId != null) 'user_id': userId,
       if (fullName != null) 'full_name': fullName,
       if (email != null) 'email': email,
       if (gender != null) 'gender': gender,
+      if (role != null) 'role': role,
       if (imageUrl != null) 'image_url': imageUrl,
+      if (fileUrl != null) 'file_url': fileUrl,
+      if (address != null) 'address': address,
       if (schoolLevelAccess != null) 'school_level_access': schoolLevelAccess,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -695,12 +986,19 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
     Value<DateTime>? dob,
     Value<String>? birthPlace,
     Value<String>? nik,
+    Value<String>? nip,
     Value<String>? status,
+    Value<DateTime>? hireDate,
+    Value<String>? phone,
+    Value<bool>? isHonor,
     Value<String>? userId,
     Value<String>? fullName,
     Value<String>? email,
     Value<String>? gender,
+    Value<String>? role,
     Value<String>? imageUrl,
+    Value<String>? fileUrl,
+    Value<String>? address,
     Value<String>? schoolLevelAccess,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -712,12 +1010,19 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
       dob: dob ?? this.dob,
       birthPlace: birthPlace ?? this.birthPlace,
       nik: nik ?? this.nik,
+      nip: nip ?? this.nip,
       status: status ?? this.status,
+      hireDate: hireDate ?? this.hireDate,
+      phone: phone ?? this.phone,
+      isHonor: isHonor ?? this.isHonor,
       userId: userId ?? this.userId,
       fullName: fullName ?? this.fullName,
       email: email ?? this.email,
       gender: gender ?? this.gender,
+      role: role ?? this.role,
       imageUrl: imageUrl ?? this.imageUrl,
+      fileUrl: fileUrl ?? this.fileUrl,
+      address: address ?? this.address,
       schoolLevelAccess: schoolLevelAccess ?? this.schoolLevelAccess,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -743,8 +1048,20 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
     if (nik.present) {
       map['nik'] = Variable<String>(nik.value);
     }
+    if (nip.present) {
+      map['nip'] = Variable<String>(nip.value);
+    }
     if (status.present) {
       map['status'] = Variable<String>(status.value);
+    }
+    if (hireDate.present) {
+      map['hire_date'] = Variable<DateTime>(hireDate.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (isHonor.present) {
+      map['is_honor'] = Variable<bool>(isHonor.value);
     }
     if (userId.present) {
       map['user_id'] = Variable<String>(userId.value);
@@ -758,8 +1075,17 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
     if (gender.present) {
       map['gender'] = Variable<String>(gender.value);
     }
+    if (role.present) {
+      map['role'] = Variable<String>(role.value);
+    }
     if (imageUrl.present) {
       map['image_url'] = Variable<String>(imageUrl.value);
+    }
+    if (fileUrl.present) {
+      map['file_url'] = Variable<String>(fileUrl.value);
+    }
+    if (address.present) {
+      map['address'] = Variable<String>(address.value);
     }
     if (schoolLevelAccess.present) {
       map['school_level_access'] = Variable<String>(schoolLevelAccess.value);
@@ -784,13 +1110,544 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
           ..write('dob: $dob, ')
           ..write('birthPlace: $birthPlace, ')
           ..write('nik: $nik, ')
+          ..write('nip: $nip, ')
           ..write('status: $status, ')
+          ..write('hireDate: $hireDate, ')
+          ..write('phone: $phone, ')
+          ..write('isHonor: $isHonor, ')
           ..write('userId: $userId, ')
           ..write('fullName: $fullName, ')
           ..write('email: $email, ')
           ..write('gender: $gender, ')
+          ..write('role: $role, ')
           ..write('imageUrl: $imageUrl, ')
+          ..write('fileUrl: $fileUrl, ')
+          ..write('address: $address, ')
           ..write('schoolLevelAccess: $schoolLevelAccess, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SchoolLevelsTable extends SchoolLevels
+    with TableInfo<$SchoolLevelsTable, SchoolLevel> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SchoolLevelsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _schoolIdMeta = const VerificationMeta(
+    'schoolId',
+  );
+  @override
+  late final GeneratedColumn<String> schoolId = GeneratedColumn<String>(
+    'school_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _isMajorMeta = const VerificationMeta(
+    'isMajor',
+  );
+  @override
+  late final GeneratedColumn<bool> isMajor = GeneratedColumn<bool>(
+    'is_major',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_major" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _isEnrollmentNumberMeta =
+      const VerificationMeta('isEnrollmentNumber');
+  @override
+  late final GeneratedColumn<bool> isEnrollmentNumber = GeneratedColumn<bool>(
+    'is_enrollment_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_enrollment_number" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    schoolId,
+    name,
+    isActive,
+    isMajor,
+    isEnrollmentNumber,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'school_levels';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SchoolLevel> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('school_id')) {
+      context.handle(
+        _schoolIdMeta,
+        schoolId.isAcceptableOrUnknown(data['school_id']!, _schoolIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_schoolIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_isActiveMeta);
+    }
+    if (data.containsKey('is_major')) {
+      context.handle(
+        _isMajorMeta,
+        isMajor.isAcceptableOrUnknown(data['is_major']!, _isMajorMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_isMajorMeta);
+    }
+    if (data.containsKey('is_enrollment_number')) {
+      context.handle(
+        _isEnrollmentNumberMeta,
+        isEnrollmentNumber.isAcceptableOrUnknown(
+          data['is_enrollment_number']!,
+          _isEnrollmentNumberMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_isEnrollmentNumberMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SchoolLevel map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SchoolLevel(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      schoolId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}school_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      isMajor: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_major'],
+      )!,
+      isEnrollmentNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_enrollment_number'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $SchoolLevelsTable createAlias(String alias) {
+    return $SchoolLevelsTable(attachedDatabase, alias);
+  }
+}
+
+class SchoolLevel extends DataClass implements Insertable<SchoolLevel> {
+  final String id;
+  final String schoolId;
+  final String name;
+  final bool isActive;
+  final bool isMajor;
+  final bool isEnrollmentNumber;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const SchoolLevel({
+    required this.id,
+    required this.schoolId,
+    required this.name,
+    required this.isActive,
+    required this.isMajor,
+    required this.isEnrollmentNumber,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['school_id'] = Variable<String>(schoolId);
+    map['name'] = Variable<String>(name);
+    map['is_active'] = Variable<bool>(isActive);
+    map['is_major'] = Variable<bool>(isMajor);
+    map['is_enrollment_number'] = Variable<bool>(isEnrollmentNumber);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  SchoolLevelsCompanion toCompanion(bool nullToAbsent) {
+    return SchoolLevelsCompanion(
+      id: Value(id),
+      schoolId: Value(schoolId),
+      name: Value(name),
+      isActive: Value(isActive),
+      isMajor: Value(isMajor),
+      isEnrollmentNumber: Value(isEnrollmentNumber),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory SchoolLevel.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SchoolLevel(
+      id: serializer.fromJson<String>(json['id']),
+      schoolId: serializer.fromJson<String>(json['schoolId']),
+      name: serializer.fromJson<String>(json['name']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      isMajor: serializer.fromJson<bool>(json['isMajor']),
+      isEnrollmentNumber: serializer.fromJson<bool>(json['isEnrollmentNumber']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'schoolId': serializer.toJson<String>(schoolId),
+      'name': serializer.toJson<String>(name),
+      'isActive': serializer.toJson<bool>(isActive),
+      'isMajor': serializer.toJson<bool>(isMajor),
+      'isEnrollmentNumber': serializer.toJson<bool>(isEnrollmentNumber),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  SchoolLevel copyWith({
+    String? id,
+    String? schoolId,
+    String? name,
+    bool? isActive,
+    bool? isMajor,
+    bool? isEnrollmentNumber,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => SchoolLevel(
+    id: id ?? this.id,
+    schoolId: schoolId ?? this.schoolId,
+    name: name ?? this.name,
+    isActive: isActive ?? this.isActive,
+    isMajor: isMajor ?? this.isMajor,
+    isEnrollmentNumber: isEnrollmentNumber ?? this.isEnrollmentNumber,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  SchoolLevel copyWithCompanion(SchoolLevelsCompanion data) {
+    return SchoolLevel(
+      id: data.id.present ? data.id.value : this.id,
+      schoolId: data.schoolId.present ? data.schoolId.value : this.schoolId,
+      name: data.name.present ? data.name.value : this.name,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      isMajor: data.isMajor.present ? data.isMajor.value : this.isMajor,
+      isEnrollmentNumber: data.isEnrollmentNumber.present
+          ? data.isEnrollmentNumber.value
+          : this.isEnrollmentNumber,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SchoolLevel(')
+          ..write('id: $id, ')
+          ..write('schoolId: $schoolId, ')
+          ..write('name: $name, ')
+          ..write('isActive: $isActive, ')
+          ..write('isMajor: $isMajor, ')
+          ..write('isEnrollmentNumber: $isEnrollmentNumber, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    schoolId,
+    name,
+    isActive,
+    isMajor,
+    isEnrollmentNumber,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SchoolLevel &&
+          other.id == this.id &&
+          other.schoolId == this.schoolId &&
+          other.name == this.name &&
+          other.isActive == this.isActive &&
+          other.isMajor == this.isMajor &&
+          other.isEnrollmentNumber == this.isEnrollmentNumber &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class SchoolLevelsCompanion extends UpdateCompanion<SchoolLevel> {
+  final Value<String> id;
+  final Value<String> schoolId;
+  final Value<String> name;
+  final Value<bool> isActive;
+  final Value<bool> isMajor;
+  final Value<bool> isEnrollmentNumber;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const SchoolLevelsCompanion({
+    this.id = const Value.absent(),
+    this.schoolId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.isMajor = const Value.absent(),
+    this.isEnrollmentNumber = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SchoolLevelsCompanion.insert({
+    required String id,
+    required String schoolId,
+    required String name,
+    required bool isActive,
+    required bool isMajor,
+    required bool isEnrollmentNumber,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       schoolId = Value(schoolId),
+       name = Value(name),
+       isActive = Value(isActive),
+       isMajor = Value(isMajor),
+       isEnrollmentNumber = Value(isEnrollmentNumber),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<SchoolLevel> custom({
+    Expression<String>? id,
+    Expression<String>? schoolId,
+    Expression<String>? name,
+    Expression<bool>? isActive,
+    Expression<bool>? isMajor,
+    Expression<bool>? isEnrollmentNumber,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (schoolId != null) 'school_id': schoolId,
+      if (name != null) 'name': name,
+      if (isActive != null) 'is_active': isActive,
+      if (isMajor != null) 'is_major': isMajor,
+      if (isEnrollmentNumber != null)
+        'is_enrollment_number': isEnrollmentNumber,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SchoolLevelsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? schoolId,
+    Value<String>? name,
+    Value<bool>? isActive,
+    Value<bool>? isMajor,
+    Value<bool>? isEnrollmentNumber,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return SchoolLevelsCompanion(
+      id: id ?? this.id,
+      schoolId: schoolId ?? this.schoolId,
+      name: name ?? this.name,
+      isActive: isActive ?? this.isActive,
+      isMajor: isMajor ?? this.isMajor,
+      isEnrollmentNumber: isEnrollmentNumber ?? this.isEnrollmentNumber,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (schoolId.present) {
+      map['school_id'] = Variable<String>(schoolId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (isMajor.present) {
+      map['is_major'] = Variable<bool>(isMajor.value);
+    }
+    if (isEnrollmentNumber.present) {
+      map['is_enrollment_number'] = Variable<bool>(isEnrollmentNumber.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SchoolLevelsCompanion(')
+          ..write('id: $id, ')
+          ..write('schoolId: $schoolId, ')
+          ..write('name: $name, ')
+          ..write('isActive: $isActive, ')
+          ..write('isMajor: $isMajor, ')
+          ..write('isEnrollmentNumber: $isEnrollmentNumber, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -803,11 +1660,15 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $SchoolAdminsTable schoolAdmins = $SchoolAdminsTable(this);
+  late final $SchoolLevelsTable schoolLevels = $SchoolLevelsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [schoolAdmins];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    schoolAdmins,
+    schoolLevels,
+  ];
 }
 
 typedef $$SchoolAdminsTableCreateCompanionBuilder =
@@ -817,12 +1678,19 @@ typedef $$SchoolAdminsTableCreateCompanionBuilder =
       required DateTime dob,
       required String birthPlace,
       required String nik,
+      required String nip,
       required String status,
+      required DateTime hireDate,
+      required String phone,
+      required bool isHonor,
       required String userId,
       required String fullName,
       required String email,
       required String gender,
+      required String role,
       required String imageUrl,
+      required String fileUrl,
+      required String address,
       required String schoolLevelAccess,
       required DateTime createdAt,
       required DateTime updatedAt,
@@ -835,12 +1703,19 @@ typedef $$SchoolAdminsTableUpdateCompanionBuilder =
       Value<DateTime> dob,
       Value<String> birthPlace,
       Value<String> nik,
+      Value<String> nip,
       Value<String> status,
+      Value<DateTime> hireDate,
+      Value<String> phone,
+      Value<bool> isHonor,
       Value<String> userId,
       Value<String> fullName,
       Value<String> email,
       Value<String> gender,
+      Value<String> role,
       Value<String> imageUrl,
+      Value<String> fileUrl,
+      Value<String> address,
       Value<String> schoolLevelAccess,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -881,8 +1756,28 @@ class $$SchoolAdminsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get nip => $composableBuilder(
+    column: $table.nip,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get status => $composableBuilder(
     column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get hireDate => $composableBuilder(
+    column: $table.hireDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isHonor => $composableBuilder(
+    column: $table.isHonor,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -906,8 +1801,23 @@ class $$SchoolAdminsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get imageUrl => $composableBuilder(
     column: $table.imageUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fileUrl => $composableBuilder(
+    column: $table.fileUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get address => $composableBuilder(
+    column: $table.address,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -961,8 +1871,28 @@ class $$SchoolAdminsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get nip => $composableBuilder(
+    column: $table.nip,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get status => $composableBuilder(
     column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get hireDate => $composableBuilder(
+    column: $table.hireDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isHonor => $composableBuilder(
+    column: $table.isHonor,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -986,8 +1916,23 @@ class $$SchoolAdminsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get imageUrl => $composableBuilder(
     column: $table.imageUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fileUrl => $composableBuilder(
+    column: $table.fileUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get address => $composableBuilder(
+    column: $table.address,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1033,8 +1978,20 @@ class $$SchoolAdminsTableAnnotationComposer
   GeneratedColumn<String> get nik =>
       $composableBuilder(column: $table.nik, builder: (column) => column);
 
+  GeneratedColumn<String> get nip =>
+      $composableBuilder(column: $table.nip, builder: (column) => column);
+
   GeneratedColumn<String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get hireDate =>
+      $composableBuilder(column: $table.hireDate, builder: (column) => column);
+
+  GeneratedColumn<String> get phone =>
+      $composableBuilder(column: $table.phone, builder: (column) => column);
+
+  GeneratedColumn<bool> get isHonor =>
+      $composableBuilder(column: $table.isHonor, builder: (column) => column);
 
   GeneratedColumn<String> get userId =>
       $composableBuilder(column: $table.userId, builder: (column) => column);
@@ -1048,8 +2005,17 @@ class $$SchoolAdminsTableAnnotationComposer
   GeneratedColumn<String> get gender =>
       $composableBuilder(column: $table.gender, builder: (column) => column);
 
+  GeneratedColumn<String> get role =>
+      $composableBuilder(column: $table.role, builder: (column) => column);
+
   GeneratedColumn<String> get imageUrl =>
       $composableBuilder(column: $table.imageUrl, builder: (column) => column);
+
+  GeneratedColumn<String> get fileUrl =>
+      $composableBuilder(column: $table.fileUrl, builder: (column) => column);
+
+  GeneratedColumn<String> get address =>
+      $composableBuilder(column: $table.address, builder: (column) => column);
 
   GeneratedColumn<String> get schoolLevelAccess => $composableBuilder(
     column: $table.schoolLevelAccess,
@@ -1099,12 +2065,19 @@ class $$SchoolAdminsTableTableManager
                 Value<DateTime> dob = const Value.absent(),
                 Value<String> birthPlace = const Value.absent(),
                 Value<String> nik = const Value.absent(),
+                Value<String> nip = const Value.absent(),
                 Value<String> status = const Value.absent(),
+                Value<DateTime> hireDate = const Value.absent(),
+                Value<String> phone = const Value.absent(),
+                Value<bool> isHonor = const Value.absent(),
                 Value<String> userId = const Value.absent(),
                 Value<String> fullName = const Value.absent(),
                 Value<String> email = const Value.absent(),
                 Value<String> gender = const Value.absent(),
+                Value<String> role = const Value.absent(),
                 Value<String> imageUrl = const Value.absent(),
+                Value<String> fileUrl = const Value.absent(),
+                Value<String> address = const Value.absent(),
                 Value<String> schoolLevelAccess = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -1115,12 +2088,19 @@ class $$SchoolAdminsTableTableManager
                 dob: dob,
                 birthPlace: birthPlace,
                 nik: nik,
+                nip: nip,
                 status: status,
+                hireDate: hireDate,
+                phone: phone,
+                isHonor: isHonor,
                 userId: userId,
                 fullName: fullName,
                 email: email,
                 gender: gender,
+                role: role,
                 imageUrl: imageUrl,
+                fileUrl: fileUrl,
+                address: address,
                 schoolLevelAccess: schoolLevelAccess,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -1133,12 +2113,19 @@ class $$SchoolAdminsTableTableManager
                 required DateTime dob,
                 required String birthPlace,
                 required String nik,
+                required String nip,
                 required String status,
+                required DateTime hireDate,
+                required String phone,
+                required bool isHonor,
                 required String userId,
                 required String fullName,
                 required String email,
                 required String gender,
+                required String role,
                 required String imageUrl,
+                required String fileUrl,
+                required String address,
                 required String schoolLevelAccess,
                 required DateTime createdAt,
                 required DateTime updatedAt,
@@ -1149,12 +2136,19 @@ class $$SchoolAdminsTableTableManager
                 dob: dob,
                 birthPlace: birthPlace,
                 nik: nik,
+                nip: nip,
                 status: status,
+                hireDate: hireDate,
+                phone: phone,
+                isHonor: isHonor,
                 userId: userId,
                 fullName: fullName,
                 email: email,
                 gender: gender,
+                role: role,
                 imageUrl: imageUrl,
+                fileUrl: fileUrl,
+                address: address,
                 schoolLevelAccess: schoolLevelAccess,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -1185,10 +2179,271 @@ typedef $$SchoolAdminsTableProcessedTableManager =
       SchoolAdmin,
       PrefetchHooks Function()
     >;
+typedef $$SchoolLevelsTableCreateCompanionBuilder =
+    SchoolLevelsCompanion Function({
+      required String id,
+      required String schoolId,
+      required String name,
+      required bool isActive,
+      required bool isMajor,
+      required bool isEnrollmentNumber,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$SchoolLevelsTableUpdateCompanionBuilder =
+    SchoolLevelsCompanion Function({
+      Value<String> id,
+      Value<String> schoolId,
+      Value<String> name,
+      Value<bool> isActive,
+      Value<bool> isMajor,
+      Value<bool> isEnrollmentNumber,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$SchoolLevelsTableFilterComposer
+    extends Composer<_$AppDatabase, $SchoolLevelsTable> {
+  $$SchoolLevelsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get schoolId => $composableBuilder(
+    column: $table.schoolId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isMajor => $composableBuilder(
+    column: $table.isMajor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isEnrollmentNumber => $composableBuilder(
+    column: $table.isEnrollmentNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SchoolLevelsTableOrderingComposer
+    extends Composer<_$AppDatabase, $SchoolLevelsTable> {
+  $$SchoolLevelsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get schoolId => $composableBuilder(
+    column: $table.schoolId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isMajor => $composableBuilder(
+    column: $table.isMajor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isEnrollmentNumber => $composableBuilder(
+    column: $table.isEnrollmentNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SchoolLevelsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SchoolLevelsTable> {
+  $$SchoolLevelsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get schoolId =>
+      $composableBuilder(column: $table.schoolId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<bool> get isMajor =>
+      $composableBuilder(column: $table.isMajor, builder: (column) => column);
+
+  GeneratedColumn<bool> get isEnrollmentNumber => $composableBuilder(
+    column: $table.isEnrollmentNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$SchoolLevelsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SchoolLevelsTable,
+          SchoolLevel,
+          $$SchoolLevelsTableFilterComposer,
+          $$SchoolLevelsTableOrderingComposer,
+          $$SchoolLevelsTableAnnotationComposer,
+          $$SchoolLevelsTableCreateCompanionBuilder,
+          $$SchoolLevelsTableUpdateCompanionBuilder,
+          (
+            SchoolLevel,
+            BaseReferences<_$AppDatabase, $SchoolLevelsTable, SchoolLevel>,
+          ),
+          SchoolLevel,
+          PrefetchHooks Function()
+        > {
+  $$SchoolLevelsTableTableManager(_$AppDatabase db, $SchoolLevelsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SchoolLevelsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SchoolLevelsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SchoolLevelsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> schoolId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<bool> isMajor = const Value.absent(),
+                Value<bool> isEnrollmentNumber = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SchoolLevelsCompanion(
+                id: id,
+                schoolId: schoolId,
+                name: name,
+                isActive: isActive,
+                isMajor: isMajor,
+                isEnrollmentNumber: isEnrollmentNumber,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String schoolId,
+                required String name,
+                required bool isActive,
+                required bool isMajor,
+                required bool isEnrollmentNumber,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => SchoolLevelsCompanion.insert(
+                id: id,
+                schoolId: schoolId,
+                name: name,
+                isActive: isActive,
+                isMajor: isMajor,
+                isEnrollmentNumber: isEnrollmentNumber,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SchoolLevelsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SchoolLevelsTable,
+      SchoolLevel,
+      $$SchoolLevelsTableFilterComposer,
+      $$SchoolLevelsTableOrderingComposer,
+      $$SchoolLevelsTableAnnotationComposer,
+      $$SchoolLevelsTableCreateCompanionBuilder,
+      $$SchoolLevelsTableUpdateCompanionBuilder,
+      (
+        SchoolLevel,
+        BaseReferences<_$AppDatabase, $SchoolLevelsTable, SchoolLevel>,
+      ),
+      SchoolLevel,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
   $$SchoolAdminsTableTableManager get schoolAdmins =>
       $$SchoolAdminsTableTableManager(_db, _db.schoolAdmins);
+  $$SchoolLevelsTableTableManager get schoolLevels =>
+      $$SchoolLevelsTableTableManager(_db, _db.schoolLevels);
 }

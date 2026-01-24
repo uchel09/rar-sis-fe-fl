@@ -209,12 +209,9 @@ class MainDashboardLayout extends StatelessWidget {
               print("ke Settings");
             }),
             const Divider(height: 1),
-            _popoverItem(
-              Icons.logout_rounded,
-              "Logout",
-              () => controller.logout(),
-              textColor: Colors.red,
-            ),
+            _popoverItem(Icons.logout_rounded, "Logout", () async {
+              await controller.logout();
+            }, textColor: Colors.red),
           ],
         ),
       ),

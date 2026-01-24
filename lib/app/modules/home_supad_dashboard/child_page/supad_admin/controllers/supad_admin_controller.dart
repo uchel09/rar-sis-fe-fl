@@ -6,6 +6,8 @@ import 'package:pluto_grid/pluto_grid.dart';
 import '../../../../../widgets/row_detail_modal.dart';
 import '../../../../../core/pluto_core.dart';
 import '../../../../../widgets/circle_cache_avatar.dart';
+import "package:shadcn_ui/shadcn_ui.dart";
+import 'package:get/get.dart' as g;
 
 class SupadAdminController extends GetxController {
   // 1. Reactive Variables
@@ -15,6 +17,11 @@ class SupadAdminController extends GetxController {
   // 2. Definisi Kolom (Late karena butuh context/init)
   late List<PlutoColumn> columns;
   final SchoolAdminService _service = Get.find<SchoolAdminService>();
+  late GlobalKey<ScaffoldState> scaffoldKey;
+
+  void bindScaffold(GlobalKey<ScaffoldState> key) {
+    scaffoldKey = key;
+  }
 
   @override
   void onInit() {
@@ -213,14 +220,14 @@ class SupadAdminController extends GetxController {
   }
 
   // 4. Fetch Data & Mapping Manual (Langsung di sini)
-  Future<void> fetchData() async {
+  Future<void> fetchData({bool forceRefresh = false}) async {
     try {
       isLoading.value = true;
-      final localData = await _service.getAll(forceRefresh: false);
+      final localData = await _service.getAll(forceRefresh: forceRefresh);
       if (localData.isNotEmpty) {
         _mapToPlutoRows(localData);
       } else {
-        final freshData = await _service.getAll(forceRefresh: true);
+        final freshData = await _service.getAll(forceRefresh: forceRefresh);
         _mapToPlutoRows(freshData);
 
         if (rows.isEmpty) {
@@ -263,21 +270,18 @@ class SupadAdminController extends GetxController {
   }
 
   // 5. CRUD Logic
+
   void onCreate() {
-    Get.snackbar(
-      "Create",
-      "Membuka form tambah data sekolah",
-      snackPosition: SnackPosition.BOTTOM,
-    );
+    scaffoldKey.currentState?.openEndDrawer();
   }
 
   void onExport() async {
     print("delete local");
-    _service.deleteLocal();
+    // _service.deleteLocal();
   }
 
   void onRefresh() {
-    _service.getAll(forceRefresh: true);
+    fetchData(forceRefresh: true);
   }
 
   void onUpdate(Map<String, dynamic> data) {

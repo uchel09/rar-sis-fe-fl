@@ -70,6 +70,7 @@ class AuthService extends GetxService {
         box.remove('profile');
         box.remove('role');
         await _api.cookieJar.deleteAll();
+
         Get.offAllNamed("/login");
       }
     } finally {

@@ -1,14 +1,12 @@
 import 'dart:convert';
-
 import '../../core/enum.dart';
-import '../db/database.dart'; // Sesuaikan path database.dart
+import '../db/database.dart';
 import 'school_admin_model.dart';
 
 class SchoolAdminLocalService {
   final AppDatabase _db;
   SchoolAdminLocalService(this._db);
 
-  /// BULK INSERT: Langsung tumpah ke database
   /// BULK INSERT: Clear dulu baru isi, dibungkus Transaction agar aman
   Future<void> bulkInsert(List<SchoolAdminResponse> admins) async {
     await _db.transaction(() async {
@@ -32,12 +30,20 @@ class SchoolAdminLocalService {
       dob: res.dob,
       birthPlace: res.birthPlace,
       nik: res.nik,
+      nip: res.nip, // Langsung string kosong sesuai response
       status: res.status.name,
+      hireDate: res.hireDate,
+      phone: res.phone,
+      isHonor: res.isHonor,
+      // Mapping manual bongkar UserInfo (Denormalisasi)
       userId: res.user.id,
       fullName: res.user.fullName,
       email: res.user.email,
       gender: res.user.gender.name,
+      role: res.user.role.name,
       imageUrl: res.user.imageUrl,
+      fileUrl: res.user.fileUrl,
+      address: res.user.address,
       // Mapping manual List ke JSON String
       schoolLevelAccess: jsonEncode(
         res.schoolLevelAccess.map((e) => e.toJson()).toList(),
@@ -47,7 +53,6 @@ class SchoolAdminLocalService {
     );
   }
 
-  /// AMBIL DATA: Untuk ditampilkan ke UI nanti
   /// AMBIL DATA: Mapping balik dari Drift ke SchoolAdminResponse
   Future<List<SchoolAdminResponse>> getAllLocal() async {
     final List<SchoolAdmin> rows = await _db.select(_db.schoolAdmins).get();
@@ -66,13 +71,20 @@ class SchoolAdminLocalService {
         dob: row.dob,
         birthPlace: row.birthPlace,
         nik: row.nik,
+        nip: row.nip,
         status: EmployeeStatus.values.byName(row.status),
+        hireDate: row.hireDate,
+        phone: row.phone,
+        isHonor: row.isHonor,
         user: UserInfo(
           id: row.userId,
           fullName: row.fullName,
           email: row.email,
           gender: Gender.values.byName(row.gender),
+          role: Role.values.byName(row.role),
           imageUrl: row.imageUrl,
+          fileUrl: row.fileUrl,
+          address: row.address,
         ),
         schoolLevelAccess: accessList,
         createdAt: row.createdAt,
@@ -82,7 +94,6 @@ class SchoolAdminLocalService {
   }
 
   Future<void> clearAllAdminLocal() async {
-    // Hanya menghapus isi tabel school_admins
     await _db.delete(_db.schoolAdmins).go();
   }
 }

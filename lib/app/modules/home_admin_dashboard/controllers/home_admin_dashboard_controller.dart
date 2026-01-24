@@ -1,12 +1,21 @@
 import 'package:get/get.dart';
 // Import BaseDashboardController yang kita buat tadi
 import '../../../core/base/base_dashboard_controller.dart';
+import '../../../routes/app_pages.dart';
+import 'package:flutter/material.dart';
 
 class HomeAdminDashboardController extends BaseDashboardController {
   var openMenuId = "".obs;
   @override
   void onInit() {
     super.onInit();
+    activeMenuKey.value = "1";
+
+    // 2. Paksa Router Outlet internal pindah ke rute overview
+    // Kita panggil di akhir frame supaya gak tabrakan sama proses build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Get.rootDelegate.toNamed(Routes.HOME_SUPAD_OVERVIEW);
+    });
     fetchDashboardStats();
     _syncMenuWithUrl();
   }

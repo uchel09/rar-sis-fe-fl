@@ -89,15 +89,3 @@ class HomeView extends GetView<HomeController> {
     );
   }
 }
-
-
-// nama get storage =
-// permanent
-
-// school_code 
-// school_id 
-
-// auth
-//  box.remove('isLoggedIn');
-//  box.remove('profile');
-//  box.remove('role');
