@@ -1,11 +1,19 @@
 import 'package:get/get.dart';
 import '../../modules/profile/controllers/profile_controller.dart';
+import 'package:rar_sis_fe_fl/app/services/school_admin/school_admin_service.dart';
+import 'package:rar_sis_fe_fl/app/services/curriculum/curriculum_service.dart';
+import 'package:rar_sis_fe_fl/app/services/school_level/school_level_service.dart';
+import "master_controller.dart";
 
 // Base-nya lu buat sekali aja di folder core/base
 abstract class BaseDashboardBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(ProfileController()); // Standar profil buat semua dashboard
+    Get.lazyPut<SchoolAdminService>(() => SchoolAdminService());
+    Get.lazyPut<SchoolLevelService>(() => SchoolLevelService());
+    Get.lazyPut<CurriculumService>(() => CurriculumService());
+    Get.put(MasterController());
     injectController(); // Panggil method abstrak
   }
 

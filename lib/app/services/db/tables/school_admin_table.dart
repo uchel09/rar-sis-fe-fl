@@ -7,7 +7,7 @@ class SchoolAdmins extends Table {
   DateTimeColumn get dob => dateTime()();
   TextColumn get birthPlace => text()();
   TextColumn get nik => text()();
-  TextColumn get nip => text()();
+  TextColumn get nip => text().nullable().unique()();
   TextColumn get status =>
       text()(); // Kita simpan string dari enum EmployeeStatus
   DateTimeColumn get hireDate => dateTime()();

@@ -4,6 +4,8 @@ import '../../providers/base_api_service.dart';
 import './school_admin_model.dart';
 import 'school_admin_local_service.dart';
 import '../db/database.dart'; // Sesuaikan path database
+import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:flutter/material.dart';
 
 class SchoolAdminService extends GetxService {
   final BaseApiService _api = Get.find<BaseApiService>();
@@ -45,7 +47,6 @@ class SchoolAdminService extends GetxService {
         return apiResults; // Return data segar dari API
       } catch (apiError) {
         print("API ERROR: $apiError");
-        // Kalau API gagal tapi ada data lokal (meski jadul), kasih yang lokal aja
         return localData;
       }
     } else {
@@ -61,20 +62,27 @@ class SchoolAdminService extends GetxService {
 
   /// CREATE
   Future<void> create(CreateSchoolAdminRequest request) async {
-    await _api.dio.post('/school-admins', data: request.toJson());
-    // Refresh data lokal setelah create sukses
-    await getAll(forceRefresh: true);
+    var res = await _api.dio.post('/school-admins', data: request.toJson());
+    if (res.statusCode == 200 || res.statusCode == 201) {
+      // Pakai Get.context buat dapet context global GetX
+      if (Get.context != null) {
+        ShadToaster.of(Get.context!).show(
+          ShadToast(
+            title: const Text('Admin Berhasil Dibuat'),
+            description: Text('Admin ${request.fullName} telah ditambahkan.'),
+            action: ShadButton.outline(
+              child: const Text('Undo'),
+              onPressed: () => ShadToaster.of(Get.context!).hide(),
+            ),
+          ),
+        );
+      }
+    }
   }
 
   /// UPDATE
-  Future<void> update(
-    String id,
-    UpdateSchoolAdminRequest request,
-    String schoolId,
-  ) async {
+  Future<void> update(String id, UpdateSchoolAdminRequest request) async {
     await _api.dio.put('/school-admins/$id', data: request.toJson());
-    // Refresh data lokal setelah update sukses
-    await getAll(forceRefresh: true);
   }
 
   /// DELETE
@@ -82,6 +90,10 @@ class SchoolAdminService extends GetxService {
     await _api.dio.delete('/school-admins/$id');
     // Refresh data lokal setelah delete sukses agar ID yang dihapus hilang dari Drift
     await getAll(forceRefresh: true);
+  }
+
+  Future<SchoolAdminResponse?> getAdminByIdLocal(String id) async {
+    return await _localService.getById(id);
   }
 
   Future<void> deleteLocal() async {

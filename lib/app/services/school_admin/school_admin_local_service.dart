@@ -2,6 +2,7 @@ import 'dart:convert';
 import '../../core/enum.dart';
 import '../db/database.dart';
 import 'school_admin_model.dart';
+import 'package:drift/drift.dart';
 
 class SchoolAdminLocalService {
   final AppDatabase _db;
@@ -30,7 +31,9 @@ class SchoolAdminLocalService {
       dob: res.dob,
       birthPlace: res.birthPlace,
       nik: res.nik,
-      nip: res.nip, // Langsung string kosong sesuai response
+      nip: res.nip != null && res.nip!.isNotEmpty
+          ? Value(res.nip)
+          : const Value.absent(),
       status: res.status.name,
       hireDate: res.hireDate,
       phone: res.phone,
@@ -53,44 +56,56 @@ class SchoolAdminLocalService {
     );
   }
 
+  /// MANUAL MAPPING: Drift Row -> Response Model
+  SchoolAdminResponse _mapToResponse(SchoolAdmin row) {
+    // 1. Bongkar JSON String untuk akses jenjang
+    final List<dynamic> accessListRaw = jsonDecode(row.schoolLevelAccess);
+    final List<SchoolLevelAccess> accessList = accessListRaw
+        .map((e) => SchoolLevelAccess.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+    // 2. Return object Response dengan mapping manual field per field
+    return SchoolAdminResponse(
+      id: row.id,
+      schoolId: row.schoolId,
+      dob: row.dob,
+      birthPlace: row.birthPlace,
+      nik: row.nik,
+      nip: row.nip,
+      status: EmployeeStatus.values.byName(row.status),
+      hireDate: row.hireDate,
+      phone: row.phone,
+      isHonor: row.isHonor,
+      // Mapping manual UserInfo (hasil denormalisasi tabel)
+      user: UserInfo(
+        id: row.userId,
+        fullName: row.fullName,
+        email: row.email,
+        gender: Gender.values.byName(row.gender),
+        role: Role.values.byName(row.role),
+        imageUrl: row.imageUrl,
+        fileUrl: row.fileUrl,
+        address: row.address,
+      ),
+      schoolLevelAccess: accessList,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+    );
+  }
+
+  /// AMBIL DATA: Mapping balik dari Drift ke SchoolAdminResponse
   /// AMBIL DATA: Mapping balik dari Drift ke SchoolAdminResponse
   Future<List<SchoolAdminResponse>> getAllLocal() async {
-    final List<SchoolAdmin> rows = await _db.select(_db.schoolAdmins).get();
+    final rows = await _db.select(_db.schoolAdmins).get();
 
-    return rows.map((row) {
-      // Bongkar JSON String kembali ke List object
-      final List<dynamic> accessListRaw = jsonDecode(row.schoolLevelAccess);
-      final List<SchoolLevelAccess> accessList = accessListRaw
-          .map((e) => SchoolLevelAccess.fromJson(e))
-          .toList();
+    // Tinggal panggil fungsi mapping yang sudah dibuat
+    return rows.map(_mapToResponse).toList();
+  }
 
-      // Mapping manual ke SchoolAdminResponse
-      return SchoolAdminResponse(
-        id: row.id,
-        schoolId: row.schoolId,
-        dob: row.dob,
-        birthPlace: row.birthPlace,
-        nik: row.nik,
-        nip: row.nip,
-        status: EmployeeStatus.values.byName(row.status),
-        hireDate: row.hireDate,
-        phone: row.phone,
-        isHonor: row.isHonor,
-        user: UserInfo(
-          id: row.userId,
-          fullName: row.fullName,
-          email: row.email,
-          gender: Gender.values.byName(row.gender),
-          role: Role.values.byName(row.role),
-          imageUrl: row.imageUrl,
-          fileUrl: row.fileUrl,
-          address: row.address,
-        ),
-        schoolLevelAccess: accessList,
-        createdAt: row.createdAt,
-        updatedAt: row.updatedAt,
-      );
-    }).toList();
+  Future<SchoolAdminResponse?> getById(String id) async {
+    final query = _db.select(_db.schoolAdmins)..where((t) => t.id.equals(id));
+    final row = await query.getSingleOrNull();
+    return row != null ? _mapToResponse(row) : null;
   }
 
   Future<void> clearAllAdminLocal() async {

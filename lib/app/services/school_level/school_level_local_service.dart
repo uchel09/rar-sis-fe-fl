@@ -57,9 +57,7 @@ class SchoolLevelLocalService {
   }
 
   // --- DELETE ---
-  Future<int> deleteLocal(String id) async {
-    return await (_db.delete(
-      _db.schoolLevels,
-    )..where((t) => t.id.equals(id))).go();
+  Future<void> deleteLocal() async {
+    await _db.delete(_db.schoolLevels).go();
   }
 }

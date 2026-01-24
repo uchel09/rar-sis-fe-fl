@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
-
+import 'package:rar_sis_fe_fl/app/services/curriculum/curriculum_service.dart';
+import '../../../../../services/curriculum/curriculum_model.dart';
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import '../../../../../widgets/row_detail_modal.dart';
 import '../../../../../core/pluto_core.dart';
+import 'package:get/get.dart' as g;
 
 class SupadCurriculumController extends GetxController {
   // 1. Reactive Variables
@@ -12,11 +14,17 @@ class SupadCurriculumController extends GetxController {
   var dropdownItems = <DropdownMenuItem<String>>[].obs;
   // 2. Definisi Kolom (Late karena butuh context/init)
   late List<PlutoColumn> columns;
+  final CurriculumService _service = Get.find<CurriculumService>();
+  late GlobalKey<ScaffoldState> scaffoldKey;
+
+  void bindScaffold(GlobalKey<ScaffoldState> key) {
+    scaffoldKey = key;
+  }
 
   @override
   void onInit() {
     _initColumns();
-    fetchData(); // Load data dummy
+    Future.microtask(() => fetchData());
     dropdownItems.value = getColumnDropdownOptions(
       columns,
       ['id', 'no', 'actions'], // field yang dilarang
@@ -27,23 +35,18 @@ class SupadCurriculumController extends GetxController {
   // 3. Konfigurasi Kolom & Renderer Action
   void _initColumns() {
     columns = [
+      // 1. Nomor Urut
       PlutoColumn(
         title: 'NO',
-
         field: 'no',
         type: PlutoColumnType.text(),
-        width: 50,
-        enableSorting: false, // Biasanya nomor tidak perlu di-sort
+        width: 60,
+        enableSorting: false,
         enableContextMenu: false,
-        enableDropToResize: true,
         renderer: (rendererContext) {
-          // Ambil stateManager untuk tahu posisi halaman sekarang
           final stateManager = rendererContext.stateManager;
-
-          // Rumus: (Halaman_Sekarang - 1) * Jumlah_Data_Per_Halaman + Index_Baris + 1
           int pageOffset = (stateManager.page - 1) * stateManager.pageSize;
           int nomorUrut = pageOffset + rendererContext.rowIdx + 1;
-
           return Center(
             child: Text(
               nomorUrut.toString(),
@@ -52,66 +55,97 @@ class SupadCurriculumController extends GetxController {
           );
         },
       ),
+
+      // 2. Nama Kurikulum
       PlutoColumn(
-        title: 'ID',
-        enableContextMenu: false,
-        field: 'id',
-        type: PlutoColumnType.text(),
-        width: 100,
-        hide: true,
-      ),
-      PlutoColumn(
-        title: 'Nama Sekolah',
+        title: 'Nama Kurikulum',
         field: 'name',
         type: PlutoColumnType.text(),
         width: 250,
       ),
-      PlutoColumn(
-        title: 'Email',
-        field: 'email',
-        type: PlutoColumnType.text(),
-        width: 200,
-      ),
+
+      // 3. Status (Boolean isActive)
       PlutoColumn(
         title: 'Status',
-        field: 'status',
+        field: 'isActive',
         type: PlutoColumnType.text(),
-        width: 150,
+        width: 120,
+        renderer: (rendererContext) {
+          // Ambil value boolean murni dari cell
+          final bool active = rendererContext.cell.value as bool;
+
+          return Center(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                // Shadcn-like Badge Style
+                color: active
+                    ? const Color(0xFFDCFCE7) // Green 100
+                    : const Color(0xFFF1F5F9), // Slate 100
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(
+                  color: active
+                      ? const Color(0xFF22C55E) // Green 500
+                      : const Color(0xFF94A3B8), // Slate 400
+                ),
+              ),
+              child: Text(
+                active ? 'Aktif' : 'Non-Aktif',
+                style: TextStyle(
+                  color: active
+                      ? const Color(0xFF166534)
+                      : const Color(0xFF475569),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          );
+        },
       ),
 
+      // 4. Actions
       PlutoColumn(
         title: 'Actions',
         field: 'actions',
         type: PlutoColumnType.text(),
         enableSorting: false,
         enableFilterMenuItem: false,
-        width: 160,
+        width: 140,
         renderer: (rendererContext) {
           return Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               IconButton(
-                icon: const Icon(Icons.edit, size: 16, color: Colors.blue),
+                icon: const Icon(
+                  Icons.edit_outlined,
+                  size: 18,
+                  color: Colors.blue,
+                ),
                 onPressed: () => onUpdate(rendererContext.row.toJson()),
               ),
               IconButton(
-                icon: const Icon(Icons.delete, size: 16, color: Colors.red),
+                icon: const Icon(
+                  Icons.delete_outline,
+                  size: 18,
+                  color: Colors.red,
+                ),
                 onPressed: () => doDelete(rendererContext.row.toJson()),
               ),
               IconButton(
                 icon: const Icon(
-                  Icons.remove_red_eye_sharp,
-                  size: 16,
+                  Icons.visibility_outlined,
+                  size: 18,
                   color: Colors.black,
                 ),
-                onPressed: () => {
+                onPressed: () {
                   Get.dialog(
                     RowDetailModal(
                       row: rendererContext.row,
                       columns: columns,
                       hiddenFields: const ['no', 'actions', 'id'],
                     ),
-                  ),
+                  );
                 },
               ),
             ],
@@ -122,236 +156,59 @@ class SupadCurriculumController extends GetxController {
   }
 
   // 4. Fetch Data & Mapping Manual (Langsung di sini)
-  void fetchData() {
-    isLoading.value = true;
+  Future<void> fetchData({bool forceRefresh = false}) async {
+    try {
+      isLoading.value = true;
+      final localData = await _service.getAll(forceRefresh: forceRefresh);
+      if (localData.isNotEmpty) {
+        _mapToPlutoRows(localData);
+      } else {
+        final freshData = await _service.getAll(forceRefresh: true);
+        _mapToPlutoRows(freshData);
+      }
+    } catch (e) {
+      print("error: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
-    // Dummy Data Mentah
-    final List<Map<String, dynamic>> dummyRaw = [
-      {
-        'id': 'SCH-001',
-        'name': 'SMA Negeri 1 Jakarta',
-        'email': 'info@sman1jkt.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-002',
-        'name': 'SMK Taruna Bhakti',
-        'email': 'admin@tarunabhakti.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-003',
-        'name': 'SMP Internasional',
-        'email': 'contact@smpinter.com',
-        'status': 'Non-Aktif',
-      },
-      {
-        'id': 'SCH-001',
-        'name': 'SMA Negeri 1 Jakarta',
-        'email': 'info@sman1jkt.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-002',
-        'name': 'SMK Taruna Bhakti',
-        'email': 'admin@tarunabhakti.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-003',
-        'name': 'SMP Internasional',
-        'email': 'contact@smpinter.com',
-        'status': 'Non-Aktif',
-      },
-      {
-        'id': 'SCH-001',
-        'name': 'SMA Negeri 1 Jakarta',
-        'email': 'info@sman1jkt.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-002',
-        'name': 'SMK Taruna Bhakti',
-        'email': 'admin@tarunabhakti.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-003',
-        'name': 'SMP Internasional',
-        'email': 'contact@smpinter.com',
-        'status': 'Non-Aktif',
-      },
-      {
-        'id': 'SCH-001',
-        'name': 'SMA Negeri 1 Jakarta',
-        'email': 'info@sman1jkt.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-002',
-        'name': 'SMK Taruna Bhakti',
-        'email': 'admin@tarunabhakti.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-003',
-        'name': 'SMP Internasional',
-        'email': 'contact@smpinter.com',
-        'status': 'Non-Aktif',
-      },
-      {
-        'id': 'SCH-001',
-        'name': 'SMA Negeri 1 Jakarta',
-        'email': 'info@sman1jkt.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-002',
-        'name': 'SMK Taruna Bhakti',
-        'email': 'admin@tarunabhakti.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-003',
-        'name': 'SMP Internasional',
-        'email': 'contact@smpinter.com',
-        'status': 'Non-Aktif',
-      },
-      {
-        'id': 'SCH-001',
-        'name': 'SMA Negeri 1 Jakarta',
-        'email': 'info@sman1jkt.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-002',
-        'name': 'SMK Taruna Bhakti',
-        'email': 'admin@tarunabhakti.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-003',
-        'name': 'SMP Internasional',
-        'email': 'contact@smpinter.com',
-        'status': 'Non-Aktif',
-      },
-      {
-        'id': 'SCH-001',
-        'name': 'SMA Negeri 1 Jakarta',
-        'email': 'info@sman1jkt.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-002',
-        'name': 'SMK Taruna Bhakti',
-        'email': 'admin@tarunabhakti.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-003',
-        'name': 'SMP Internasional',
-        'email': 'contact@smpinter.com',
-        'status': 'Non-Aktif',
-      },
-      {
-        'id': 'SCH-001',
-        'name': 'SMA Negeri 1 Jakarta',
-        'email': 'info@sman1jkt.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-002',
-        'name': 'SMK Taruna Bhakti',
-        'email': 'admin@tarunabhakti.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-003',
-        'name': 'SMP Internasional',
-        'email': 'contact@smpinter.com',
-        'status': 'Non-Aktif',
-      },
-      {
-        'id': 'SCH-001',
-        'name': 'SMA Negeri 1 Jakarta',
-        'email': 'info@sman1jkt.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-002',
-        'name': 'SMK Taruna Bhakti',
-        'email': 'admin@tarunabhakti.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-003',
-        'name': 'SMP Internasional',
-        'email': 'contact@smpinter.com',
-        'status': 'Non-Aktif',
-      },
-      {
-        'id': 'SCH-001',
-        'name': 'SMA Negeri 1 Jakarta',
-        'email': 'info@sman1jkt.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-002',
-        'name': 'SMK Taruna Bhakti',
-        'email': 'admin@tarunabhakti.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-003',
-        'name': 'SMP Internasional',
-        'email': 'contact@smpinter.com',
-        'status': 'Non-Aktif',
-      },
-      {
-        'id': 'SCH-001',
-        'name': 'SMA Negeri 1 Jakarta',
-        'email': 'info@sman1jkt.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-002',
-        'name': 'SMK Taruna Bhakti',
-        'email': 'admin@tarunabhakti.sch.id',
-        'status': 'Aktif',
-      },
-      {
-        'id': 'SCH-003',
-        'name': 'SMP Internasional',
-        'email': 'contact@smpinter.com',
-        'status': 'Non-Aktif',
-      },
-    ];
-
-    // Proses Mapping Manual ke PlutoRow
-    final mappedRows = dummyRaw.map((item) {
+  /// Mapping ke PlutoRow: Fokus hanya pada konversi ke View/Tabel
+  void _mapToPlutoRows(List<CurriculumResponse> curriculumList) {
+    final mappedRows = curriculumList.map((curriculum) {
       return PlutoRow(
         cells: {
-          'no': PlutoCell(value: item['']),
-          'id': PlutoCell(value: item['id']),
-          'name': PlutoCell(value: item['name']),
-          'email': PlutoCell(value: item['email']),
-          'status': PlutoCell(value: item['status']),
-          'actions': PlutoCell(value: ''), // Kosong karena dirender IconButton
+          'no': PlutoCell(
+            value: '',
+          ), // Renderer nomor urut sudah kita handle di initColumns
+          'id': PlutoCell(value: curriculum.id),
+          'schoolId': PlutoCell(value: curriculum.schoolId),
+          'name': PlutoCell(value: curriculum.name),
+          // Sesuai request: isActive dikirim sebagai boolean murni
+          'isActive': PlutoCell(value: curriculum.isActive),
+          'createdAt': PlutoCell(value: curriculum.createdAt),
+          'updatedAt': PlutoCell(value: curriculum.updatedAt),
+          'actions': PlutoCell(value: ''),
         },
       );
     }).toList();
 
     rows.assignAll(mappedRows);
-    isLoading.value = false;
   }
 
   // 5. CRUD Logic
+
   void onCreate() {
-    Get.snackbar(
-      "Create",
-      "Membuka form tambah data sekolah",
-      snackPosition: SnackPosition.BOTTOM,
-    );
+    scaffoldKey.currentState?.openEndDrawer();
+  }
+
+  void onExport() async {
+    print("delete local");
+    _service.deleteLocal();
+  }
+
+  void onRefresh() {
+    fetchData(forceRefresh: true);
   }
 
   void onUpdate(Map<String, dynamic> data) {
@@ -360,6 +217,13 @@ class SupadCurriculumController extends GetxController {
       "Edit sekolah: ${data['name']}",
       snackPosition: SnackPosition.BOTTOM,
     );
+  }
+
+  Future<void> getAdminByIdLocal(String id) async {
+    final curriculum = await _service.getCurriculumByIdLocal(id);
+    if (curriculum != null) {
+      print("get curriculum by id");
+    }
   }
 
   void doDelete(Map<String, dynamic> data) {

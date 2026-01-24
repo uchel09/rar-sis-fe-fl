@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:dio/dio.dart';
 import 'package:rar_sis_fe_fl/app/controllers/school_controller.dart';
 import 'package:rar_sis_fe_fl/app/controllers/global_loading_controller.dart';
 import 'package:rar_sis_fe_fl/app/services/auth/auth_service.dart'; // Sesuaikan path ini
@@ -68,9 +67,6 @@ class LoginController extends GetxController {
       );
       // Redirect berdasarkan role
       _redirectUser(role);
-    } on DioException catch (e) {
-      // Error message sudah dihandle global di BaseApiService interceptor sebenarnya,
-      // tapi kalau mau spesifik snackbar di sini juga boleh.
     } finally {
       isLoading.value = false;
       GlobalLoadingController.to.hide();

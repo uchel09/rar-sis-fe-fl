@@ -109,7 +109,7 @@ class SchoolAdminResponse {
   final DateTime dob;
   final String birthPlace;
   final String nik;
-  final String nip;
+  final String? nip;
   final EmployeeStatus status;
   final DateTime hireDate;
   final String phone;
@@ -126,7 +126,7 @@ class SchoolAdminResponse {
     required this.dob,
     required this.birthPlace,
     required this.nik,
-    required this.nip,
+    this.nip,
     required this.status,
     required this.hireDate,
     required this.phone,
@@ -164,7 +164,11 @@ class SchoolAdminResponse {
     "dob": dob.toIso8601String(),
     "birthPlace": birthPlace,
     "nik": nik,
+    "nip": nip,
     "status": status.name,
+    "hireDate": hireDate,
+    "phone": phone,
+    "isHonor": isHonor,
     "user": user.toJson(),
     "schoolLevelAccess": schoolLevelAccess.map((x) => x.toJson()).toList(),
     "createdAt": createdAt.toIso8601String(),

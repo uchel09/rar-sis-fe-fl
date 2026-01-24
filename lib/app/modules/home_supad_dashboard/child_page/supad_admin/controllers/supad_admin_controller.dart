@@ -1,23 +1,60 @@
 import 'package:get/get.dart';
+import 'package:rar_sis_fe_fl/app/core/base/master_controller.dart';
 import 'package:rar_sis_fe_fl/app/services/school_admin/school_admin_service.dart';
+import 'package:rar_sis_fe_fl/app/core/enum.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../../../services/school_admin/school_admin_model.dart';
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import '../../../../../widgets/row_detail_modal.dart';
 import '../../../../../core/pluto_core.dart';
 import '../../../../../widgets/circle_cache_avatar.dart';
-import "package:shadcn_ui/shadcn_ui.dart";
 import 'package:get/get.dart' as g;
+import 'package:get_storage/get_storage.dart';
 
 class SupadAdminController extends GetxController {
   // 1. Reactive Variables
   var rows = <PlutoRow>[].obs;
   var isLoading = false.obs;
   var dropdownItems = <DropdownMenuItem<String>>[].obs;
+
   // 2. Definisi Kolom (Late karena butuh context/init)
   late List<PlutoColumn> columns;
   final SchoolAdminService _service = Get.find<SchoolAdminService>();
+  final MasterController schoolLevel = Get.find<MasterController>();
+  // Penampung UUID jenjang yang dipilih di form (reaktif)
+  // form
   late GlobalKey<ScaffoldState> scaffoldKey;
+  final formKey = GlobalKey<ShadFormState>();
+  var box = GetStorage();
+  final isCreate = false.obs;
+  final schoolId = "".obs;
+
+  // ==========================================
+  // 1. USER BASIC DATA (String & Enums)
+  // ==========================================
+  final fullNameController = TextEditingController();
+  final emailController = TextEditingController();
+  final addressController = TextEditingController();
+
+  final gender = Rxn<Gender>();
+  final role = Rxn<Role>();
+
+  // ==========================================
+  // 2. PROFILE DATA (Detail & Employment)
+  // ==========================================
+  // schoolId ambil langsung dari storage
+  final adminId = "".obs;
+  final nikController = TextEditingController();
+  final nipController = TextEditingController();
+  final phoneController = TextEditingController();
+  final bPlaceController = TextEditingController(); // birthPlace
+
+  final dob = Rxn<DateTime>(); // Date of Birth
+  final hireDate = Rxn<DateTime>();
+  final status = Rxn<EmployeeStatus>();
+  final isHonor = false.obs;
+  var selectedLevelIds = <String>[].obs;
 
   void bindScaffold(GlobalKey<ScaffoldState> key) {
     scaffoldKey = key;
@@ -31,6 +68,7 @@ class SupadAdminController extends GetxController {
       columns,
       ['id', 'no', 'actions'], // field yang dilarang
     );
+    schoolId.value = box.read("school_id");
     super.onInit();
   }
 
@@ -227,12 +265,8 @@ class SupadAdminController extends GetxController {
       if (localData.isNotEmpty) {
         _mapToPlutoRows(localData);
       } else {
-        final freshData = await _service.getAll(forceRefresh: forceRefresh);
+        final freshData = await _service.getAll(forceRefresh: true);
         _mapToPlutoRows(freshData);
-
-        if (rows.isEmpty) {
-          Get.snackbar("Info", "Tidak ada data admin ditemukan.");
-        }
       }
     } catch (e) {
       print("error: $e");
@@ -272,24 +306,175 @@ class SupadAdminController extends GetxController {
   // 5. CRUD Logic
 
   void onCreate() {
+    clearForm();
+    isCreate.value = true;
     scaffoldKey.currentState?.openEndDrawer();
   }
 
-  void onExport() async {
-    print("delete local");
-    // _service.deleteLocal();
+  Future<void> doCreate() async {
+    // 1. Validasi Form (Trigger error merah di UI)
+    if (!(formKey.currentState?.saveAndValidate() ?? false)) return;
+
+    try {
+      // 2. Mapping Manual dari Controller ke Model Request
+      // Kita pakai "!" karena sudah divalidasi oleh ShadForm (tidak mungkin null)
+      final request = CreateSchoolAdminRequest(
+        // User Group
+        email: emailController.text.trim(),
+        fullName: fullNameController.text.trim(),
+        gender: gender.value!,
+        address: addressController.text.trim(),
+
+        // Profile Group
+        schoolId: schoolId.value,
+        dob: dob.value!,
+        birthPlace: bPlaceController.text.trim(),
+        nik: nikController.text.trim(),
+        hireDate: hireDate.value!,
+        phone: phoneController.text.trim(),
+        isHonor: isHonor.value,
+        schoolLevelAccessIds: selectedLevelIds.toList(),
+      );
+
+      await _service.create(request);
+      await fetchData(forceRefresh: true);
+      // 3. Tembak ke Service
+      // await _service.createAdmin(request.toJson());
+
+      print("Payload siap kirim: ${request.toJson()}");
+
+      // Close Drawer & Reset
+      scaffoldKey.currentState?.closeEndDrawer();
+      clearForm();
+
+      // Tampilkan notifikasi sukses
+      // ShadToaster.show(const ShadToast(description: Text('Admin berhasil dibuat!')));
+    } catch (e) {
+      print("Error pas mapping/simpan: $e");
+    }
   }
 
-  void onRefresh() {
-    fetchData(forceRefresh: true);
+  void clearForm() {
+    // user
+    fullNameController.clear();
+    emailController.clear();
+    gender.value = null;
+    role.value = null;
+    addressController.clear();
+    // profile
+    dob.value = null;
+    bPlaceController.clear();
+    nikController.clear();
+    nipController.clear();
+    status.value = null;
+    hireDate.value = null;
+    phoneController.clear();
+    isHonor.value = false;
+    selectedLevelIds.clear();
+
+    formKey.currentState?.reset(); // Reset state validasi ShadForm
   }
 
-  void onUpdate(Map<String, dynamic> data) {
-    Get.snackbar(
-      "Update",
-      "Edit sekolah: ${data['name']}",
-      snackPosition: SnackPosition.BOTTOM,
-    );
+  void onUpdate(Map<String, dynamic> rowData) async {
+    final String? id = rowData['id'];
+    if (id == null) return;
+
+    adminId.value = id;
+    final admin = await _service.getAdminByIdLocal(id);
+
+    if (admin != null) {
+      isCreate.value = false;
+      clearForm();
+
+      // --- MAPPING MANUAL KE CONTROLLER ---
+      fullNameController.text = admin.user.fullName;
+      emailController.text = admin.user.email;
+      addressController.text = admin.user.address;
+      gender.value = admin.user.gender;
+      nikController.text = admin.nik;
+      nipController.text = admin.nip ?? "";
+      phoneController.text = admin.phone;
+      bPlaceController.text = admin.birthPlace;
+      dob.value = admin.dob;
+      hireDate.value = admin.hireDate;
+      status.value = admin.status;
+      isHonor.value = admin.isHonor;
+      selectedLevelIds.assignAll(
+        admin.schoolLevelAccess.map((e) => e.id).toList(),
+      );
+
+      // 1. Buka Drawer dulu agar widget-nya teregistrasi di UI
+      scaffoldKey.currentState?.openEndDrawer();
+
+      // 2. FORCE UPDATE STATE UNTUK PICKER & SELECT
+      // Kasih delay 200-300ms supaya drawer sudah terbuka sempurna
+      Future.delayed(const Duration(milliseconds: 250), () {
+        final state = formKey.currentState;
+        if (state != null) {
+          // Paksa isi nilai ke internal state ShadForm field demi field
+          // ID di sini HARUS sama dengan ID di widget ShadFormBuilderField lo
+          state.fields['gender']?.didChange(admin.user.gender);
+          state.fields['dob']?.didChange(admin.dob);
+          state.fields['hireDate']?.didChange(admin.hireDate);
+          state.fields['status']?.didChange(admin.status);
+
+          // Panggil validate sekali saja di akhir untuk menghapus pesan error merah
+          state.validate();
+        }
+      });
+    }
+  }
+
+  Future<void> doUpdate() async {
+    // 1. Validasi Form (Trigger error merah di UI)
+    if (!(formKey.currentState?.saveAndValidate() ?? false)) return;
+
+    try {
+      // 2. Mapping Manual dari Controller ke Model Request
+      // Kita pakai "!" karena sudah divalidasi oleh ShadForm (tidak mungkin null)
+      final request = UpdateSchoolAdminRequest(
+        // User Group
+        fullName: fullNameController.text.trim(),
+        gender: gender.value!,
+        address: addressController.text.trim(),
+
+        // Profile Group
+        dob: dob.value!,
+        birthPlace: bPlaceController.text.trim(),
+        nik: nikController.text.trim(),
+        nip: nipController.text.trim().isEmpty
+            ? null
+            : nipController.text.trim(),
+        status: status.value,
+        phone: phoneController.text.trim(),
+        isHonor: isHonor.value,
+        schoolLevelAccessIds: selectedLevelIds.toList(),
+      );
+
+      await _service.update(adminId.value, request);
+      await fetchData(forceRefresh: true);
+
+      // 3. Tembak ke Service
+      // await _service.createAdmin(request.toJson());
+
+      print("Payload siap kirim: ${request.toJson()}");
+
+      // Close Drawer & Reset
+      scaffoldKey.currentState?.closeEndDrawer();
+      clearForm();
+
+      // Tampilkan notifikasi sukses
+      // ShadToaster.show(const ShadToast(description: Text('Admin berhasil dibuat!')));
+    } catch (e) {
+      print("Error pas mapping/simpan: $e");
+    }
+  }
+
+  Future<void> getAdminByIdLocal(String id) async {
+    final admin = await _service.getAdminByIdLocal(id);
+    if (admin != null) {
+      print(admin.user.fullName);
+    }
   }
 
   void doDelete(Map<String, dynamic> data) {
@@ -300,5 +485,13 @@ class SupadAdminController extends GetxController {
       "Berhasil menghapus ${data['name']}",
       snackPosition: SnackPosition.BOTTOM,
     );
+  }
+
+  void onExport() async {
+    Get.snackbar("Export", "Export Data", snackPosition: SnackPosition.BOTTOM);
+  }
+
+  void onRefresh() {
+    fetchData(forceRefresh: true);
   }
 }

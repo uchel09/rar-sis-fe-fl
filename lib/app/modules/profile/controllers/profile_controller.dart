@@ -236,55 +236,6 @@ class ProfileController extends GetxController {
     }
   }
 
-  // Future<void> pickAndUploadImage() async {
-  //   final ImagePicker picker = ImagePicker();
-  //   final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-
-  //   if (image == null) return;
-
-  //   isImageLoading.value = true;
-  //   try {
-  //     // Ambil folder temp
-  //     final dir = await getTemporaryDirectory();
-
-  //     // Ambil nama asli tanpa ekstensi + ganti ke .webp
-  //     String originalName = image.name.split('.').first;
-  //     String webpFileName =
-  //         "${originalName}_${DateTime.now().millisecondsSinceEpoch}.webp";
-  //     final String tempPath = "${dir.path}/$webpFileName";
-
-  //     // PROSES KOMPRESI
-  //     // Jika masih "Unimplemented", cek langkah di bawah kode ini
-  //     XFile? result = await FlutterImageCompress.compressAndGetFile(
-  //       image.path,
-  //       tempPath,
-  //       format: CompressFormat.webp,
-  //       quality: 50,
-  //     );
-
-  //     if (result == null) throw "Gagal kompres gambar";
-
-  //     // HANYA KIRIM FILE (Sesuai request backend lu)
-  //     dio.FormData formData = dio.FormData.fromMap({
-  //       "file": await dio.MultipartFile.fromFile(
-  //         result.path,
-  //         filename: webpFileName,
-  //         contentType: dio.DioMediaType('image', 'webp'),
-  //       ),
-  //     });
-
-  //     await _apiProvider.dio.post('/users/upload-avatar', data: formData);
-
-  //     await refreshProfileData();
-  //     Get.snackbar("Sukses", "Foto profil diperbarui");
-  //   } catch (e) {
-  //     print("LOG ERROR: $e");
-  //     Get.snackbar("Error", "Gagal upload: $e");
-  //   } finally {
-  //     isImageLoading.value = false;
-  //   }
-  // }
-
   @override
   void onClose() {
     nameController.dispose();

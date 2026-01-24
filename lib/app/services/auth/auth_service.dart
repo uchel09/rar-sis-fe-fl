@@ -4,6 +4,7 @@ import 'package:rar_sis_fe_fl/app/controllers/global_loading_controller.dart';
 import 'package:rar_sis_fe_fl/app/services/auth/auth_model.dart';
 import '../../providers/base_api_service.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class AuthService extends GetxService {
   final BaseApiService _api = Get.find<BaseApiService>();
@@ -14,6 +15,19 @@ class AuthService extends GetxService {
     super.onInit();
     // 1. Saat aplikasi dibuka pertama kali, hapus data lama (Sesuai request lu)
     _initAuth();
+
+    Connectivity().onConnectivityChanged.listen((
+      List<ConnectivityResult> results,
+    ) {
+      final isOnline =
+          results.isNotEmpty && !results.contains(ConnectivityResult.none);
+
+      // Jika internet nyala kembali dan statusnya sudah login, tarik data profile terbaru
+      if (isOnline && box.read('isLoggedIn') == true) {
+        print("AUTH: Internet nyala, sinkronisasi Profile...");
+        fetchMe(forceRefresh: true);
+      }
+    });
   }
 
   Future<void> _initAuth() async {
@@ -39,25 +53,16 @@ class AuthService extends GetxService {
   }
 
   Future<void> fetchMe({bool forceRefresh = false}) async {
-    try {
-      GlobalLoadingController.to.show();
-      final response = await _api.dio.get('/users/me');
+    final response = await _api.dio.get('/users/me');
 
-      // Manual mapping
-      final rawDataMap = response.data["data"];
-      final rawData = UserProfileModel.fromJson(rawDataMap);
-      if (response.statusCode == 200) {
-        await box.remove('profile');
-        await box.remove('role');
-      }
-      // Simpan ke Storage agar persistent (anti-null pas pindah page)
-      print(
-        "AuthService: Data user dimuat & disimpan di Storage -> ${rawData.fullName}",
-      );
+    // Manual mapping
+    final rawDataMap = response.data["data"];
+    final rawData = UserProfileModel.fromJson(rawDataMap);
+    if (response.statusCode == 200) {
+      await box.remove('profile');
+      await box.remove('role');
       await box.write('role', rawData.role);
       await box.write('profile', rawDataMap);
-    } finally {
-      GlobalLoadingController.to.hide();
     }
   }
 
