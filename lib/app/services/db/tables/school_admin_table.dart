@@ -8,11 +8,14 @@ class SchoolAdmins extends Table {
   TextColumn get birthPlace => text()();
   TextColumn get nik => text()();
   TextColumn get nip => text().nullable().unique()();
-  TextColumn get status =>
-      text()(); // Kita simpan string dari enum EmployeeStatus
+
   DateTimeColumn get hireDate => dateTime()();
+  TextColumn get employeeType =>
+      text()(); // Ganti isHonor dengan ini (Enum String)
+  TextColumn get workStatus => text()(); // PENTING: Untuk status kehadiran
+  TextColumn get employeeEndStatus => text()(); // Nullable untuk pensiun/resign
+  DateTimeColumn get hireEnd => dateTime().nullable()();
   TextColumn get phone => text()();
-  BoolColumn get isHonor => boolean()();
 
   // Field hasil bongkar object 'user' (UserInfo)
   TextColumn get userId => text()();

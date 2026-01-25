@@ -52,7 +52,9 @@ class SupadAdminView extends GetView<SupadAdminController> {
       () => ShadForm(
         key: controller.formKey,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(4),
+          padding: const EdgeInsets.all(
+            16,
+          ), // Padding sedikit diperlebar agar rapi di Tablet
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -81,7 +83,6 @@ class SupadAdminView extends GetView<SupadAdminController> {
 
               const SizedBox(height: 16),
 
-              // Row Gender & Role (Enum)
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -117,7 +118,6 @@ class SupadAdminView extends GetView<SupadAdminController> {
               ),
 
               const SizedBox(height: 16),
-              //alamat
               ShadInputFormField(
                 id: 'address',
                 label: const Text('Alamat'),
@@ -136,7 +136,7 @@ class SupadAdminView extends GetView<SupadAdminController> {
               ),
               const Divider(),
               const SizedBox(height: 16),
-              //nik dan dob
+
               Row(
                 children: [
                   Expanded(
@@ -145,22 +145,13 @@ class SupadAdminView extends GetView<SupadAdminController> {
                       label: const Text('NIK'),
                       controller: controller.nikController,
                       placeholder: const Text('16 Digit NIK'),
-                      // Tambahin validator di sini
                       validator: (v) {
-                        // 1. Cek dulu apakah kosong
                         if (v == null || v.isEmpty) return 'Wajib diisi';
-
-                        // 2. Baru cek panjangnya
                         if (v.length < 16) return 'Harus 16 digit';
-
-                        // 3. Cek apakah angka semua
-                        if (!GetUtils.isNumericOnly(v)) {
+                        if (!GetUtils.isNumericOnly(v))
                           return 'Harus berupa angka';
-                        }
-
                         return null;
                       },
-                      // Opsional: Batasi inputan biar cuma bisa angka dan max 16 digit di keyboard
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
@@ -180,33 +171,60 @@ class SupadAdminView extends GetView<SupadAdminController> {
               ),
 
               const SizedBox(height: 16),
-              // nip dan status
+
+              // Tipe Pegawai & Work Status (BARU)
+              Row(
+                children: [
+                  Expanded(
+                    child: ShadFormBuilderField<EmployeeType>(
+                      id: 'employeeType',
+                      label: const Text('Tipe Pegawai'),
+                      validator: (v) => v == null ? 'Wajib' : null,
+                      builder: (field) => AppSelectEnumSearch<EmployeeType>(
+                        label: '',
+                        selectedValue: controller.employeeType.value,
+                        values: EmployeeType.values,
+                        labelBuilder: (v) => v.name.replaceAll('_', ' '),
+                        onChanged: (val) {
+                          field.didChange(val);
+                          controller.employeeType.value = val;
+                        },
+                      ),
+                    ),
+                  ),
+                  if (!controller.isCreate.value) ...[
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: ShadFormBuilderField<WorkStatus>(
+                        id: 'workStatus',
+                        label: const Text('Status Kehadiran'),
+                        builder: (field) => AppSelectEnumSearch<WorkStatus>(
+                          label: '',
+                          selectedValue: controller.workStatus.value,
+                          values: WorkStatus.values,
+                          labelBuilder: (v) => v.name,
+                          onChanged: (val) {
+                            field.didChange(val);
+                            controller.workStatus.value = val;
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+
+              const SizedBox(height: 16),
+
+              // NIP & End Status (Hanya muncul jika Update)
               if (!controller.isCreate.value)
                 Row(
                   children: [
                     Expanded(
                       child: ShadInputFormField(
                         id: 'nip',
-                        label: const Text('NIP (optional bila sudah ada)'),
+                        label: const Text('NIP (Opsional)'),
                         controller: controller.nipController,
-                        placeholder: const Text('minimal 9 Digit'),
-                        // Tambahin validator di sini
-                        validator: (v) {
-                          // 1. Kalau kosong, boleh (karena di DB boleh null)
-
-                          if (v == null || v.isEmpty) return null;
-
-                          // 2. Tapi kalau user ngetik, minimal harus 9 digit (misal)
-                          if (v.length < 9) return 'NIP minimal 9 digit';
-
-                          // 3. Harus angka
-                          if (!GetUtils.isNumericOnly(v)) {
-                            return 'NIP harus berupa angka';
-                          }
-
-                          return null;
-                        },
-                        // Opsional: Batasi inputan biar cuma bisa angka dan max 16 digit di keyboard
                         keyboardType: TextInputType.number,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
@@ -215,34 +233,35 @@ class SupadAdminView extends GetView<SupadAdminController> {
                       ),
                     ),
                     const SizedBox(width: 16),
-
                     Expanded(
-                      child: ShadFormBuilderField<EmployeeStatus>(
-                        id: 'status',
-                        label: const Text('Status Pegawai'),
-                        // 1. Tambahin initialValue biar pas Update langsung dapet data
-                        initialValue: controller.status.value,
-                        validator: (v) => v == null ? 'Wajib' : null,
-                        builder: (field) => AppSelectEnumSearch<EmployeeStatus>(
-                          // Pastikan Tipe-nya EmployeeStatus
-                          label: '',
-                          // 2. Hubungkan ke controller status, bukan gender!
-                          selectedValue: controller.status.value,
-                          values: EmployeeStatus.values,
-                          // 3. Sesuaikan label dengan isi EmployeeStatus lo
-                          labelBuilder: (v) => v.name.toUpperCase(),
-                          onChanged: (val) {
-                            field.didChange(val);
-                            // 4. Update ke variable status
-                            controller.status.value = val!;
-                          },
+                      child: ShadFormBuilderField<EmployeeEndStatus>(
+                        id: 'endStatus',
+                        label: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Status Akhir'),
+
+                            // Tombol Reset ke Null
+                          ],
                         ),
+                        builder: (field) =>
+                            AppSelectEnumSearch<EmployeeEndStatus>(
+                              label: '',
+                              selectedValue: controller.endStatus.value,
+                              values: EmployeeEndStatus.values,
+                              labelBuilder: (v) => v.name,
+                              onChanged: (val) {
+                                field.didChange(val);
+                                controller.endStatus.value = val;
+                              },
+                            ),
                       ),
                     ),
                   ],
                 ),
 
               const SizedBox(height: 16),
+
               // DOB Picker
               ShadFormBuilderField<DateTime>(
                 id: 'dob',
@@ -259,21 +278,70 @@ class SupadAdminView extends GetView<SupadAdminController> {
               ),
 
               const SizedBox(height: 16),
-              // Hire Date Picker
-              if (controller.isCreate.value)
-                ShadFormBuilderField<DateTime>(
-                  id: 'hireDate',
-                  label: const Text('Tanggal Mulai Kerja'),
-                  validator: (v) => v == null ? 'Wajib diisi' : null,
-                  builder: (field) => AppDatePicker(
-                    label: '',
-                    value: controller.hireDate.value,
-                    onChanged: (date) {
-                      field.didChange(date);
-                      controller.hireDate.value = date;
-                    },
+
+              // Hire Date & Hire End (BARU)
+              Row(
+                children: [
+                  Expanded(
+                    child: ShadFormBuilderField<DateTime>(
+                      id: 'hireDate',
+                      label: const Text('Mulai Kerja'),
+                      validator: (v) => v == null ? 'Wajib diisi' : null,
+                      builder: (field) => AppDatePicker(
+                        label: '',
+                        value: controller.hireDate.value,
+                        onChanged: (date) {
+                          field.didChange(date);
+                          controller.hireDate.value = date;
+                        },
+                      ),
+                    ),
                   ),
-                ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ShadFormBuilderField<DateTime>(
+                      id: 'hireEnd',
+                      label: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Berakhir Kerja'),
+                          // Tombol Hapus muncul jika tanggal sudah terisi
+                          Obx(
+                            () => controller.hireEnd.value != null
+                                ? GestureDetector(
+                                    onTap: () {
+                                      controller.hireEnd.value = null;
+                                      controller
+                                          .formKey
+                                          .currentState
+                                          ?.fields['hireEnd']
+                                          ?.didChange(null);
+                                    },
+                                    child: const Text(
+                                      'Hapus',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
+                          ),
+                        ],
+                      ),
+                      builder: (field) => AppDatePicker(
+                        label: '',
+                        value: controller.hireEnd.value,
+                        onChanged: (date) {
+                          field.didChange(date);
+                          controller.hireEnd.value = date;
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
 
               const SizedBox(height: 16),
 
@@ -286,7 +354,6 @@ class SupadAdminView extends GetView<SupadAdminController> {
                     (v == null || v.isEmpty) ? 'Pilih minimal satu' : null,
                 builder: (field) => ShadSelectMultiple<SchoolLevelResponse>(
                   label: "pilih jenjang",
-
                   items: controller.schoolLevel.allSchoolLevels,
                   selectedIds: controller.selectedLevelIds.toList(),
                   idBuilder: (v) => v.id,
@@ -296,20 +363,6 @@ class SupadAdminView extends GetView<SupadAdminController> {
                     field.didChange(val);
                   },
                 ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Switch Honor
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Status Guru Honor?'),
-                  ShadSwitch(
-                    value: controller.isHonor.value,
-                    onChanged: (v) => controller.isHonor.value = v,
-                  ),
-                ],
               ),
 
               const SizedBox(height: 40),

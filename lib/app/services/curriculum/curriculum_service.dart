@@ -67,11 +67,7 @@ class CurriculumService extends GetxService {
   }
 
   /// UPDATE
-  Future<void> update(
-    String id,
-    UpdateCurriculumRequest request,
-    String schoolId,
-  ) async {
+  Future<void> update(String id, UpdateCurriculumRequest request) async {
     await _api.dio.put('/curriculums/$id', data: request.toJson());
     // Refresh data lokal setelah update sukses
     await getAll(forceRefresh: true);

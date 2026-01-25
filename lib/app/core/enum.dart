@@ -35,7 +35,29 @@ enum Gender { MALE, FEMALE }
 enum Grade { GRADE_1, GRADE_2, GRADE_3, GRADE_4, GRADE_5, GRADE_6 }
 
 /// Status kepegawaian
-enum EmployeeStatus { ACTIVE, INACTIVE, RESIGNED, ON_LEAVE, PENSION }
+enum EmployeeType {
+  PERMANENT, // Pekerja Tetap
+  HONORARY, //Pekerja Honor
+  PART_TIME, // Pekerja Part time
+  CONTRACT, // Pekerja Kontrak
+}
+
+enum WorkStatus {
+  WORKING, // Sedang bekerja rutin
+  ON_LEAVE, // Masih pegawai, tapi sedang cuti
+  ON_PERMISION, // izin
+  ON_SICK, //sakit
+  ON_ABSENT, // alpa
+}
+
+enum EmployeeEndStatus {
+  PENSION, // Pensiun
+  RESIGNED, // Mengundurkan diri
+  TERMINATED, // Diberhentikan
+  DECEASED, // Wafat (Tambahan opsional)
+  CONTRACT_ENDED,
+  NONE,
+}
 
 /// Tipe penilaian
 enum AssessmentType { ASSIGNMENT, MID_EXAM, FINAL_EXAM, PRACTICAL, OTHER }

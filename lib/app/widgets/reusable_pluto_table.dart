@@ -145,6 +145,7 @@ class _ReusablePlutoTableState extends State<ReusablePlutoTable> {
         : const SizedBox.shrink();
     final setButton = ShadTooltip(
       builder: (context) => const Text("Atur Kolom"),
+      anchor: const ShadAnchor(offset: Offset(20, 10)),
       child: ShadButton.ghost(
         child: const Icon(LucideIcons.squareDashedMousePointer600, size: 20),
         onPressed: () => showSetColumnMenu(context),

@@ -68,15 +68,6 @@ class $SchoolAdminsTable extends SchoolAdmins
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
   );
-  static const VerificationMeta _statusMeta = const VerificationMeta('status');
-  @override
-  late final GeneratedColumn<String> status = GeneratedColumn<String>(
-    'status',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
   static const VerificationMeta _hireDateMeta = const VerificationMeta(
     'hireDate',
   );
@@ -88,6 +79,51 @@ class $SchoolAdminsTable extends SchoolAdmins
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _employeeTypeMeta = const VerificationMeta(
+    'employeeType',
+  );
+  @override
+  late final GeneratedColumn<String> employeeType = GeneratedColumn<String>(
+    'employee_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _workStatusMeta = const VerificationMeta(
+    'workStatus',
+  );
+  @override
+  late final GeneratedColumn<String> workStatus = GeneratedColumn<String>(
+    'work_status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _employeeEndStatusMeta = const VerificationMeta(
+    'employeeEndStatus',
+  );
+  @override
+  late final GeneratedColumn<String> employeeEndStatus =
+      GeneratedColumn<String>(
+        'employee_end_status',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _hireEndMeta = const VerificationMeta(
+    'hireEnd',
+  );
+  @override
+  late final GeneratedColumn<DateTime> hireEnd = GeneratedColumn<DateTime>(
+    'hire_end',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _phoneMeta = const VerificationMeta('phone');
   @override
   late final GeneratedColumn<String> phone = GeneratedColumn<String>(
@@ -96,20 +132,6 @@ class $SchoolAdminsTable extends SchoolAdmins
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
-  );
-  static const VerificationMeta _isHonorMeta = const VerificationMeta(
-    'isHonor',
-  );
-  @override
-  late final GeneratedColumn<bool> isHonor = GeneratedColumn<bool>(
-    'is_honor',
-    aliasedName,
-    false,
-    type: DriftSqlType.bool,
-    requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("is_honor" IN (0, 1))',
-    ),
   );
   static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
   @override
@@ -233,10 +255,12 @@ class $SchoolAdminsTable extends SchoolAdmins
     birthPlace,
     nik,
     nip,
-    status,
     hireDate,
+    employeeType,
+    workStatus,
+    employeeEndStatus,
+    hireEnd,
     phone,
-    isHonor,
     userId,
     fullName,
     email,
@@ -304,14 +328,6 @@ class $SchoolAdminsTable extends SchoolAdmins
         nip.isAcceptableOrUnknown(data['nip']!, _nipMeta),
       );
     }
-    if (data.containsKey('status')) {
-      context.handle(
-        _statusMeta,
-        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_statusMeta);
-    }
     if (data.containsKey('hire_date')) {
       context.handle(
         _hireDateMeta,
@@ -320,6 +336,42 @@ class $SchoolAdminsTable extends SchoolAdmins
     } else if (isInserting) {
       context.missing(_hireDateMeta);
     }
+    if (data.containsKey('employee_type')) {
+      context.handle(
+        _employeeTypeMeta,
+        employeeType.isAcceptableOrUnknown(
+          data['employee_type']!,
+          _employeeTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_employeeTypeMeta);
+    }
+    if (data.containsKey('work_status')) {
+      context.handle(
+        _workStatusMeta,
+        workStatus.isAcceptableOrUnknown(data['work_status']!, _workStatusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_workStatusMeta);
+    }
+    if (data.containsKey('employee_end_status')) {
+      context.handle(
+        _employeeEndStatusMeta,
+        employeeEndStatus.isAcceptableOrUnknown(
+          data['employee_end_status']!,
+          _employeeEndStatusMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_employeeEndStatusMeta);
+    }
+    if (data.containsKey('hire_end')) {
+      context.handle(
+        _hireEndMeta,
+        hireEnd.isAcceptableOrUnknown(data['hire_end']!, _hireEndMeta),
+      );
+    }
     if (data.containsKey('phone')) {
       context.handle(
         _phoneMeta,
@@ -327,14 +379,6 @@ class $SchoolAdminsTable extends SchoolAdmins
       );
     } else if (isInserting) {
       context.missing(_phoneMeta);
-    }
-    if (data.containsKey('is_honor')) {
-      context.handle(
-        _isHonorMeta,
-        isHonor.isAcceptableOrUnknown(data['is_honor']!, _isHonorMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_isHonorMeta);
     }
     if (data.containsKey('user_id')) {
       context.handle(
@@ -460,21 +504,29 @@ class $SchoolAdminsTable extends SchoolAdmins
         DriftSqlType.string,
         data['${effectivePrefix}nip'],
       ),
-      status: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}status'],
-      )!,
       hireDate: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}hire_date'],
       )!,
+      employeeType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}employee_type'],
+      )!,
+      workStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}work_status'],
+      )!,
+      employeeEndStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}employee_end_status'],
+      )!,
+      hireEnd: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}hire_end'],
+      ),
       phone: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}phone'],
-      )!,
-      isHonor: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}is_honor'],
       )!,
       userId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -536,10 +588,12 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
   final String birthPlace;
   final String nik;
   final String? nip;
-  final String status;
   final DateTime hireDate;
+  final String employeeType;
+  final String workStatus;
+  final String employeeEndStatus;
+  final DateTime? hireEnd;
   final String phone;
-  final bool isHonor;
   final String userId;
   final String fullName;
   final String email;
@@ -558,10 +612,12 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
     required this.birthPlace,
     required this.nik,
     this.nip,
-    required this.status,
     required this.hireDate,
+    required this.employeeType,
+    required this.workStatus,
+    required this.employeeEndStatus,
+    this.hireEnd,
     required this.phone,
-    required this.isHonor,
     required this.userId,
     required this.fullName,
     required this.email,
@@ -585,10 +641,14 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
     if (!nullToAbsent || nip != null) {
       map['nip'] = Variable<String>(nip);
     }
-    map['status'] = Variable<String>(status);
     map['hire_date'] = Variable<DateTime>(hireDate);
+    map['employee_type'] = Variable<String>(employeeType);
+    map['work_status'] = Variable<String>(workStatus);
+    map['employee_end_status'] = Variable<String>(employeeEndStatus);
+    if (!nullToAbsent || hireEnd != null) {
+      map['hire_end'] = Variable<DateTime>(hireEnd);
+    }
     map['phone'] = Variable<String>(phone);
-    map['is_honor'] = Variable<bool>(isHonor);
     map['user_id'] = Variable<String>(userId);
     map['full_name'] = Variable<String>(fullName);
     map['email'] = Variable<String>(email);
@@ -611,10 +671,14 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
       birthPlace: Value(birthPlace),
       nik: Value(nik),
       nip: nip == null && nullToAbsent ? const Value.absent() : Value(nip),
-      status: Value(status),
       hireDate: Value(hireDate),
+      employeeType: Value(employeeType),
+      workStatus: Value(workStatus),
+      employeeEndStatus: Value(employeeEndStatus),
+      hireEnd: hireEnd == null && nullToAbsent
+          ? const Value.absent()
+          : Value(hireEnd),
       phone: Value(phone),
-      isHonor: Value(isHonor),
       userId: Value(userId),
       fullName: Value(fullName),
       email: Value(email),
@@ -641,10 +705,12 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
       birthPlace: serializer.fromJson<String>(json['birthPlace']),
       nik: serializer.fromJson<String>(json['nik']),
       nip: serializer.fromJson<String?>(json['nip']),
-      status: serializer.fromJson<String>(json['status']),
       hireDate: serializer.fromJson<DateTime>(json['hireDate']),
+      employeeType: serializer.fromJson<String>(json['employeeType']),
+      workStatus: serializer.fromJson<String>(json['workStatus']),
+      employeeEndStatus: serializer.fromJson<String>(json['employeeEndStatus']),
+      hireEnd: serializer.fromJson<DateTime?>(json['hireEnd']),
       phone: serializer.fromJson<String>(json['phone']),
-      isHonor: serializer.fromJson<bool>(json['isHonor']),
       userId: serializer.fromJson<String>(json['userId']),
       fullName: serializer.fromJson<String>(json['fullName']),
       email: serializer.fromJson<String>(json['email']),
@@ -668,10 +734,12 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
       'birthPlace': serializer.toJson<String>(birthPlace),
       'nik': serializer.toJson<String>(nik),
       'nip': serializer.toJson<String?>(nip),
-      'status': serializer.toJson<String>(status),
       'hireDate': serializer.toJson<DateTime>(hireDate),
+      'employeeType': serializer.toJson<String>(employeeType),
+      'workStatus': serializer.toJson<String>(workStatus),
+      'employeeEndStatus': serializer.toJson<String>(employeeEndStatus),
+      'hireEnd': serializer.toJson<DateTime?>(hireEnd),
       'phone': serializer.toJson<String>(phone),
-      'isHonor': serializer.toJson<bool>(isHonor),
       'userId': serializer.toJson<String>(userId),
       'fullName': serializer.toJson<String>(fullName),
       'email': serializer.toJson<String>(email),
@@ -693,10 +761,12 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
     String? birthPlace,
     String? nik,
     Value<String?> nip = const Value.absent(),
-    String? status,
     DateTime? hireDate,
+    String? employeeType,
+    String? workStatus,
+    String? employeeEndStatus,
+    Value<DateTime?> hireEnd = const Value.absent(),
     String? phone,
-    bool? isHonor,
     String? userId,
     String? fullName,
     String? email,
@@ -715,10 +785,12 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
     birthPlace: birthPlace ?? this.birthPlace,
     nik: nik ?? this.nik,
     nip: nip.present ? nip.value : this.nip,
-    status: status ?? this.status,
     hireDate: hireDate ?? this.hireDate,
+    employeeType: employeeType ?? this.employeeType,
+    workStatus: workStatus ?? this.workStatus,
+    employeeEndStatus: employeeEndStatus ?? this.employeeEndStatus,
+    hireEnd: hireEnd.present ? hireEnd.value : this.hireEnd,
     phone: phone ?? this.phone,
-    isHonor: isHonor ?? this.isHonor,
     userId: userId ?? this.userId,
     fullName: fullName ?? this.fullName,
     email: email ?? this.email,
@@ -741,10 +813,18 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
           : this.birthPlace,
       nik: data.nik.present ? data.nik.value : this.nik,
       nip: data.nip.present ? data.nip.value : this.nip,
-      status: data.status.present ? data.status.value : this.status,
       hireDate: data.hireDate.present ? data.hireDate.value : this.hireDate,
+      employeeType: data.employeeType.present
+          ? data.employeeType.value
+          : this.employeeType,
+      workStatus: data.workStatus.present
+          ? data.workStatus.value
+          : this.workStatus,
+      employeeEndStatus: data.employeeEndStatus.present
+          ? data.employeeEndStatus.value
+          : this.employeeEndStatus,
+      hireEnd: data.hireEnd.present ? data.hireEnd.value : this.hireEnd,
       phone: data.phone.present ? data.phone.value : this.phone,
-      isHonor: data.isHonor.present ? data.isHonor.value : this.isHonor,
       userId: data.userId.present ? data.userId.value : this.userId,
       fullName: data.fullName.present ? data.fullName.value : this.fullName,
       email: data.email.present ? data.email.value : this.email,
@@ -770,10 +850,12 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
           ..write('birthPlace: $birthPlace, ')
           ..write('nik: $nik, ')
           ..write('nip: $nip, ')
-          ..write('status: $status, ')
           ..write('hireDate: $hireDate, ')
+          ..write('employeeType: $employeeType, ')
+          ..write('workStatus: $workStatus, ')
+          ..write('employeeEndStatus: $employeeEndStatus, ')
+          ..write('hireEnd: $hireEnd, ')
           ..write('phone: $phone, ')
-          ..write('isHonor: $isHonor, ')
           ..write('userId: $userId, ')
           ..write('fullName: $fullName, ')
           ..write('email: $email, ')
@@ -797,10 +879,12 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
     birthPlace,
     nik,
     nip,
-    status,
     hireDate,
+    employeeType,
+    workStatus,
+    employeeEndStatus,
+    hireEnd,
     phone,
-    isHonor,
     userId,
     fullName,
     email,
@@ -823,10 +907,12 @@ class SchoolAdmin extends DataClass implements Insertable<SchoolAdmin> {
           other.birthPlace == this.birthPlace &&
           other.nik == this.nik &&
           other.nip == this.nip &&
-          other.status == this.status &&
           other.hireDate == this.hireDate &&
+          other.employeeType == this.employeeType &&
+          other.workStatus == this.workStatus &&
+          other.employeeEndStatus == this.employeeEndStatus &&
+          other.hireEnd == this.hireEnd &&
           other.phone == this.phone &&
-          other.isHonor == this.isHonor &&
           other.userId == this.userId &&
           other.fullName == this.fullName &&
           other.email == this.email &&
@@ -847,10 +933,12 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
   final Value<String> birthPlace;
   final Value<String> nik;
   final Value<String?> nip;
-  final Value<String> status;
   final Value<DateTime> hireDate;
+  final Value<String> employeeType;
+  final Value<String> workStatus;
+  final Value<String> employeeEndStatus;
+  final Value<DateTime?> hireEnd;
   final Value<String> phone;
-  final Value<bool> isHonor;
   final Value<String> userId;
   final Value<String> fullName;
   final Value<String> email;
@@ -870,10 +958,12 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
     this.birthPlace = const Value.absent(),
     this.nik = const Value.absent(),
     this.nip = const Value.absent(),
-    this.status = const Value.absent(),
     this.hireDate = const Value.absent(),
+    this.employeeType = const Value.absent(),
+    this.workStatus = const Value.absent(),
+    this.employeeEndStatus = const Value.absent(),
+    this.hireEnd = const Value.absent(),
     this.phone = const Value.absent(),
-    this.isHonor = const Value.absent(),
     this.userId = const Value.absent(),
     this.fullName = const Value.absent(),
     this.email = const Value.absent(),
@@ -894,10 +984,12 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
     required String birthPlace,
     required String nik,
     this.nip = const Value.absent(),
-    required String status,
     required DateTime hireDate,
+    required String employeeType,
+    required String workStatus,
+    required String employeeEndStatus,
+    this.hireEnd = const Value.absent(),
     required String phone,
-    required bool isHonor,
     required String userId,
     required String fullName,
     required String email,
@@ -915,10 +1007,11 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
        dob = Value(dob),
        birthPlace = Value(birthPlace),
        nik = Value(nik),
-       status = Value(status),
        hireDate = Value(hireDate),
+       employeeType = Value(employeeType),
+       workStatus = Value(workStatus),
+       employeeEndStatus = Value(employeeEndStatus),
        phone = Value(phone),
-       isHonor = Value(isHonor),
        userId = Value(userId),
        fullName = Value(fullName),
        email = Value(email),
@@ -937,10 +1030,12 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
     Expression<String>? birthPlace,
     Expression<String>? nik,
     Expression<String>? nip,
-    Expression<String>? status,
     Expression<DateTime>? hireDate,
+    Expression<String>? employeeType,
+    Expression<String>? workStatus,
+    Expression<String>? employeeEndStatus,
+    Expression<DateTime>? hireEnd,
     Expression<String>? phone,
-    Expression<bool>? isHonor,
     Expression<String>? userId,
     Expression<String>? fullName,
     Expression<String>? email,
@@ -961,10 +1056,12 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
       if (birthPlace != null) 'birth_place': birthPlace,
       if (nik != null) 'nik': nik,
       if (nip != null) 'nip': nip,
-      if (status != null) 'status': status,
       if (hireDate != null) 'hire_date': hireDate,
+      if (employeeType != null) 'employee_type': employeeType,
+      if (workStatus != null) 'work_status': workStatus,
+      if (employeeEndStatus != null) 'employee_end_status': employeeEndStatus,
+      if (hireEnd != null) 'hire_end': hireEnd,
       if (phone != null) 'phone': phone,
-      if (isHonor != null) 'is_honor': isHonor,
       if (userId != null) 'user_id': userId,
       if (fullName != null) 'full_name': fullName,
       if (email != null) 'email': email,
@@ -987,10 +1084,12 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
     Value<String>? birthPlace,
     Value<String>? nik,
     Value<String?>? nip,
-    Value<String>? status,
     Value<DateTime>? hireDate,
+    Value<String>? employeeType,
+    Value<String>? workStatus,
+    Value<String>? employeeEndStatus,
+    Value<DateTime?>? hireEnd,
     Value<String>? phone,
-    Value<bool>? isHonor,
     Value<String>? userId,
     Value<String>? fullName,
     Value<String>? email,
@@ -1011,10 +1110,12 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
       birthPlace: birthPlace ?? this.birthPlace,
       nik: nik ?? this.nik,
       nip: nip ?? this.nip,
-      status: status ?? this.status,
       hireDate: hireDate ?? this.hireDate,
+      employeeType: employeeType ?? this.employeeType,
+      workStatus: workStatus ?? this.workStatus,
+      employeeEndStatus: employeeEndStatus ?? this.employeeEndStatus,
+      hireEnd: hireEnd ?? this.hireEnd,
       phone: phone ?? this.phone,
-      isHonor: isHonor ?? this.isHonor,
       userId: userId ?? this.userId,
       fullName: fullName ?? this.fullName,
       email: email ?? this.email,
@@ -1051,17 +1152,23 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
     if (nip.present) {
       map['nip'] = Variable<String>(nip.value);
     }
-    if (status.present) {
-      map['status'] = Variable<String>(status.value);
-    }
     if (hireDate.present) {
       map['hire_date'] = Variable<DateTime>(hireDate.value);
     }
+    if (employeeType.present) {
+      map['employee_type'] = Variable<String>(employeeType.value);
+    }
+    if (workStatus.present) {
+      map['work_status'] = Variable<String>(workStatus.value);
+    }
+    if (employeeEndStatus.present) {
+      map['employee_end_status'] = Variable<String>(employeeEndStatus.value);
+    }
+    if (hireEnd.present) {
+      map['hire_end'] = Variable<DateTime>(hireEnd.value);
+    }
     if (phone.present) {
       map['phone'] = Variable<String>(phone.value);
-    }
-    if (isHonor.present) {
-      map['is_honor'] = Variable<bool>(isHonor.value);
     }
     if (userId.present) {
       map['user_id'] = Variable<String>(userId.value);
@@ -1111,10 +1218,12 @@ class SchoolAdminsCompanion extends UpdateCompanion<SchoolAdmin> {
           ..write('birthPlace: $birthPlace, ')
           ..write('nik: $nik, ')
           ..write('nip: $nip, ')
-          ..write('status: $status, ')
           ..write('hireDate: $hireDate, ')
+          ..write('employeeType: $employeeType, ')
+          ..write('workStatus: $workStatus, ')
+          ..write('employeeEndStatus: $employeeEndStatus, ')
+          ..write('hireEnd: $hireEnd, ')
           ..write('phone: $phone, ')
-          ..write('isHonor: $isHonor, ')
           ..write('userId: $userId, ')
           ..write('fullName: $fullName, ')
           ..write('email: $email, ')
@@ -2092,10 +2201,12 @@ typedef $$SchoolAdminsTableCreateCompanionBuilder =
       required String birthPlace,
       required String nik,
       Value<String?> nip,
-      required String status,
       required DateTime hireDate,
+      required String employeeType,
+      required String workStatus,
+      required String employeeEndStatus,
+      Value<DateTime?> hireEnd,
       required String phone,
-      required bool isHonor,
       required String userId,
       required String fullName,
       required String email,
@@ -2117,10 +2228,12 @@ typedef $$SchoolAdminsTableUpdateCompanionBuilder =
       Value<String> birthPlace,
       Value<String> nik,
       Value<String?> nip,
-      Value<String> status,
       Value<DateTime> hireDate,
+      Value<String> employeeType,
+      Value<String> workStatus,
+      Value<String> employeeEndStatus,
+      Value<DateTime?> hireEnd,
       Value<String> phone,
-      Value<bool> isHonor,
       Value<String> userId,
       Value<String> fullName,
       Value<String> email,
@@ -2174,23 +2287,33 @@ class $$SchoolAdminsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get status => $composableBuilder(
-    column: $table.status,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnFilters<DateTime> get hireDate => $composableBuilder(
     column: $table.hireDate,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get phone => $composableBuilder(
-    column: $table.phone,
+  ColumnFilters<String> get employeeType => $composableBuilder(
+    column: $table.employeeType,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<bool> get isHonor => $composableBuilder(
-    column: $table.isHonor,
+  ColumnFilters<String> get workStatus => $composableBuilder(
+    column: $table.workStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get employeeEndStatus => $composableBuilder(
+    column: $table.employeeEndStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get hireEnd => $composableBuilder(
+    column: $table.hireEnd,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phone => $composableBuilder(
+    column: $table.phone,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2289,23 +2412,33 @@ class $$SchoolAdminsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get status => $composableBuilder(
-    column: $table.status,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<DateTime> get hireDate => $composableBuilder(
     column: $table.hireDate,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get phone => $composableBuilder(
-    column: $table.phone,
+  ColumnOrderings<String> get employeeType => $composableBuilder(
+    column: $table.employeeType,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<bool> get isHonor => $composableBuilder(
-    column: $table.isHonor,
+  ColumnOrderings<String> get workStatus => $composableBuilder(
+    column: $table.workStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get employeeEndStatus => $composableBuilder(
+    column: $table.employeeEndStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get hireEnd => $composableBuilder(
+    column: $table.hireEnd,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get phone => $composableBuilder(
+    column: $table.phone,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -2394,17 +2527,29 @@ class $$SchoolAdminsTableAnnotationComposer
   GeneratedColumn<String> get nip =>
       $composableBuilder(column: $table.nip, builder: (column) => column);
 
-  GeneratedColumn<String> get status =>
-      $composableBuilder(column: $table.status, builder: (column) => column);
-
   GeneratedColumn<DateTime> get hireDate =>
       $composableBuilder(column: $table.hireDate, builder: (column) => column);
 
+  GeneratedColumn<String> get employeeType => $composableBuilder(
+    column: $table.employeeType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get workStatus => $composableBuilder(
+    column: $table.workStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get employeeEndStatus => $composableBuilder(
+    column: $table.employeeEndStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get hireEnd =>
+      $composableBuilder(column: $table.hireEnd, builder: (column) => column);
+
   GeneratedColumn<String> get phone =>
       $composableBuilder(column: $table.phone, builder: (column) => column);
-
-  GeneratedColumn<bool> get isHonor =>
-      $composableBuilder(column: $table.isHonor, builder: (column) => column);
 
   GeneratedColumn<String> get userId =>
       $composableBuilder(column: $table.userId, builder: (column) => column);
@@ -2479,10 +2624,12 @@ class $$SchoolAdminsTableTableManager
                 Value<String> birthPlace = const Value.absent(),
                 Value<String> nik = const Value.absent(),
                 Value<String?> nip = const Value.absent(),
-                Value<String> status = const Value.absent(),
                 Value<DateTime> hireDate = const Value.absent(),
+                Value<String> employeeType = const Value.absent(),
+                Value<String> workStatus = const Value.absent(),
+                Value<String> employeeEndStatus = const Value.absent(),
+                Value<DateTime?> hireEnd = const Value.absent(),
                 Value<String> phone = const Value.absent(),
-                Value<bool> isHonor = const Value.absent(),
                 Value<String> userId = const Value.absent(),
                 Value<String> fullName = const Value.absent(),
                 Value<String> email = const Value.absent(),
@@ -2502,10 +2649,12 @@ class $$SchoolAdminsTableTableManager
                 birthPlace: birthPlace,
                 nik: nik,
                 nip: nip,
-                status: status,
                 hireDate: hireDate,
+                employeeType: employeeType,
+                workStatus: workStatus,
+                employeeEndStatus: employeeEndStatus,
+                hireEnd: hireEnd,
                 phone: phone,
-                isHonor: isHonor,
                 userId: userId,
                 fullName: fullName,
                 email: email,
@@ -2527,10 +2676,12 @@ class $$SchoolAdminsTableTableManager
                 required String birthPlace,
                 required String nik,
                 Value<String?> nip = const Value.absent(),
-                required String status,
                 required DateTime hireDate,
+                required String employeeType,
+                required String workStatus,
+                required String employeeEndStatus,
+                Value<DateTime?> hireEnd = const Value.absent(),
                 required String phone,
-                required bool isHonor,
                 required String userId,
                 required String fullName,
                 required String email,
@@ -2550,10 +2701,12 @@ class $$SchoolAdminsTableTableManager
                 birthPlace: birthPlace,
                 nik: nik,
                 nip: nip,
-                status: status,
                 hireDate: hireDate,
+                employeeType: employeeType,
+                workStatus: workStatus,
+                employeeEndStatus: employeeEndStatus,
+                hireEnd: hireEnd,
                 phone: phone,
-                isHonor: isHonor,
                 userId: userId,
                 fullName: fullName,
                 email: email,

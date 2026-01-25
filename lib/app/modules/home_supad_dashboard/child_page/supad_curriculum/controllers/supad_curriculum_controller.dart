@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:rar_sis_fe_fl/app/services/curriculum/curriculum_service.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../../../services/curriculum/curriculum_model.dart';
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
@@ -9,13 +11,24 @@ import 'package:get/get.dart' as g;
 
 class SupadCurriculumController extends GetxController {
   // 1. Reactive Variables
+  var box = GetStorage();
   var rows = <PlutoRow>[].obs;
   var isLoading = false.obs;
   var dropdownItems = <DropdownMenuItem<String>>[].obs;
   // 2. Definisi Kolom (Late karena butuh context/init)
   late List<PlutoColumn> columns;
+  //form
   final CurriculumService _service = Get.find<CurriculumService>();
+  final formKey = GlobalKey<ShadFormState>();
   late GlobalKey<ScaffoldState> scaffoldKey;
+  final isCreate = false.obs;
+
+  //field
+  final schoolId = "".obs;
+  final nameController = TextEditingController();
+  final isActive = true.obs;
+  //id update
+  final currId = "".obs;
 
   void bindScaffold(GlobalKey<ScaffoldState> key) {
     scaffoldKey = key;
@@ -29,6 +42,7 @@ class SupadCurriculumController extends GetxController {
       columns,
       ['id', 'no', 'actions'], // field yang dilarang
     );
+    schoolId.value = box.read("school_id");
     super.onInit();
   }
 
@@ -143,7 +157,7 @@ class SupadCurriculumController extends GetxController {
                     RowDetailModal(
                       row: rendererContext.row,
                       columns: columns,
-                      hiddenFields: const ['no', 'actions', 'id'],
+                      hiddenFields: const ['no', 'actions', 'id', "schoolId"],
                     ),
                   );
                 },
@@ -151,6 +165,18 @@ class SupadCurriculumController extends GetxController {
             ],
           );
         },
+      ),
+      PlutoColumn(
+        title: 'Tanggal dibuat',
+        field: 'createdAt',
+        type: PlutoColumnType.text(),
+        hide: true,
+      ),
+      PlutoColumn(
+        title: 'Tanggal di update',
+        field: 'updatedAt',
+        type: PlutoColumnType.text(),
+        hide: true,
       ),
     ];
   }
@@ -197,26 +223,100 @@ class SupadCurriculumController extends GetxController {
   }
 
   // 5. CRUD Logic
+  void clearForm() {
+    nameController.clear();
+    isActive.value = true;
+  }
 
   void onCreate() {
+    clearForm();
+    isCreate.value = true;
     scaffoldKey.currentState?.openEndDrawer();
   }
 
-  void onExport() async {
-    print("delete local");
-    _service.deleteLocal();
+  Future<void> doCreate() async {
+    // 1. Validasi Form (Trigger error merah di UI)
+    if (!(formKey.currentState?.saveAndValidate() ?? false)) return;
+
+    try {
+      // 2. Mapping Manual dari Controller ke Model Request
+      // Kita pakai "!" karena sudah divalidasi oleh ShadForm (tidak mungkin null)
+      final request = CreateCurriculumRequest(
+        schoolId: schoolId.value,
+        name: nameController.text.trim(),
+        isActive: isActive.value,
+      );
+
+      await _service.create(request);
+      await fetchData(forceRefresh: true);
+      // 3. Tembak ke Service
+
+      // Close Drawer & Reset
+      scaffoldKey.currentState?.closeEndDrawer();
+      clearForm();
+
+      // Tampilkan notifikasi sukses
+      // ShadToaster.show(const ShadToast(description: Text('Admin berhasil dibuat!')));
+    } catch (e) {
+      print("Error pas mapping/simpan: $e");
+    }
   }
 
-  void onRefresh() {
-    fetchData(forceRefresh: true);
+  void onUpdate(Map<String, dynamic> rowData) async {
+    clearForm();
+    final String? id = rowData['id'];
+    if (id == null) return;
+    currId.value = id;
+    final schoolLevel = await _service.getCurriculumByIdLocal(id);
+
+    if (schoolLevel != null) {
+      isCreate.value = false;
+      nameController.text = schoolLevel.name;
+      isActive.value = schoolLevel.isActive;
+
+      // 1. Buka Drawer dulu agar widget-nya teregistrasi di UI
+      scaffoldKey.currentState?.openEndDrawer();
+
+      // 2. FORCE UPDATE STATE UNTUK PICKER & SELECT
+      // Kasih delay 200-300ms supaya drawer sudah terbuka sempurna
+      Future.delayed(const Duration(milliseconds: 250), () {
+        final state = formKey.currentState;
+        if (state != null) {
+          state.fields['name']?.didChange(schoolLevel.name);
+          state.fields['isActive']?.didChange(schoolLevel.isActive);
+
+          state.validate();
+        }
+      });
+    }
   }
 
-  void onUpdate(Map<String, dynamic> data) {
-    Get.snackbar(
-      "Update",
-      "Edit sekolah: ${data['name']}",
-      snackPosition: SnackPosition.BOTTOM,
-    );
+  Future<void> doUpdate() async {
+    // 1. Validasi Form (Trigger error merah di UI)
+    if (!(formKey.currentState?.saveAndValidate() ?? false)) return;
+
+    try {
+      // 2. Mapping Manual dari Controller ke Model Request
+      // Kita pakai "!" karena sudah divalidasi oleh ShadForm (tidak mungkin null)
+      final request = UpdateCurriculumRequest(
+        name: nameController.text.trim(),
+        isActive: isActive.value,
+      );
+
+      await _service.update(currId.value, request);
+      await fetchData(forceRefresh: true);
+
+      // 3. Tembak ke Service
+
+      // Close Drawer & Reset
+      scaffoldKey.currentState?.closeEndDrawer();
+      clearForm();
+
+      // Tampilkan notifikasi sukses
+      // ShadToaster.show(const ShadToast(description: Text('Admin berhasil dibuat!')));
+    } catch (e) {
+      print("Error pas mapping/simpan: $e");
+    }
   }
 
   Future<void> getAdminByIdLocal(String id) async {
@@ -228,11 +328,20 @@ class SupadCurriculumController extends GetxController {
 
   void doDelete(Map<String, dynamic> data) {
     // Contoh delete lokal (offline)
-    rows.removeWhere((row) => row.cells['id']?.value == data['id']);
+    // rows.removeWhere((row) => row.cells['id']?.value == data['id']);
     Get.snackbar(
       "Delete",
       "Berhasil menghapus ${data['name']}",
       snackPosition: SnackPosition.BOTTOM,
     );
+  }
+
+  void onExport() async {
+    print("delete local");
+    _service.deleteLocal();
+  }
+
+  void onRefresh() {
+    fetchData(forceRefresh: true);
   }
 }

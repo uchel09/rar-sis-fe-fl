@@ -6,7 +6,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../../../../services/school_admin/school_admin_model.dart';
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
-import '../../../../../widgets/row_detail_modal.dart';
+import '../../../../../widgets/universal_profile_detail.dart';
 import '../../../../../core/pluto_core.dart';
 import '../../../../../widgets/circle_cache_avatar.dart';
 import 'package:get/get.dart' as g;
@@ -36,9 +36,7 @@ class SupadAdminController extends GetxController {
   final fullNameController = TextEditingController();
   final emailController = TextEditingController();
   final addressController = TextEditingController();
-
   final gender = Rxn<Gender>();
-  final role = Rxn<Role>();
 
   // ==========================================
   // 2. PROFILE DATA (Detail & Employment)
@@ -49,11 +47,12 @@ class SupadAdminController extends GetxController {
   final nipController = TextEditingController();
   final phoneController = TextEditingController();
   final bPlaceController = TextEditingController(); // birthPlace
-
   final dob = Rxn<DateTime>(); // Date of Birth
+  final employeeType = Rxn<EmployeeType>(); // Untuk Kontrak/Tetap
+  final workStatus = Rxn<WorkStatus>(); // Untuk Aktif/Sakit/Izin
+  final endStatus = Rxn<EmployeeEndStatus>(); // Untuk Resign/Pensiun
   final hireDate = Rxn<DateTime>();
-  final status = Rxn<EmployeeStatus>();
-  final isHonor = false.obs;
+  final hireEnd = Rxn<DateTime>();
   var selectedLevelIds = <String>[].obs;
 
   void bindScaffold(GlobalKey<ScaffoldState> key) {
@@ -96,7 +95,7 @@ class SupadAdminController extends GetxController {
         },
       ),
 
-      // 3. Nama Lengkap (Dari UserInfo)
+      // Nama Lengkap (Dari UserInfo)
       PlutoColumn(
         title: 'avatar',
         field: 'imageUrl',
@@ -122,54 +121,36 @@ class SupadAdminController extends GetxController {
         width: 200,
       ),
 
-      // 4. Email (Dari UserInfo)
+      // Email (Dari UserInfo)
       PlutoColumn(
         title: 'Email',
         field: 'email',
         type: PlutoColumnType.text(),
         width: 180,
       ),
+      // gender
+      PlutoColumn(
+        title: 'Gender',
+        field: 'gender',
+        type: PlutoColumnType.text(),
+        width: 150,
+      ),
 
-      // 5. NIK
+      //NIK
       PlutoColumn(
         title: 'NIK',
         field: 'nik',
         type: PlutoColumnType.text(),
         width: 150,
       ),
-
-      // 6. Status (Enum EmployeeStatus)
+      //  NIP
       PlutoColumn(
-        title: 'Status',
-        field: 'status',
+        title: 'NIP',
+        field: 'nip',
         type: PlutoColumnType.text(),
-        width: 120,
-        renderer: (rendererContext) {
-          // Styling status (optional)
-          Color textColor = rendererContext.cell.value == 'ACTIVE'
-              ? Colors.green
-              : Colors.red;
-          return Center(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: textColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                rendererContext.cell.value.toString(),
-                style: TextStyle(
-                  color: textColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-          );
-        },
+        width: 150,
       ),
 
-      // 7. Access Level (Menampilkan jumlah akses)
       PlutoColumn(
         title: 'Akses Jenjang',
         field: 'schoolLevelAccess',
@@ -214,7 +195,7 @@ class SupadAdminController extends GetxController {
         },
       ),
 
-      // 8. Actions
+      //  Actions
       PlutoColumn(
         title: 'Actions',
         field: 'actions',
@@ -223,6 +204,8 @@ class SupadAdminController extends GetxController {
         enableFilterMenuItem: false,
         width: 160,
         renderer: (rendererContext) {
+          final String rowId =
+              rendererContext.row.cells['id']?.value.toString() ?? '';
           return Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -241,12 +224,10 @@ class SupadAdminController extends GetxController {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  Get.dialog(
-                    RowDetailModal(
-                      row: rendererContext.row,
-                      columns: columns,
-                      hiddenFields: const ['no', 'actions', 'id'],
-                    ),
+                  showDialog(
+                    context: Get.context!,
+                    builder: (context) =>
+                        const UniversalProfileDetail(id: '123'),
                   );
                 },
               ),
@@ -288,10 +269,11 @@ class SupadAdminController extends GetxController {
           'no': PlutoCell(value: ''),
           'id': PlutoCell(value: admin.id),
           'fullName': PlutoCell(value: admin.user.fullName),
-          'imageUrl': PlutoCell(value: admin.user.imageUrl),
           'email': PlutoCell(value: admin.user.email),
+          'imageUrl': PlutoCell(value: admin.user.imageUrl),
+          'gender': PlutoCell(value: admin.user.gender),
           'nik': PlutoCell(value: admin.nik),
-          'status': PlutoCell(value: admin.status.name),
+          'nip': PlutoCell(value: admin.nip),
           'schoolLevelAccess': PlutoCell(
             value: accessNames.isEmpty ? '-' : accessNames,
           ),
@@ -319,20 +301,24 @@ class SupadAdminController extends GetxController {
       // 2. Mapping Manual dari Controller ke Model Request
       // Kita pakai "!" karena sudah divalidasi oleh ShadForm (tidak mungkin null)
       final request = CreateSchoolAdminRequest(
-        // User Group
+        // 1. User Group
         email: emailController.text.trim(),
         fullName: fullNameController.text.trim(),
         gender: gender.value!,
         address: addressController.text.trim(),
 
-        // Profile Group
+        // 2. Profile Group
         schoolId: schoolId.value,
         dob: dob.value!,
         birthPlace: bPlaceController.text.trim(),
         nik: nikController.text.trim(),
         hireDate: hireDate.value!,
         phone: phoneController.text.trim(),
-        isHonor: isHonor.value,
+
+        // ✅ TAMBAHKAN INI (Wajib sesuai Model & Service NestJS)
+        employeeType: employeeType.value!,
+        hireEnd: hireEnd.value, // Ini boleh null jika pegawai tetap
+        // 3. Access Group
         schoolLevelAccessIds: selectedLevelIds.toList(),
       );
 
@@ -359,17 +345,19 @@ class SupadAdminController extends GetxController {
     fullNameController.clear();
     emailController.clear();
     gender.value = null;
-    role.value = null;
     addressController.clear();
     // profile
     dob.value = null;
     bPlaceController.clear();
     nikController.clear();
     nipController.clear();
-    status.value = null;
+
     hireDate.value = null;
     phoneController.clear();
-    isHonor.value = false;
+    hireEnd.value = null;
+    employeeType.value = null;
+    workStatus.value = null;
+    endStatus.value = null;
     selectedLevelIds.clear();
 
     formKey.currentState?.reset(); // Reset state validasi ShadForm
@@ -397,8 +385,11 @@ class SupadAdminController extends GetxController {
       bPlaceController.text = admin.birthPlace;
       dob.value = admin.dob;
       hireDate.value = admin.hireDate;
-      status.value = admin.status;
-      isHonor.value = admin.isHonor;
+      hireEnd.value = admin.hireEnd;
+      employeeType.value = admin.employeeType;
+      workStatus.value = admin.workStatus;
+      endStatus.value = admin.employeeEndStatus;
+
       selectedLevelIds.assignAll(
         admin.schoolLevelAccess.map((e) => e.id).toList(),
       );
@@ -414,9 +405,12 @@ class SupadAdminController extends GetxController {
           // Paksa isi nilai ke internal state ShadForm field demi field
           // ID di sini HARUS sama dengan ID di widget ShadFormBuilderField lo
           state.fields['gender']?.didChange(admin.user.gender);
+          state.fields['employeeType']?.didChange(admin.employeeType);
+          state.fields['workStatus']?.didChange(admin.workStatus);
+          state.fields['employeeEndStatus']?.didChange(admin.employeeEndStatus);
+          state.fields['hireEnd']?.didChange(admin.hireEnd);
           state.fields['dob']?.didChange(admin.dob);
           state.fields['hireDate']?.didChange(admin.hireDate);
-          state.fields['status']?.didChange(admin.status);
 
           // Panggil validate sekali saja di akhir untuk menghapus pesan error merah
           state.validate();
@@ -445,9 +439,11 @@ class SupadAdminController extends GetxController {
         nip: nipController.text.trim().isEmpty
             ? null
             : nipController.text.trim(),
-        status: status.value,
         phone: phoneController.text.trim(),
-        isHonor: isHonor.value,
+        employeeType: employeeType.value,
+        workStatus: workStatus.value,
+        employeeEndStatus: endStatus.value,
+        hireEnd: hireEnd.value,
         schoolLevelAccessIds: selectedLevelIds.toList(),
       );
 

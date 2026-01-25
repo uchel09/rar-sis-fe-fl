@@ -12,8 +12,10 @@ class CreateSchoolAdminRequest {
   final String birthPlace;
   final String nik;
   final DateTime hireDate;
+  final EmployeeType employeeType;
+  final DateTime? hireEnd;
   final String phone;
-  final bool isHonor;
+
   final List<String> schoolLevelAccessIds;
 
   CreateSchoolAdminRequest({
@@ -28,8 +30,10 @@ class CreateSchoolAdminRequest {
     required this.birthPlace,
     required this.nik,
     required this.hireDate,
+    required this.employeeType,
+    this.hireEnd,
     required this.phone,
-    required this.isHonor,
+
     required this.schoolLevelAccessIds,
   });
 
@@ -42,10 +46,12 @@ class CreateSchoolAdminRequest {
     "schoolId": schoolId,
     "dob": dob.toIso8601String(),
     "birthPlace": birthPlace,
+    "employeeType": employeeType.name,
+    // ✅ Tambahkan hireEnd (handle null dengan aman)
+    "hireEnd": hireEnd?.toIso8601String(),
     "nik": nik,
     "hireDate": hireDate.toIso8601String(),
     "phone": phone,
-    "isHonor": isHonor,
     "schoolLevelAccessIds": schoolLevelAccessIds,
   };
 }
@@ -60,23 +66,29 @@ class UpdateSchoolAdminRequest {
   final String? birthPlace;
   final String? nik;
   final String? nip;
-  final EmployeeStatus? status;
+  final EmployeeType? employeeType;
+  final WorkStatus? workStatus;
+  final EmployeeEndStatus? employeeEndStatus;
+  final DateTime? hireEnd;
+
   final String? phone;
-  final bool? isHonor;
+
   final List<String>? schoolLevelAccessIds;
 
   UpdateSchoolAdminRequest({
     this.fullName,
     this.gender,
     this.address,
-
     this.dob,
     this.birthPlace,
     this.nik,
     this.nip,
-    this.status,
+    this.employeeType,
+    this.employeeEndStatus,
+    this.workStatus,
+    this.hireEnd,
     this.phone,
-    this.isHonor,
+
     this.schoolLevelAccessIds,
   });
 
@@ -90,9 +102,16 @@ class UpdateSchoolAdminRequest {
     if (birthPlace != null) data['birthPlace'] = birthPlace;
     if (nik != null) data['nik'] = nik;
     if (nip != null) data['nip'] = nip;
-    if (status != null) data['status'] = status!.name;
+    // ✅ Tambahkan Enums & Status (PENTING untuk Status Kehadiran)
+    if (employeeType != null) data['employeeType'] = employeeType!.name;
+    if (workStatus != null) data['workStatus'] = workStatus!.name;
+    if (employeeEndStatus != null)
+      data['employeeEndStatus'] = employeeEndStatus!.name;
+
+    // ✅ Tambahkan Tanggal Akhir (Bisa null jika status berubah jadi tetap)
+    if (hireEnd != null) data['hireEnd'] = hireEnd!.toIso8601String();
     if (phone != null) data['phone'] = phone;
-    if (isHonor != null) data['isHonor'] = isHonor;
+
     if (schoolLevelAccessIds != null)
       data['schoolLevelAccessIds'] = schoolLevelAccessIds;
     return data;
@@ -110,10 +129,13 @@ class SchoolAdminResponse {
   final String birthPlace;
   final String nik;
   final String? nip;
-  final EmployeeStatus status;
+
   final DateTime hireDate;
+  final EmployeeType employeeType;
+  final WorkStatus workStatus;
+  final EmployeeEndStatus employeeEndStatus;
+  final DateTime? hireEnd;
   final String phone;
-  final bool isHonor;
 
   final UserInfo user;
   final List<SchoolLevelAccess> schoolLevelAccess;
@@ -127,10 +149,13 @@ class SchoolAdminResponse {
     required this.birthPlace,
     required this.nik,
     this.nip,
-    required this.status,
     required this.hireDate,
+    required this.employeeType,
+    required this.workStatus,
+    required this.employeeEndStatus,
+    this.hireEnd,
     required this.phone,
-    required this.isHonor,
+
     required this.user,
     required this.schoolLevelAccess,
     required this.createdAt,
@@ -145,10 +170,20 @@ class SchoolAdminResponse {
         birthPlace: json["birthPlace"],
         nik: json["nik"],
         nip: json["nip"],
-        status: EmployeeStatus.values.byName(json["status"]),
+        // status: EmployeeStatus.values.byName(json["status"]),
         hireDate: DateTime.parse(json["hireDate"]),
+        employeeType: EmployeeType.values.byName(json["employeeType"]),
+        workStatus: WorkStatus.values.byName(json["workStatus"]),
+        // ✅ Handle Null untuk Enum (Gunakan try-catch atau check null)
+        employeeEndStatus: EmployeeEndStatus.values.byName(
+          json["employeeEndStatus"],
+        ),
+
+        // ✅ Handle Null untuk DateTime (hireEnd sering null buat pegawai tetap)
+        hireEnd: json["hireEnd"] != null
+            ? DateTime.parse(json["hireEnd"])
+            : null,
         phone: json["phone"],
-        isHonor: json["isHonor"],
         user: UserInfo.fromJson(json["user"]),
         schoolLevelAccess: List<SchoolLevelAccess>.from(
           json["schoolLevelAccess"].map((x) => SchoolLevelAccess.fromJson(x)),
@@ -165,10 +200,14 @@ class SchoolAdminResponse {
     "birthPlace": birthPlace,
     "nik": nik,
     "nip": nip,
-    "status": status.name,
-    "hireDate": hireDate,
+    "employeeEndStatus": employeeEndStatus.name,
+    "employeeType": employeeType.name,
+    "workStatus": workStatus.name,
+    "hireEnd": hireEnd?.toIso8601String(),
+    // "status": status.name,
+    "hireDate": hireDate.toIso8601String(),
     "phone": phone,
-    "isHonor": isHonor,
+
     "user": user.toJson(),
     "schoolLevelAccess": schoolLevelAccess.map((x) => x.toJson()).toList(),
     "createdAt": createdAt.toIso8601String(),
