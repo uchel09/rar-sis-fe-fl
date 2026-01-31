@@ -53,7 +53,7 @@ class LoginController extends GetxController {
       );
 
       // Mapping manual sederhana dari response
-      final user = response.data['user'];
+      final user = response.data["data"];
       final String role = user['role'] ?? '';
 
       box.write('isLoggedIn', true);

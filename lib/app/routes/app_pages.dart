@@ -40,6 +40,10 @@ import '../modules/home_teacher_dashboard/child_page/home_teacher_overview/views
 import '../modules/home_teacher_dashboard/views/home_teacher_dashboard_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
+import '../modules/ppdb_registration/bindings/ppdb_registration_binding.dart';
+import '../modules/ppdb_registration/views/ppdb_registration_view.dart';
+import '../modules/ppdb_selection/bindings/ppdb_selection_binding.dart';
+import '../modules/ppdb_selection/views/ppdb_selection_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 
@@ -78,6 +82,16 @@ class AppPages {
           name: _Paths.PROFILE,
           page: () => const ProfileView(),
           binding: ProfileBinding(),
+        ),
+        GetPage(
+          name: _Paths.PPDB_REGISTRATION,
+          page: () => const PpdbRegistrationView(),
+          binding: PpdbRegistrationBinding(),
+        ),
+        GetPage(
+          name: _Paths.PPDB_SELECTION,
+          page: () => const PpdbSelectionView(),
+          binding: PpdbSelectionBinding(),
         ),
       ],
     ),
@@ -135,6 +149,16 @@ class AppPages {
           page: () => const StaffView(),
           binding: StaffBinding(),
         ),
+        GetPage(
+          name: _Paths.PPDB_REGISTRATION,
+          page: () => const PpdbRegistrationView(),
+          binding: PpdbRegistrationBinding(),
+        ),
+        GetPage(
+          name: _Paths.PPDB_SELECTION,
+          page: () => const PpdbSelectionView(),
+          binding: PpdbSelectionBinding(),
+        ),
       ],
     ),
     GetPage(
@@ -152,6 +176,16 @@ class AppPages {
           name: _Paths.PROFILE,
           page: () => const ProfileView(),
           binding: ProfileBinding(),
+        ),
+        GetPage(
+          name: _Paths.PPDB_REGISTRATION,
+          page: () => const PpdbRegistrationView(),
+          binding: PpdbRegistrationBinding(),
+        ),
+        GetPage(
+          name: _Paths.PPDB_SELECTION,
+          page: () => const PpdbSelectionView(),
+          binding: PpdbSelectionBinding(),
         ),
       ],
     ),

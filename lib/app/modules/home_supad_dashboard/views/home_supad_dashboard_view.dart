@@ -38,6 +38,16 @@ class HomeSupadDashboardView extends GetView<HomeSupadDashboardController> {
               _subMenuItem("Jenjang Sekolah", "2-3", Routes.SUPAD_SCHOOL_LEVEL),
             ],
           ),
+          _buildMenuSection("Audit"),
+          _expansionMenu(
+            icon: Icons.school_outlined,
+            label: "Manajemen Audit",
+            children: [
+              _subMenuItem("admin", "3-1", Routes.SUPAD_ADMIN),
+              _subMenuItem("Kurikulum", "3-2", Routes.SUPAD_CURRICULUM),
+              _subMenuItem("Jenjang Sekolah", "3-3", Routes.SUPAD_SCHOOL_LEVEL),
+            ],
+          ),
           // _buildMenuSection("KEUANGAN"),
           // DashboardComponents.menuItem(
           //   icon: Icons.payments_outlined,

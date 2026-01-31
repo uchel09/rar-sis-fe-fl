@@ -133,7 +133,35 @@ class SupadAdminController extends GetxController {
         title: 'Gender',
         field: 'gender',
         type: PlutoColumnType.text(),
-        width: 150,
+        width: 120,
+        renderer: (rendererContext) {
+          final val = rendererContext.cell.value.toString().toLowerCase();
+
+          String label = val == 'female' ? 'Perempuan' : 'Laki-laki';
+          Color chipColor = val == 'female' ? Colors.pink : Colors.blue;
+
+          return Center(
+            // Tambahkan Center di sini
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+              decoration: BoxDecoration(
+                color: chipColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: chipColor.withOpacity(0.5)),
+              ),
+              child: Text(
+                label,
+                textAlign: TextAlign
+                    .center, // Opsional: memastikan teks di dalam container juga center
+                style: TextStyle(
+                  color: chipColor,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+          );
+        },
       ),
 
       //NIK
@@ -155,7 +183,7 @@ class SupadAdminController extends GetxController {
         title: 'Akses Jenjang',
         field: 'schoolLevelAccess',
         type: PlutoColumnType.text(),
-        width: 250,
+        // width: 200,
         renderer: (rendererContext) {
           // String dari cell (misal: "SD, SMP, SMA")
           String value = rendererContext.cell.value.toString();
@@ -183,8 +211,9 @@ class SupadAdminController extends GetxController {
                       child: Text(
                         e,
                         style: const TextStyle(
-                          fontSize: 11,
+                          fontSize: 14,
                           color: Colors.blue,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
@@ -271,7 +300,7 @@ class SupadAdminController extends GetxController {
           'fullName': PlutoCell(value: admin.user.fullName),
           'email': PlutoCell(value: admin.user.email),
           'imageUrl': PlutoCell(value: admin.user.imageUrl),
-          'gender': PlutoCell(value: admin.user.gender),
+          'gender': PlutoCell(value: admin.user.gender.name.toLowerCase()),
           'nik': PlutoCell(value: admin.nik),
           'nip': PlutoCell(value: admin.nip),
           'schoolLevelAccess': PlutoCell(

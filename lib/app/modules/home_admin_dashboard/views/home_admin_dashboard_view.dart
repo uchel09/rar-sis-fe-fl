@@ -39,6 +39,17 @@ class HomeAdminDashboardView extends GetView<HomeAdminDashboardController> {
               _subMenuItem("Staff", "2-4", Routes.STAFF),
             ],
           ),
+          _expansionMenu(
+            icon: Icons.app_registration,
+            label: "PPDB",
+            children: [
+              _subMenuItem("Registrasi", "3-1", Routes.ADMIN_PPDB_REGISTRATION),
+              _subMenuItem("Seleksi", "3-2", Routes.ADMIN_PPDB_SELECTION),
+              _subMenuItem("Pembayaran", "3-3", Routes.CLASS),
+              _subMenuItem("Penentuan Kelas", "3-4", Routes.STAFF),
+              _subMenuItem("Riwayat", "3-5", Routes.STAFF),
+            ],
+          ),
           // _buildMenuSection("KEUANGAN"),
           // DashboardComponents.menuItem(
           //   icon: Icons.payments_outlined,

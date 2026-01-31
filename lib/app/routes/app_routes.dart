@@ -16,6 +16,10 @@ abstract class Routes {
   static const HOME_TEACHER_OVERVIEW =
       _Paths.HOME_TEACHER_DASHBOARD + _Paths.HOME_TEACHER_OVERVIEW;
   static const TEACHER_PROFILE = _Paths.HOME_TEACHER_DASHBOARD + _Paths.PROFILE;
+  static const TEACHER_PPDB_REGISTRATION =
+      _Paths.HOME_TEACHER_DASHBOARD + _Paths.PPDB_REGISTRATION;
+  static const TEACHER_PPDB_SELECTION =
+      _Paths.HOME_TEACHER_DASHBOARD + _Paths.PPDB_SELECTION;
 
   // Admin Dashboard
   static const HOME_ADMIN_DASHBOARD = _Paths.HOME_ADMIN_DASHBOARD;
@@ -26,12 +30,20 @@ abstract class Routes {
   static const STUDENT = _Paths.HOME_ADMIN_DASHBOARD + _Paths.STUDENT;
   static const CLASS = _Paths.HOME_ADMIN_DASHBOARD + _Paths.CLASS;
   static const STAFF = _Paths.HOME_ADMIN_DASHBOARD + _Paths.STAFF;
+  static const ADMIN_PPDB_REGISTRATION =
+      _Paths.HOME_ADMIN_DASHBOARD + _Paths.PPDB_REGISTRATION;
+  static const ADMIN_PPDB_SELECTION =
+      _Paths.HOME_ADMIN_DASHBOARD + _Paths.PPDB_SELECTION;
 
   // Staff Dashboard
   static const HOME_STAFF_DASHBOARD = _Paths.HOME_STAFF_DASHBOARD;
   static const HOME_STAFF_OVERVIEW =
       _Paths.HOME_STAFF_DASHBOARD + _Paths.HOME_STAFF_OVERVIEW;
   static const STAFF_PROFILE = _Paths.HOME_STAFF_DASHBOARD + _Paths.PROFILE;
+  static const STAFF_PPDB_REGISTRATION =
+      _Paths.HOME_STAFF_DASHBOARD + _Paths.PPDB_REGISTRATION;
+  static const STAFF_PPDB_SELECTION =
+      _Paths.HOME_STAFF_DASHBOARD + _Paths.PPDB_SELECTION;
 
   // Super Admin Dashboard
   static const HOME_SUPAD_DASHBOARD = _Paths.HOME_SUPAD_DASHBOARD;
@@ -72,4 +84,6 @@ abstract class _Paths {
   static const SUPAD_SCHOOL_LEVEL = '/supad-school-level';
   static const SUPAD_CURRICULUM = '/supad-curriculum';
   static const PROFILE = '/profile';
+  static const PPDB_REGISTRATION = '/ppdb-registration';
+  static const PPDB_SELECTION = '/ppdb-selection';
 }

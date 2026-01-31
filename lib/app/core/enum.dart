@@ -50,6 +50,20 @@ enum WorkStatus {
   ON_ABSENT, // alpa
 }
 
+enum StudentPaymentStatus {
+  // Belum bayar / Baru daftar
+  UNPAID,
+  // Sudah upload/bayar, menunggu dicek sore hari
+  PENDING_PAID,
+  // Sudah cocok antara sistem dan uang fisik
+  PAID,
+  // uang kuran,g setelah di cek ,
+  //kalau pembayaran manual tanyakan yang handle terlebih dahulu
+  UNDERPAID,
+  // Dana tidak terkirim, konsultasi ke yang verifikasi terlebih dahulu
+  PROBLEM,
+}
+
 enum EmployeeEndStatus {
   PENSION, // Pensiun
   RESIGNED, // Mengundurkan diri
