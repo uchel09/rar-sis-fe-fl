@@ -351,7 +351,7 @@ class TeacherView extends GetView<TeacherController> {
                     (v == null || v.isEmpty) ? 'Pilih minimal satu' : null,
                 builder: (field) => ShadSelectMultiple<SchoolLevelResponse>(
                   label: "pilih jenjang",
-                  items: controller.schoolLevel.allSchoolLevels,
+                  items: controller.masterController.allSchoolLevels,
                   selectedIds: controller.selectedLevelIds.toList(),
                   idBuilder: (v) => v.id,
                   labelBuilder: (v) => v.name,

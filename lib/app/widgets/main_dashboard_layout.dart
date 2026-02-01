@@ -158,7 +158,6 @@ class MainDashboardLayout extends StatelessWidget {
           const Spacer(),
 
           // THEME SELECTOR
-          _buildThemeSelector(),
           const SizedBox(width: 16),
 
           // PROFILE POPOVER (SHADCN)
@@ -174,6 +173,12 @@ class MainDashboardLayout extends StatelessWidget {
       child: ShadSelect<String>(
         initialValue: controller.themeColor.value,
         onChanged: controller.changeTheme,
+        decoration: const ShadDecoration(
+          border: ShadBorder.none,
+
+          focusedBorder: ShadBorder.none, // Hilangkan border saat fokus
+        ),
+
         // TAMBAHKAN <ShadOption<String>> di sini agar tipenya jelas
         options: controller.themes.keys
             .map<ShadOption<String>>(
@@ -201,6 +206,15 @@ class MainDashboardLayout extends StatelessWidget {
               ),
             ),
             const Divider(height: 1),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                const SizedBox(width: 14),
+                Text("Tema", style: TextStyle(fontWeight: FontWeight.w600)),
+                const SizedBox(width: 12),
+                _buildThemeSelector(),
+              ],
+            ),
             _popoverItem(Icons.person_outline, "Profile", () {
               final currentPath = Get.currentRoute;
               Get.rootDelegate.toNamed('$currentPath/profile');

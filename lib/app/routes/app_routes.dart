@@ -30,6 +30,13 @@ abstract class Routes {
   static const STUDENT = _Paths.HOME_ADMIN_DASHBOARD + _Paths.STUDENT;
   static const CLASS = _Paths.HOME_ADMIN_DASHBOARD + _Paths.CLASS;
   static const STAFF = _Paths.HOME_ADMIN_DASHBOARD + _Paths.STAFF;
+  static const SUB_CURRICULUM =
+      _Paths.HOME_ADMIN_DASHBOARD + _Paths.SUB_CURRICULUM;
+  static const SUBJECT = _Paths.HOME_ADMIN_DASHBOARD + _Paths.SUBJECT;
+  static const TEACHER_SUBJECT =
+      _Paths.HOME_ADMIN_DASHBOARD + _Paths.TEACHER_SUBJECT;
+  static const STAFF_POSITION =
+      _Paths.HOME_ADMIN_DASHBOARD + _Paths.STAFF_POSITION;
   static const ADMIN_PPDB_REGISTRATION =
       _Paths.HOME_ADMIN_DASHBOARD + _Paths.PPDB_REGISTRATION;
   static const ADMIN_PPDB_SELECTION =
@@ -86,4 +93,8 @@ abstract class _Paths {
   static const PROFILE = '/profile';
   static const PPDB_REGISTRATION = '/ppdb-registration';
   static const PPDB_SELECTION = '/ppdb-selection';
+  static const SUB_CURRICULUM = '/sub-curriculum';
+  static const SUBJECT = '/subject';
+  static const TEACHER_SUBJECT = '/teacher-subject';
+  static const STAFF_POSITION = '/staff-position';
 }

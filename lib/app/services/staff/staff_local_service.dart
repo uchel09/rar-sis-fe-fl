@@ -1,31 +1,31 @@
 import 'dart:convert';
 import '../../core/enum.dart';
 import '../db/database.dart';
-import 'teacher_model.dart';
+import 'staff_model.dart';
 import 'package:drift/drift.dart';
 
-class TeacherLocalService {
+class StaffLocalService {
   final AppDatabase _db;
-  TeacherLocalService(this._db);
+  StaffLocalService(this._db);
 
   /// BULK INSERT: Clear dulu baru isi, dibungkus Transaction agar aman
-  Future<void> bulkInsert(List<TeacherResponse> teachers) async {
+  Future<void> bulkInsert(List<StaffResponse> staffs) async {
     await _db.transaction(() async {
       // 1. Bersihkan tabel
-      await _db.delete(_db.teachers).go();
+      await _db.delete(_db.staffs).go();
 
       // 2. Batch insert data baru
       await _db.batch((batch) {
-        for (final teacher in teachers) {
-          batch.insert(_db.teachers, _mapToCompanion(teacher));
+        for (final staff in staffs) {
+          batch.insert(_db.staffs, _mapToCompanion(staff));
         }
       });
     });
   }
 
   /// MANUAL MAPPING: Response API -> Drift Companion
-  TeachersCompanion _mapToCompanion(TeacherResponse res) {
-    return TeachersCompanion.insert(
+  StaffsCompanion _mapToCompanion(StaffResponse res) {
+    return StaffsCompanion.insert(
       id: res.id,
       schoolId: res.schoolId,
       dob: res.dob,
@@ -43,6 +43,8 @@ class TeacherLocalService {
 
       hireDate: res.hireDate,
       phone: res.phone,
+      staffPositionId: res.staffPosition.id,
+      staffPositionName: res.staffPosition.name,
 
       // Mapping UserInfo (Denormalisasi)
       userId: res.user.id,
@@ -64,7 +66,7 @@ class TeacherLocalService {
   }
 
   /// MANUAL MAPPING: Drift Row -> Response Model
-  TeacherResponse _mapToResponse(Teacher row) {
+  StaffResponse _mapToResponse(Staff row) {
     // 1. Bongkar JSON String untuk akses jenjang
     final List<dynamic> accessListRaw = jsonDecode(row.schoolLevelAccess);
     final List<SchoolLevelAccess> accessList = accessListRaw
@@ -72,7 +74,7 @@ class TeacherLocalService {
         .toList();
 
     // 2. Return object Response
-    return TeacherResponse(
+    return StaffResponse(
       id: row.id,
       schoolId: row.schoolId,
       dob: row.dob,
@@ -89,6 +91,10 @@ class TeacherLocalService {
 
       hireDate: row.hireDate,
       phone: row.phone,
+      staffPosition: StaffPositionInfo(
+        id: row.staffPositionId,
+        name: row.staffPositionName,
+      ),
 
       // Mapping manual UserInfo
       user: UserInfo(
@@ -107,22 +113,22 @@ class TeacherLocalService {
     );
   }
 
-  /// AMBIL DATA: Mapping balik dari Drift ke TeacherResponse
-  /// AMBIL DATA: Mapping balik dari Drift ke TeacherResponse
-  Future<List<TeacherResponse>> getAllLocal() async {
-    final rows = await _db.select(_db.teachers).get();
+  /// AMBIL DATA: Mapping balik dari Drift ke StaffResponse
+  /// AMBIL DATA: Mapping balik dari Drift ke StaffResponse
+  Future<List<StaffResponse>> getAllLocal() async {
+    final rows = await _db.select(_db.staffs).get();
 
     // Tinggal panggil fungsi mapping yang sudah dibuat
     return rows.map(_mapToResponse).toList();
   }
 
-  Future<TeacherResponse?> getById(String id) async {
-    final query = _db.select(_db.teachers)..where((t) => t.id.equals(id));
+  Future<StaffResponse?> getById(String id) async {
+    final query = _db.select(_db.staffs)..where((t) => t.id.equals(id));
     final row = await query.getSingleOrNull();
     return row != null ? _mapToResponse(row) : null;
   }
 
-  Future<void> clearAllTeacherLocal() async {
-    await _db.delete(_db.teachers).go();
+  Future<void> clearAllStaffLocal() async {
+    await _db.delete(_db.staffs).go();
   }
 }

@@ -48,6 +48,15 @@ class CurriculumLocalService {
     return rows.map((row) => _mapToResponse(row)).toList();
   }
 
+  Future<List<CurriculumResponse>> getAllLocalActive() async {
+    // Tambahkan .where untuk filter isActive
+    final rows = await (_db.select(
+      _db.curriculums,
+    )..where((t) => t.isActive.equals(true))).get();
+
+    return rows.map((row) => _mapToResponse(row)).toList();
+  }
+
   Future<void> deleteLocal() async {
     await _db.delete(_db.curriculums).go();
   }

@@ -21,7 +21,7 @@ class PpdbRegistrationView extends GetView<PpdbRegistrationController> {
           children: [
             _buildHeaderSearch(),
             _buildMainGrid(),
-            if (controller.totalPages.value > 0) _buildPaginationBar(),
+            // if (controller.totalPages.value > 0) _buildPaginationBar(),
           ],
         );
       }),
@@ -256,13 +256,22 @@ class PpdbRegistrationView extends GetView<PpdbRegistrationController> {
             rows: controller.rows,
             onLoaded: controller.onPlutoGridLoaded,
             onChanged: controller.onGridChanged,
+            createFooter: (stateManager) {
+              return Obx(() {
+                // Cek kondisi reaktif di sini
+                if (controller.totalPages.value > 0) {
+                  return _buildPaginationBar();
+                }
+                return const SizedBox.shrink();
+              });
+            },
             configuration: PlutoGridConfiguration(
               style: PlutoGridStyleConfig(
                 gridBorderColor: Colors.transparent,
                 gridBackgroundColor: Colors.white,
                 borderColor: const Color(0xFFF1F5F9),
-                columnHeight: 45,
-                rowHeight: 55,
+                columnHeight: 40,
+                rowHeight: 45,
                 columnTextStyle: const TextStyle(
                   color: Color(0xFF64748B),
                   fontWeight: FontWeight.w600,
@@ -285,7 +294,7 @@ class PpdbRegistrationView extends GetView<PpdbRegistrationController> {
 
   Widget _buildPaginationBar() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [

@@ -13,6 +13,12 @@ import '../modules/home_admin_dashboard/child_page/staff/bindings/staff_binding.
 import '../modules/home_admin_dashboard/child_page/staff/views/staff_view.dart';
 import '../modules/home_admin_dashboard/child_page/student/bindings/student_binding.dart';
 import '../modules/home_admin_dashboard/child_page/student/views/student_view.dart';
+import '../modules/home_admin_dashboard/child_page/sub-curriculum/bindings/sub_curriculum_binding.dart';
+import '../modules/home_admin_dashboard/child_page/sub-curriculum/views/sub_curriculum_view.dart';
+import '../modules/home_admin_dashboard/child_page/subject/bindings/subject_binding.dart';
+import '../modules/home_admin_dashboard/child_page/subject/views/subject_view.dart';
+import '../modules/home_admin_dashboard/child_page/teacher-subject/bindings/teacher_subject_binding.dart';
+import '../modules/home_admin_dashboard/child_page/teacher-subject/views/teacher_subject_view.dart';
 import '../modules/home_admin_dashboard/child_page/teacher/bindings/teacher_binding.dart';
 import '../modules/home_admin_dashboard/child_page/teacher/views/teacher_view.dart';
 import '../modules/home_admin_dashboard/views/home_admin_dashboard_view.dart';
@@ -46,6 +52,8 @@ import '../modules/ppdb_selection/bindings/ppdb_selection_binding.dart';
 import '../modules/ppdb_selection/views/ppdb_selection_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
+import '../modules/home_admin_dashboard/child_page/staff-position/bindings/staff_position_binding.dart';
+import '../modules/home_admin_dashboard/child_page/staff-position/views/staff_position_view.dart';
 
 part 'app_routes.dart';
 
@@ -150,6 +158,21 @@ class AppPages {
           binding: StaffBinding(),
         ),
         GetPage(
+          name: _Paths.SUB_CURRICULUM,
+          page: () => const SubCurriculumView(),
+          binding: SubCurriculumBinding(),
+        ),
+        GetPage(
+          name: _Paths.SUBJECT,
+          page: () => const SubjectView(),
+          binding: SubjectBinding(),
+        ),
+        GetPage(
+          name: _Paths.TEACHER_SUBJECT,
+          page: () => const TeacherSubjectView(),
+          binding: TeacherSubjectBinding(),
+        ),
+        GetPage(
           name: _Paths.PPDB_REGISTRATION,
           page: () => const PpdbRegistrationView(),
           binding: PpdbRegistrationBinding(),
@@ -158,6 +181,11 @@ class AppPages {
           name: _Paths.PPDB_SELECTION,
           page: () => const PpdbSelectionView(),
           binding: PpdbSelectionBinding(),
+        ),
+        GetPage(
+          name: _Paths.STAFF_POSITION,
+          page: () => const StaffPositionView(),
+          binding: StaffPositionBinding(),
         ),
       ],
     ),

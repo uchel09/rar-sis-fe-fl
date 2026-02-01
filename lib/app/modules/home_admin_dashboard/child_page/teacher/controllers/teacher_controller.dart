@@ -21,7 +21,7 @@ class TeacherController extends GetxController {
   // 2. Definisi Kolom (Late karena butuh context/init)
   late List<PlutoColumn> columns;
   final TeacherService _service = Get.find<TeacherService>();
-  final MasterController schoolLevel = Get.find<MasterController>();
+  final MasterController masterController = Get.find<MasterController>();
   // Penampung UUID jenjang yang dipilih di form (reaktif)
   // form
   late GlobalKey<ScaffoldState> scaffoldKey;
