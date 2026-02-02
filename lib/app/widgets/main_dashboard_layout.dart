@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rar_sis_fe_fl/app/core/base/master_controller.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../core/responsive_wrapper.dart';
 import './circle_cache_avatar.dart';
@@ -9,7 +10,7 @@ class MainDashboardLayout extends StatelessWidget {
   final List<Widget> menuItems;
   final Widget body;
   final dynamic controller; // Harus extends BaseDashboardController
-
+  final MasterController masterController = Get.find<MasterController>();
   // Controller untuk ShadPopover
   final popoverController = ShadPopoverController();
 
@@ -159,7 +160,8 @@ class MainDashboardLayout extends StatelessWidget {
 
           // THEME SELECTOR
           const SizedBox(width: 16),
-
+          _buildLevelSelector(),
+          const SizedBox(width: 16),
           // PROFILE POPOVER (SHADCN)
           _buildProfileDropdown(),
         ],
@@ -188,6 +190,54 @@ class MainDashboardLayout extends StatelessWidget {
         selectedOptionBuilder: (context, value) => Text(_capitalize(value)),
       ),
     );
+  }
+
+  Widget _buildLevelSelector() {
+    return Obx(() {
+      // Tampilkan loading atau empty state jika data belum siap
+      if (masterController.profileSchoolLevels.isEmpty) {
+        return const SizedBox.shrink();
+      }
+
+      return SizedBox(
+        width: 110,
+        child: ShadSelect<String>(
+          // Gunakan .value dari obs
+          initialValue: masterController.levelAccessProfileId.value,
+          onChanged: (String? value) {
+            if (value != null) {
+              // Update state global saat user memilih level lain
+              masterController.levelAccessProfileId.value = value;
+              print(
+                "Level Aktif: ${masterController.levelAccessProfileId.value}",
+              );
+
+              // Opsional: Panggil fungsi refresh data modul lain di sini jika perlu
+            }
+          },
+          decoration: const ShadDecoration(
+            border: ShadBorder.none,
+            focusedBorder: ShadBorder.none,
+          ),
+          options: masterController.profileSchoolLevels
+              .map<ShadOption<String>>(
+                (level) => ShadOption<String>(
+                  value: level.id,
+                  child: Text(level.name.toUpperCase()),
+                ),
+              )
+              .toList(),
+          selectedOptionBuilder: (context, value) {
+            // Cari item yang terpilih untuk ditampilkan teksnya
+            final selected = masterController.profileSchoolLevels.firstWhere(
+              (e) => e.id == value,
+              orElse: () => masterController.profileSchoolLevels.first,
+            );
+            return Text(selected.name.toUpperCase());
+          },
+        ),
+      );
+    });
   }
 
   Widget _buildProfileDropdown() {

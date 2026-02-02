@@ -36,6 +36,7 @@ class ProfileController extends GetxController {
   var isProcessing = false.obs; // Untuk status di dalam dialog
   final userData = Rxn<UserProfileModel>(); // Tetap Rxn biar UI Obx lu gak mati
   var schoolId = "".obs;
+
   var selectedImageFile = Rxn<XFile>();
 
   // Text Controllers

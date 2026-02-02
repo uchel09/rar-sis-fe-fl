@@ -48,11 +48,11 @@ class CurriculumLocalService {
     return rows.map((row) => _mapToResponse(row)).toList();
   }
 
-  Future<List<CurriculumResponse>> getAllLocalActive() async {
+  Future<List<CurriculumResponse>> getAllLocalByActive(bool active) async {
     // Tambahkan .where untuk filter isActive
     final rows = await (_db.select(
       _db.curriculums,
-    )..where((t) => t.isActive.equals(true))).get();
+    )..where((t) => t.isActive.equals(active))).get();
 
     return rows.map((row) => _mapToResponse(row)).toList();
   }

@@ -58,11 +58,17 @@ class AuthService extends GetxService {
     // Manual mapping
     final rawDataMap = response.data["data"];
     final rawData = UserProfileModel.fromJson(rawDataMap);
+
     if (response.statusCode == 200) {
       await box.remove('profile');
+      await box.remove('profile_school_level_access');
       await box.remove('role');
       await box.write('role', rawData.role);
       await box.write('profile', rawDataMap);
+      final schoolAccess = rawData.profile?['schoolLevelAccess'];
+      if (schoolAccess != null) {
+        await box.write("profile_school_level_access", schoolAccess);
+      }
     }
   }
 
@@ -73,7 +79,9 @@ class AuthService extends GetxService {
       if (res.statusCode == 200 || res.statusCode == 201) {
         box.remove('isLoggedIn');
         box.remove('profile');
+        await box.remove('profile_school_level_access');
         box.remove('role');
+
         await _api.cookieJar.deleteAll();
 
         Get.offAllNamed("/login");

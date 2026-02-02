@@ -4,6 +4,7 @@ class SubCurriculums extends Table {
   TextColumn get id => text()();
   TextColumn get curriculumId => text()(); // Foreign Key ke tabel Curriculums
   TextColumn get schoolLevelId => text()(); // ID Jenjang Sekolah
+  TextColumn get schoolLevelName => text()(); // ID Jenjang Sekolah
 
   // Sesuai aturan: string antara 1 dan 100 karakter
   TextColumn get name => text().withLength(min: 1, max: 100)();

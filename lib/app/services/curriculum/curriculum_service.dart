@@ -77,8 +77,10 @@ class CurriculumService extends GetxService {
     return await _localService.getById(id);
   }
 
-  Future<List<CurriculumResponse>> getCurriculumActiveLocal() async {
-    return await _localService.getAllLocalActive();
+  Future<List<CurriculumResponse>> getCurriculumByActiveLocal(
+    bool active,
+  ) async {
+    return await _localService.getAllLocalByActive(active);
   }
 
   /// DELETE
