@@ -5,6 +5,7 @@ import '../controllers/sub_curriculum_controller.dart';
 import '../../../../../widgets/reusable_pluto_table.dart';
 import '../../../../../widgets/right_form_drawer.dart';
 import 'package:flutter/services.dart';
+import 'package:rar_sis_fe_fl/app/services/sub_curriculum/sub_curriculum_model.dart';
 
 class SubCurriculumView extends GetView<SubCurriculumController> {
   const SubCurriculumView({super.key});
@@ -22,10 +23,14 @@ class SubCurriculumView extends GetView<SubCurriculumController> {
       // 👉 DRAWER KANAN UNTUK FORM CREATE/EDIT
       endDrawer: Obx(
         () => RightFormDrawer(
-          title: controller.isCreate.value
-              ? 'Buat Sub Kurikulum'
-              : 'Edit Sub Kurikulum',
-          child: formSubCurriculum(),
+          title: controller.isManageSubjects.value
+              ? 'Manage Mata Pelajaran'
+              : (controller.isCreate.value
+                    ? 'Buat Sub Kurikulum'
+                    : 'Edit Sub Kurikulum'),
+          child: controller.isManageSubjects.value
+              ? listSubjectPicker(context) // Widget baru
+              : formSubCurriculum(),
         ),
       ),
       body: Obx(() {
@@ -273,5 +278,146 @@ class SubCurriculumView extends GetView<SubCurriculumController> {
         ),
       ),
     );
+  }
+
+  Widget listSubjectPicker(BuildContext context) {
+    return Obx(() {
+      // 1. State Loading
+      if (controller.isLoading.value) {
+        return const SizedBox(
+          height: 300,
+          child: Center(child: CircularProgressIndicator()),
+        );
+      }
+
+      // 2. State Kosong
+      if (controller.availableSubjects.isEmpty) {
+        return const Padding(
+          padding: EdgeInsets.all(24.0),
+          child: Center(
+            child: Text(
+              "Tidak ada daftar mata pelajaran untuk jenjang ini. Silakan buat di Master Mapel.",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey),
+            ),
+          ),
+        );
+      }
+
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Header Info
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: // Ganti bagian Alert tadi dengan ini:
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: ShadTheme.of(
+                    context,
+                  ).colorScheme.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: ShadTheme.of(
+                      context,
+                    ).colorScheme.primary.withOpacity(0.2),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      size: 16,
+                      color: ShadTheme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: Text(
+                        "Pilih mata pelajaran dan tentukan jumlah Jam Pelajaran (JP) per minggu.",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          // List Mata Pelajaran
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: controller.availableSubjects.length,
+            itemBuilder: (context, index) {
+              final subject = controller.availableSubjects[index];
+
+              // Bungkus dengan Obx di sini agar setiap perubahan di list terpantau
+              return Obx(() {
+                // Logic pengecekan apakah id mapel ini ada di list terpilih
+                final assignItem = controller.selectedSubjectsForAssign
+                    .firstWhereOrNull((s) => s.subjectId == subject.id);
+                final bool isSelected = assignItem != null;
+
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: isSelected, // Sekarang reaktif
+                        onChanged: (val) {
+                          controller.toggleSubject(subject.id, val ?? false);
+                        },
+                      ),
+                      Expanded(
+                        child: Text('${subject.name} ${subject.subName}'),
+                      ),
+                      if (isSelected)
+                        SizedBox(
+                          width: 60,
+                          child: ShadInput(
+                            initialValue: assignItem.hoursPerWeek.toString(),
+                            onChanged: (v) =>
+                                controller.updateJP(subject.id, v),
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              });
+            },
+          ),
+
+          // Footer Actions
+          const Divider(),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ShadButton.outline(
+                    child: const Text("Batal"),
+                    onPressed: () =>
+                        controller.scaffoldKey.currentState?.closeEndDrawer(),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ShadButton(
+                    onPressed: controller.doBulkAssign,
+                    child: const Text("Simpan"),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    });
   }
 }

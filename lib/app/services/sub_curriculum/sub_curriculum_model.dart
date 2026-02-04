@@ -5,8 +5,9 @@ class SubCurriculumResponse {
   final int minutesPerJp;
   final DateTime createdAt;
   final DateTime updatedAt;
-  // Ubah String schoolLevelId menjadi class SchoolLevel
   final SchoolLevel schoolLevel;
+  // Tambahkan list subjects
+  final List<SubCurriculumSubject> subjects;
 
   SubCurriculumResponse({
     required this.id,
@@ -16,6 +17,7 @@ class SubCurriculumResponse {
     required this.createdAt,
     required this.updatedAt,
     required this.schoolLevel,
+    required this.subjects,
   });
 
   factory SubCurriculumResponse.fromJson(Map<String, dynamic> json) =>
@@ -26,8 +28,11 @@ class SubCurriculumResponse {
         minutesPerJp: json["minutesPerJp"],
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
-        // Parsing nested object schoolLevel
         schoolLevel: SchoolLevel.fromJson(json["schoolLevel"]),
+        // Parsing list subjects dengan aman
+        subjects: List<SubCurriculumSubject>.from(
+          (json["subjects"] ?? []).map((x) => SubCurriculumSubject.fromJson(x)),
+        ),
       );
 
   Map<String, dynamic> toJson() => {
@@ -38,10 +43,10 @@ class SubCurriculumResponse {
     "createdAt": createdAt.toIso8601String(),
     "updatedAt": updatedAt.toIso8601String(),
     "schoolLevel": schoolLevel.toJson(),
+    "subjects": List<dynamic>.from(subjects.map((x) => x.toJson())),
   };
 }
 
-// Tambahkan class pendukung untuk SchoolLevel
 class SchoolLevel {
   final String id;
   final String name;
@@ -52,6 +57,40 @@ class SchoolLevel {
       SchoolLevel(id: json["id"], name: json["name"]);
 
   Map<String, dynamic> toJson() => {"id": id, "name": name};
+}
+
+// Tambahkan class untuk item subject sesuai mapping NestJS kita
+class SubCurriculumSubject {
+  final String id; // Ini ID Pivot
+  final String subjectId; // Ini ID Master
+  final String subjectName;
+  final int hoursPerWeek;
+  final dynamic syllabus; // Pakai dynamic karena tipe Json di backend
+
+  SubCurriculumSubject({
+    required this.id,
+    required this.subjectId,
+    required this.subjectName,
+    required this.hoursPerWeek,
+    this.syllabus,
+  });
+
+  factory SubCurriculumSubject.fromJson(Map<String, dynamic> json) =>
+      SubCurriculumSubject(
+        id: json["id"],
+        subjectId: json["subjectId"],
+        subjectName: json["subjectName"],
+        hoursPerWeek: json["hoursPerWeek"],
+        syllabus: json["syllabus"],
+      );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "subjectId": subjectId,
+    "subjectName": subjectName,
+    "hoursPerWeek": hoursPerWeek,
+    "syllabus": syllabus,
+  };
 }
 
 class CreateSubCurriculumRequest {
@@ -96,4 +135,31 @@ class UpdateSubCurriculumRequest {
     if (minutesPerJp != null) data["minutesPerJp"] = minutesPerJp;
     return data;
   }
+}
+
+class BulkAssignSubjectRequest {
+  final String subCurriculumId;
+  final List<SubjectAssignItem> subjects;
+
+  BulkAssignSubjectRequest({
+    required this.subCurriculumId,
+    required this.subjects,
+  });
+
+  Map<String, dynamic> toJson() => {
+    "subCurriculumId": subCurriculumId,
+    "subjects": subjects.map((x) => x.toJson()).toList(),
+  };
+}
+
+class SubjectAssignItem {
+  final String subjectId;
+  final int hoursPerWeek;
+
+  SubjectAssignItem({required this.subjectId, required this.hoursPerWeek});
+
+  Map<String, dynamic> toJson() => {
+    "subjectId": subjectId,
+    "hoursPerWeek": hoursPerWeek,
+  };
 }

@@ -45,6 +45,7 @@ class SubCurriculumService extends GetxService {
         final apiResults = list
             .map((item) => SubCurriculumResponse.fromJson(item))
             .toList();
+        print("woooy");
         print(response);
 
         // Simpan hasil API ke DB Lokal (Gunakan fungsi bulk yang baru)
@@ -110,6 +111,30 @@ class SubCurriculumService extends GetxService {
   Future<void> update(String id, UpdateSubCurriculumRequest request) async {
     await _api.dio.put('/sub-curriculums/$id', data: request.toJson());
     // Refresh data lokal setelah update sukses
+  }
+
+  /// BULK ASSIGN SUBJECTS
+  /// Hanya melakukan update ke server
+  // Gunakan class DTO yang baru kita buat sebagai parameter
+  Future<void> bulkAssignSubjects(BulkAssignSubjectRequest request) async {
+    try {
+      // Panggil .toJson() di sini, jadi di Controller tinggal kirim objeknya
+      await _api.dio.post(
+        '/sub-curriculums/subjects/bulk',
+        data: request.toJson(),
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// UPDATE SYLLABUS
+  /// Hanya melakukan update ke server
+  Future<void> updateSyllabus(String pivotId, dynamic syllabusData) async {
+    await _api.dio.patch(
+      '/sub-curriculums/subject/$pivotId/syllabus',
+      data: {'syllabus': syllabusData},
+    );
   }
 
   Future<SubCurriculumResponse?> getSubByIdLocal(String id) async {

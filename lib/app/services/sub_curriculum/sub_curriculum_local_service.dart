@@ -1,6 +1,7 @@
 import '../db/database.dart';
 import 'sub_curriculum_model.dart' as model; // Pastikan path model benar
 import 'package:drift/drift.dart';
+import 'dart:convert';
 
 class SubCurriculumLocalService {
   final AppDatabase _db;
@@ -20,6 +21,9 @@ class SubCurriculumLocalService {
         id: row.schoolLevelId,
         name: row.schoolLevelName, // Gunakan default value jika null
       ),
+      subjects: (jsonDecode(row.subjects) as List)
+          .map((e) => model.SubCurriculumSubject.fromJson(e))
+          .toList(),
     );
   }
 
@@ -39,6 +43,9 @@ class SubCurriculumLocalService {
               curriculumId: item.curriculumId,
               schoolLevelId: item.schoolLevel.id,
               schoolLevelName: item.schoolLevel.name,
+              subjects: jsonEncode(
+                item.subjects.map((e) => e.toJson()).toList(),
+              ),
               name: item.name,
               minutesPerJp: item.minutesPerJp,
               createdAt: item.createdAt,
@@ -71,6 +78,9 @@ class SubCurriculumLocalService {
               schoolLevelId: item.schoolLevel.id,
               schoolLevelName: item.schoolLevel.name,
               name: item.name,
+              subjects: jsonEncode(
+                item.subjects.map((e) => e.toJson()).toList(),
+              ),
               minutesPerJp: item.minutesPerJp,
               createdAt: item.createdAt,
               updatedAt: item.updatedAt,

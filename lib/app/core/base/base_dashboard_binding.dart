@@ -19,12 +19,12 @@ abstract class BaseDashboardBinding extends Bindings {
     Get.lazyPut<SchoolAdminService>(() => SchoolAdminService());
     Get.lazyPut<SchoolLevelService>(() => SchoolLevelService());
     Get.lazyPut<CurriculumService>(() => CurriculumService());
+    Get.lazyPut<SubjectService>(() => SubjectService());
     Get.lazyPut<SubCurriculumService>(() => SubCurriculumService());
     Get.lazyPut<StudentDraftService>(() => StudentDraftService());
     Get.lazyPut<TeacherService>(() => TeacherService());
     Get.lazyPut<StaffPositionService>(() => StaffPositionService());
     Get.lazyPut<StaffService>(() => StaffService());
-    Get.lazyPut<SubjectService>(() => SubjectService());
     Get.put(MasterController());
     injectController(); // Panggil method abstrak
   }
