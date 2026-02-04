@@ -2,6 +2,7 @@ class SubCurriculumResponse {
   final String id;
   final String curriculumId;
   final String name;
+  final int minutesPerJp;
   final DateTime createdAt;
   final DateTime updatedAt;
   // Ubah String schoolLevelId menjadi class SchoolLevel
@@ -11,6 +12,7 @@ class SubCurriculumResponse {
     required this.id,
     required this.curriculumId,
     required this.name,
+    required this.minutesPerJp,
     required this.createdAt,
     required this.updatedAt,
     required this.schoolLevel,
@@ -21,6 +23,7 @@ class SubCurriculumResponse {
         id: json["id"],
         curriculumId: json["curriculumId"],
         name: json["name"],
+        minutesPerJp: json["minutesPerJp"],
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
         // Parsing nested object schoolLevel
@@ -31,6 +34,7 @@ class SubCurriculumResponse {
     "id": id,
     "curriculumId": curriculumId,
     "name": name,
+    "minutesPerJp": minutesPerJp,
     "createdAt": createdAt.toIso8601String(),
     "updatedAt": updatedAt.toIso8601String(),
     "schoolLevel": schoolLevel.toJson(),
@@ -54,17 +58,20 @@ class CreateSubCurriculumRequest {
   final String curriculumId;
   final String schoolLevelId;
   final String name;
+  final int minutesPerJp;
 
   CreateSubCurriculumRequest({
     required this.curriculumId,
     required this.schoolLevelId,
     required this.name,
+    required this.minutesPerJp,
   });
 
   Map<String, dynamic> toJson() => {
     "curriculumId": curriculumId,
     "schoolLevelId": schoolLevelId,
     "name": name,
+    "minutesPerJp": minutesPerJp,
   };
 }
 
@@ -72,11 +79,13 @@ class UpdateSubCurriculumRequest {
   final String? curriculumId;
   final String? schoolLevelId;
   final String? name;
+  final int? minutesPerJp;
 
   UpdateSubCurriculumRequest({
     this.curriculumId,
     this.schoolLevelId,
     this.name,
+    this.minutesPerJp,
   });
 
   Map<String, dynamic> toJson() {
@@ -84,6 +93,7 @@ class UpdateSubCurriculumRequest {
     if (curriculumId != null) data["curriculumId"] = curriculumId;
     if (schoolLevelId != null) data["schoolLevelId"] = schoolLevelId;
     if (name != null) data["name"] = name;
+    if (minutesPerJp != null) data["minutesPerJp"] = minutesPerJp;
     return data;
   }
 }

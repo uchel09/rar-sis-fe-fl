@@ -31,14 +31,14 @@ class SubCurriculumController extends GetxController {
   var curriculums = <CurriculumResponse>[].obs;
   var selectedCurriculumId = "".obs;
   final nameController = TextEditingController();
+  final minutesPerjPController = TextEditingController();
   var selectedSchoolLevelId = "".obs;
   @override
   void onInit() {
     super.onInit();
     _initColumns();
     // Load data pertama kali
-    Future.microtask(() => fetchAllData());
-    fetchLocalCurriculums();
+    _initialLoad();
     ever(selectedCurriculumId, (_) {
       if (selectedCurriculumId.value.isNotEmpty) {
         fetchByCurriculum();
@@ -46,7 +46,6 @@ class SubCurriculumController extends GetxController {
     });
     // Worker: Ambil ulang data setiap kali switch showActive berubah
     ever(showActive, (_) => fetchLocalCurriculums());
-    Future.microtask(() => fetchByCurriculum());
 
     // Helper untuk filter dropdown (asumsi Anda punya utility ini di core)
     dropdownItems.value = getColumnDropdownOptions(columns, [
@@ -55,6 +54,20 @@ class SubCurriculumController extends GetxController {
       'actions',
     ]);
     schoolId.value = box.read("school_id");
+  }
+
+  Future<void> _initialLoad() async {
+    await fetchLocalCurriculums();
+    // 1. Pastikan ambil data dari API dan simpan ke lokal selesai dulu
+    await fetchAllData();
+
+    // 2. Load data lokal (Curriculums) untuk dropdown
+
+    // 3. Jika setelah fetchLocalCurriculums ID sudah terisi secara otomatis (misal ambil index 0)
+    // Maka jalankan fetchByCurriculum
+    if (selectedCurriculumId.value.isNotEmpty) {
+      await fetchByCurriculum();
+    }
   }
 
   Future<void> fetchLocalCurriculums() async {
@@ -116,20 +129,55 @@ class SubCurriculumController extends GetxController {
         width: 250,
       ),
       PlutoColumn(
+        title: 'Menit/Mapel',
+        field: 'minutesPerJp',
+        type: PlutoColumnType.text(),
+        width: 250,
+      ),
+      PlutoColumn(
         title: 'Jenjang',
         field: 'schoolLevelName',
         type: PlutoColumnType.text(),
         width: 300,
       ),
+
+      PlutoColumn(
+        title: 'Actions',
+        field: 'actions',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableAutoEditing: false, // Tambahin ini biar gak bentrok sama keyboard
+        enableSorting: false,
+        renderer: (rendererContext) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.edit, size: 18, color: Colors.blue),
+                onPressed: () {
+                  // AMBIL ID SECARA AMAN:
+                  final id = rendererContext.row.cells['id']?.value;
+                  if (id != null) {
+                    // Kirim map manual aja, lebih aman daripada toJson()
+                    onUpdate({'id': id});
+                  }
+                },
+              ),
+            ],
+          );
+        },
+      ),
     ];
   }
 
-  Future<void> fetchAllData({bool forceRefresh = false}) async {
+  Future<void> fetchAllData() async {
     try {
       isLoading.value = true;
-      var data = await _service.getAll(forceRefresh: forceRefresh);
-      print("data Get all");
+      var data = await _service.getAll(forceRefresh: false);
       print(data);
+      if (data.isEmpty) {
+        await _service.getAll(forceRefresh: true);
+      }
     } catch (e) {
       debugPrint("Error Fetch Sub Kurikulum $e");
     } finally {
@@ -175,7 +223,9 @@ class SubCurriculumController extends GetxController {
           'no': PlutoCell(value: ''),
           'id': PlutoCell(value: item.id),
           'name': PlutoCell(value: item.name),
+          'minutesPerJp': PlutoCell(value: item.minutesPerJp),
           'schoolLevelName': PlutoCell(value: item.schoolLevel.name),
+          'actions': PlutoCell(value: ''),
         },
       );
     }).toList();
@@ -195,6 +245,7 @@ class SubCurriculumController extends GetxController {
     try {
       final request = CreateSubCurriculumRequest(
         name: nameController.text.trim(),
+        minutesPerJp: int.tryParse(minutesPerjPController.text.trim()) ?? 0,
         curriculumId: selectedCurriculumId.value,
         schoolLevelId: selectedSchoolLevelId.value,
       );
@@ -219,6 +270,7 @@ class SubCurriculumController extends GetxController {
     if (data != null) {
       isCreate.value = false;
       nameController.text = data.name;
+      minutesPerjPController.text = data.minutesPerJp.toString();
       selectedCurriculumId.value = data.curriculumId;
       selectedSchoolLevelId.value = data.schoolLevel.id;
 
@@ -243,6 +295,7 @@ class SubCurriculumController extends GetxController {
     try {
       final request = UpdateSubCurriculumRequest(
         name: nameController.text.trim(),
+        minutesPerJp: int.tryParse(minutesPerjPController.text.trim()) ?? 0,
         schoolLevelId: selectedSchoolLevelId.value,
         curriculumId: selectedCurriculumId.value,
       );

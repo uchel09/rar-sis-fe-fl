@@ -4,6 +4,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../controllers/sub_curriculum_controller.dart';
 import '../../../../../widgets/reusable_pluto_table.dart';
 import '../../../../../widgets/right_form_drawer.dart';
+import 'package:flutter/services.dart';
 
 class SubCurriculumView extends GetView<SubCurriculumController> {
   const SubCurriculumView({super.key});
@@ -19,11 +20,13 @@ class SubCurriculumView extends GetView<SubCurriculumController> {
     return Scaffold(
       key: scaffoldKey,
       // 👉 DRAWER KANAN UNTUK FORM CREATE/EDIT
-      endDrawer: RightFormDrawer(
-        title: controller.isCreate.value
-            ? 'Buat Sub Kurikulum'
-            : 'Edit Sub Kurikulum',
-        child: formSubCurriculum(),
+      endDrawer: Obx(
+        () => RightFormDrawer(
+          title: controller.isCreate.value
+              ? 'Buat Sub Kurikulum'
+              : 'Edit Sub Kurikulum',
+          child: formSubCurriculum(),
+        ),
       ),
       body: Obx(() {
         final curriculums = controller.curriculums;
@@ -158,6 +161,54 @@ class SubCurriculumView extends GetView<SubCurriculumController> {
                 validator: (v) => v.isEmpty
                     ? 'Nama wajib diisi'
                     : (v.length > 100 ? 'Maksimal 100 karakter' : null),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // Tombol Kurang
+                  ShadButton.outline(
+                    child: const Icon(Icons.remove, size: 16),
+                    onPressed: () {
+                      int current =
+                          int.tryParse(
+                            controller.minutesPerjPController.text,
+                          ) ??
+                          35;
+                      if (current > 5) {
+                        controller.minutesPerjPController.text = (current - 5)
+                            .toString();
+                      }
+                    },
+                  ),
+                  const SizedBox(width: 8),
+
+                  // Input Tengah
+                  Expanded(
+                    child: ShadInputFormField(
+                      id: 'minutesPerJp',
+                      label: const Text('Menit per JP'),
+                      controller: controller.minutesPerjPController,
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    ),
+                  ),
+
+                  const SizedBox(width: 8),
+                  // Tombol Tambah
+                  ShadButton.outline(
+                    child: const Icon(Icons.add, size: 16),
+                    onPressed: () {
+                      int current =
+                          int.tryParse(
+                            controller.minutesPerjPController.text,
+                          ) ??
+                          35;
+                      controller.minutesPerjPController.text = (current + 5)
+                          .toString();
+                    },
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
 

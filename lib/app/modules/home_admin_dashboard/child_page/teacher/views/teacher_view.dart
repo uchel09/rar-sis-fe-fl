@@ -26,7 +26,12 @@ class TeacherView extends GetView<TeacherController> {
       key: scaffoldKey,
 
       // 👉 DRAWER KANAN LANGSUNG DI SINI
-      endDrawer: RightFormDrawer(title: 'Buat Guru Baru', child: formTeacher()),
+      endDrawer: Obx(
+        () => RightFormDrawer(
+          title: controller.isCreate.value ? 'Buat Guru Baru' : 'Edit  Guru',
+          child: formTeacher(),
+        ),
+      ),
 
       body: Obx(
         () => ReusablePlutoTable(
@@ -377,7 +382,9 @@ class TeacherView extends GetView<TeacherController> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: ShadButton(
-                      child: const Text('Simpan Admin'),
+                      child: Text(
+                        controller.isCreate.value ? 'Simpan' : 'Update',
+                      ),
                       onPressed: () {
                         if (controller.isCreate.value) {
                           controller.doCreate();

@@ -25,9 +25,11 @@ class StaffView extends GetView<StaffController> {
     return Scaffold(
       key: scaffoldKey,
       // 👉 DRAWER KANAN UNTUK STAFF
-      endDrawer: RightFormDrawer(
-        title: controller.isCreate.value ? 'Buat Staff Baru' : 'Edit Staff',
-        child: formStaff(),
+      endDrawer: Obx(
+        () => RightFormDrawer(
+          title: controller.isCreate.value ? 'Buat Staff Baru' : 'Edit Staff',
+          child: formStaff(),
+        ),
       ),
 
       body: Obx(

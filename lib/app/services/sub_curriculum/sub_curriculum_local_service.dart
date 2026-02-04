@@ -12,6 +12,7 @@ class SubCurriculumLocalService {
       id: row.id,
       curriculumId: row.curriculumId,
       name: row.name,
+      minutesPerJp: row.minutesPerJp,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
       // Menggunakan konstruktor class SchoolLevel secara manual
@@ -39,6 +40,7 @@ class SubCurriculumLocalService {
               schoolLevelId: item.schoolLevel.id,
               schoolLevelName: item.schoolLevel.name,
               name: item.name,
+              minutesPerJp: item.minutesPerJp,
               createdAt: item.createdAt,
               updatedAt: item.updatedAt,
             ),
@@ -69,6 +71,7 @@ class SubCurriculumLocalService {
               schoolLevelId: item.schoolLevel.id,
               schoolLevelName: item.schoolLevel.name,
               name: item.name,
+              minutesPerJp: item.minutesPerJp,
               createdAt: item.createdAt,
               updatedAt: item.updatedAt,
             ),

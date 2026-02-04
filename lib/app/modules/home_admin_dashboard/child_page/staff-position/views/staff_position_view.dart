@@ -17,9 +17,13 @@ class StaffPositionView extends GetView<StaffPositionController> {
     return Scaffold(
       key: scaffoldKey,
       // Form diletakkan di Drawer Kanan sesuai pola project Anda
-      endDrawer: RightFormDrawer(
-        title: controller.isCreate.value ? 'Tambah Jabatan' : 'Update Jabatan',
-        child: _formStaffPosition(),
+      endDrawer: Obx(
+        () => RightFormDrawer(
+          title: controller.isCreate.value
+              ? 'Tambah Jabatan'
+              : 'Update Jabatan',
+          child: _formStaffPosition(),
+        ),
       ),
       body: Obx(
         () => ReusablePlutoTable(

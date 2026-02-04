@@ -5279,6 +5279,17 @@ class $SubCurriculumsTable extends SubCurriculums
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _minutesPerJpMeta = const VerificationMeta(
+    'minutesPerJp',
+  );
+  @override
+  late final GeneratedColumn<int> minutesPerJp = GeneratedColumn<int>(
+    'minutes_per_jp',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -5320,6 +5331,7 @@ class $SubCurriculumsTable extends SubCurriculums
     curriculumId,
     schoolLevelId,
     schoolLevelName,
+    minutesPerJp,
     name,
     createdAt,
     updatedAt,
@@ -5374,6 +5386,17 @@ class $SubCurriculumsTable extends SubCurriculums
     } else if (isInserting) {
       context.missing(_schoolLevelNameMeta);
     }
+    if (data.containsKey('minutes_per_jp')) {
+      context.handle(
+        _minutesPerJpMeta,
+        minutesPerJp.isAcceptableOrUnknown(
+          data['minutes_per_jp']!,
+          _minutesPerJpMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_minutesPerJpMeta);
+    }
     if (data.containsKey('name')) {
       context.handle(
         _nameMeta,
@@ -5423,6 +5446,10 @@ class $SubCurriculumsTable extends SubCurriculums
         DriftSqlType.string,
         data['${effectivePrefix}school_level_name'],
       )!,
+      minutesPerJp: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}minutes_per_jp'],
+      )!,
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}name'],
@@ -5449,6 +5476,7 @@ class SubCurriculum extends DataClass implements Insertable<SubCurriculum> {
   final String curriculumId;
   final String schoolLevelId;
   final String schoolLevelName;
+  final int minutesPerJp;
   final String name;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -5457,6 +5485,7 @@ class SubCurriculum extends DataClass implements Insertable<SubCurriculum> {
     required this.curriculumId,
     required this.schoolLevelId,
     required this.schoolLevelName,
+    required this.minutesPerJp,
     required this.name,
     required this.createdAt,
     required this.updatedAt,
@@ -5468,6 +5497,7 @@ class SubCurriculum extends DataClass implements Insertable<SubCurriculum> {
     map['curriculum_id'] = Variable<String>(curriculumId);
     map['school_level_id'] = Variable<String>(schoolLevelId);
     map['school_level_name'] = Variable<String>(schoolLevelName);
+    map['minutes_per_jp'] = Variable<int>(minutesPerJp);
     map['name'] = Variable<String>(name);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -5480,6 +5510,7 @@ class SubCurriculum extends DataClass implements Insertable<SubCurriculum> {
       curriculumId: Value(curriculumId),
       schoolLevelId: Value(schoolLevelId),
       schoolLevelName: Value(schoolLevelName),
+      minutesPerJp: Value(minutesPerJp),
       name: Value(name),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -5496,6 +5527,7 @@ class SubCurriculum extends DataClass implements Insertable<SubCurriculum> {
       curriculumId: serializer.fromJson<String>(json['curriculumId']),
       schoolLevelId: serializer.fromJson<String>(json['schoolLevelId']),
       schoolLevelName: serializer.fromJson<String>(json['schoolLevelName']),
+      minutesPerJp: serializer.fromJson<int>(json['minutesPerJp']),
       name: serializer.fromJson<String>(json['name']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -5509,6 +5541,7 @@ class SubCurriculum extends DataClass implements Insertable<SubCurriculum> {
       'curriculumId': serializer.toJson<String>(curriculumId),
       'schoolLevelId': serializer.toJson<String>(schoolLevelId),
       'schoolLevelName': serializer.toJson<String>(schoolLevelName),
+      'minutesPerJp': serializer.toJson<int>(minutesPerJp),
       'name': serializer.toJson<String>(name),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -5520,6 +5553,7 @@ class SubCurriculum extends DataClass implements Insertable<SubCurriculum> {
     String? curriculumId,
     String? schoolLevelId,
     String? schoolLevelName,
+    int? minutesPerJp,
     String? name,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -5528,6 +5562,7 @@ class SubCurriculum extends DataClass implements Insertable<SubCurriculum> {
     curriculumId: curriculumId ?? this.curriculumId,
     schoolLevelId: schoolLevelId ?? this.schoolLevelId,
     schoolLevelName: schoolLevelName ?? this.schoolLevelName,
+    minutesPerJp: minutesPerJp ?? this.minutesPerJp,
     name: name ?? this.name,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -5544,6 +5579,9 @@ class SubCurriculum extends DataClass implements Insertable<SubCurriculum> {
       schoolLevelName: data.schoolLevelName.present
           ? data.schoolLevelName.value
           : this.schoolLevelName,
+      minutesPerJp: data.minutesPerJp.present
+          ? data.minutesPerJp.value
+          : this.minutesPerJp,
       name: data.name.present ? data.name.value : this.name,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -5557,6 +5595,7 @@ class SubCurriculum extends DataClass implements Insertable<SubCurriculum> {
           ..write('curriculumId: $curriculumId, ')
           ..write('schoolLevelId: $schoolLevelId, ')
           ..write('schoolLevelName: $schoolLevelName, ')
+          ..write('minutesPerJp: $minutesPerJp, ')
           ..write('name: $name, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -5570,6 +5609,7 @@ class SubCurriculum extends DataClass implements Insertable<SubCurriculum> {
     curriculumId,
     schoolLevelId,
     schoolLevelName,
+    minutesPerJp,
     name,
     createdAt,
     updatedAt,
@@ -5582,6 +5622,7 @@ class SubCurriculum extends DataClass implements Insertable<SubCurriculum> {
           other.curriculumId == this.curriculumId &&
           other.schoolLevelId == this.schoolLevelId &&
           other.schoolLevelName == this.schoolLevelName &&
+          other.minutesPerJp == this.minutesPerJp &&
           other.name == this.name &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -5592,6 +5633,7 @@ class SubCurriculumsCompanion extends UpdateCompanion<SubCurriculum> {
   final Value<String> curriculumId;
   final Value<String> schoolLevelId;
   final Value<String> schoolLevelName;
+  final Value<int> minutesPerJp;
   final Value<String> name;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -5601,6 +5643,7 @@ class SubCurriculumsCompanion extends UpdateCompanion<SubCurriculum> {
     this.curriculumId = const Value.absent(),
     this.schoolLevelId = const Value.absent(),
     this.schoolLevelName = const Value.absent(),
+    this.minutesPerJp = const Value.absent(),
     this.name = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -5611,6 +5654,7 @@ class SubCurriculumsCompanion extends UpdateCompanion<SubCurriculum> {
     required String curriculumId,
     required String schoolLevelId,
     required String schoolLevelName,
+    required int minutesPerJp,
     required String name,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -5619,6 +5663,7 @@ class SubCurriculumsCompanion extends UpdateCompanion<SubCurriculum> {
        curriculumId = Value(curriculumId),
        schoolLevelId = Value(schoolLevelId),
        schoolLevelName = Value(schoolLevelName),
+       minutesPerJp = Value(minutesPerJp),
        name = Value(name),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
@@ -5627,6 +5672,7 @@ class SubCurriculumsCompanion extends UpdateCompanion<SubCurriculum> {
     Expression<String>? curriculumId,
     Expression<String>? schoolLevelId,
     Expression<String>? schoolLevelName,
+    Expression<int>? minutesPerJp,
     Expression<String>? name,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -5637,6 +5683,7 @@ class SubCurriculumsCompanion extends UpdateCompanion<SubCurriculum> {
       if (curriculumId != null) 'curriculum_id': curriculumId,
       if (schoolLevelId != null) 'school_level_id': schoolLevelId,
       if (schoolLevelName != null) 'school_level_name': schoolLevelName,
+      if (minutesPerJp != null) 'minutes_per_jp': minutesPerJp,
       if (name != null) 'name': name,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -5649,6 +5696,7 @@ class SubCurriculumsCompanion extends UpdateCompanion<SubCurriculum> {
     Value<String>? curriculumId,
     Value<String>? schoolLevelId,
     Value<String>? schoolLevelName,
+    Value<int>? minutesPerJp,
     Value<String>? name,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -5659,6 +5707,7 @@ class SubCurriculumsCompanion extends UpdateCompanion<SubCurriculum> {
       curriculumId: curriculumId ?? this.curriculumId,
       schoolLevelId: schoolLevelId ?? this.schoolLevelId,
       schoolLevelName: schoolLevelName ?? this.schoolLevelName,
+      minutesPerJp: minutesPerJp ?? this.minutesPerJp,
       name: name ?? this.name,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -5680,6 +5729,9 @@ class SubCurriculumsCompanion extends UpdateCompanion<SubCurriculum> {
     }
     if (schoolLevelName.present) {
       map['school_level_name'] = Variable<String>(schoolLevelName.value);
+    }
+    if (minutesPerJp.present) {
+      map['minutes_per_jp'] = Variable<int>(minutesPerJp.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
@@ -5703,6 +5755,7 @@ class SubCurriculumsCompanion extends UpdateCompanion<SubCurriculum> {
           ..write('curriculumId: $curriculumId, ')
           ..write('schoolLevelId: $schoolLevelId, ')
           ..write('schoolLevelName: $schoolLevelName, ')
+          ..write('minutesPerJp: $minutesPerJp, ')
           ..write('name: $name, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -5732,10 +5785,17 @@ class $SubjectsTable extends Subjects with TableInfo<$SubjectsTable, Subject> {
     'name',
     aliasedName,
     false,
-    additionalChecks: GeneratedColumn.checkTextLength(
-      minTextLength: 1,
-      maxTextLength: 100,
-    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _subNameMeta = const VerificationMeta(
+    'subName',
+  );
+  @override
+  late final GeneratedColumn<String> subName = GeneratedColumn<String>(
+    'sub_name',
+    aliasedName,
+    false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
@@ -5750,17 +5810,18 @@ class $SubjectsTable extends Subjects with TableInfo<$SubjectsTable, Subject> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _schoolLevelIdMeta = const VerificationMeta(
-    'schoolLevelId',
+  static const VerificationMeta _schoolLevelAccessMeta = const VerificationMeta(
+    'schoolLevelAccess',
   );
   @override
-  late final GeneratedColumn<String> schoolLevelId = GeneratedColumn<String>(
-    'school_level_id',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
+  late final GeneratedColumn<String> schoolLevelAccess =
+      GeneratedColumn<String>(
+        'school_level_access',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -5787,8 +5848,9 @@ class $SubjectsTable extends Subjects with TableInfo<$SubjectsTable, Subject> {
   List<GeneratedColumn> get $columns => [
     id,
     name,
+    subName,
     schoolId,
-    schoolLevelId,
+    schoolLevelAccess,
     createdAt,
     updatedAt,
   ];
@@ -5817,6 +5879,14 @@ class $SubjectsTable extends Subjects with TableInfo<$SubjectsTable, Subject> {
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
+    if (data.containsKey('sub_name')) {
+      context.handle(
+        _subNameMeta,
+        subName.isAcceptableOrUnknown(data['sub_name']!, _subNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_subNameMeta);
+    }
     if (data.containsKey('school_id')) {
       context.handle(
         _schoolIdMeta,
@@ -5825,16 +5895,16 @@ class $SubjectsTable extends Subjects with TableInfo<$SubjectsTable, Subject> {
     } else if (isInserting) {
       context.missing(_schoolIdMeta);
     }
-    if (data.containsKey('school_level_id')) {
+    if (data.containsKey('school_level_access')) {
       context.handle(
-        _schoolLevelIdMeta,
-        schoolLevelId.isAcceptableOrUnknown(
-          data['school_level_id']!,
-          _schoolLevelIdMeta,
+        _schoolLevelAccessMeta,
+        schoolLevelAccess.isAcceptableOrUnknown(
+          data['school_level_access']!,
+          _schoolLevelAccessMeta,
         ),
       );
     } else if (isInserting) {
-      context.missing(_schoolLevelIdMeta);
+      context.missing(_schoolLevelAccessMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(
@@ -5869,13 +5939,17 @@ class $SubjectsTable extends Subjects with TableInfo<$SubjectsTable, Subject> {
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
+      subName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sub_name'],
+      )!,
       schoolId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}school_id'],
       )!,
-      schoolLevelId: attachedDatabase.typeMapping.read(
+      schoolLevelAccess: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}school_level_id'],
+        data['${effectivePrefix}school_level_access'],
       )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
@@ -5897,15 +5971,17 @@ class $SubjectsTable extends Subjects with TableInfo<$SubjectsTable, Subject> {
 class Subject extends DataClass implements Insertable<Subject> {
   final String id;
   final String name;
+  final String subName;
   final String schoolId;
-  final String schoolLevelId;
+  final String schoolLevelAccess;
   final DateTime createdAt;
   final DateTime updatedAt;
   const Subject({
     required this.id,
     required this.name,
+    required this.subName,
     required this.schoolId,
-    required this.schoolLevelId,
+    required this.schoolLevelAccess,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -5914,8 +5990,9 @@ class Subject extends DataClass implements Insertable<Subject> {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['name'] = Variable<String>(name);
+    map['sub_name'] = Variable<String>(subName);
     map['school_id'] = Variable<String>(schoolId);
-    map['school_level_id'] = Variable<String>(schoolLevelId);
+    map['school_level_access'] = Variable<String>(schoolLevelAccess);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -5925,8 +6002,9 @@ class Subject extends DataClass implements Insertable<Subject> {
     return SubjectsCompanion(
       id: Value(id),
       name: Value(name),
+      subName: Value(subName),
       schoolId: Value(schoolId),
-      schoolLevelId: Value(schoolLevelId),
+      schoolLevelAccess: Value(schoolLevelAccess),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -5940,8 +6018,9 @@ class Subject extends DataClass implements Insertable<Subject> {
     return Subject(
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
+      subName: serializer.fromJson<String>(json['subName']),
       schoolId: serializer.fromJson<String>(json['schoolId']),
-      schoolLevelId: serializer.fromJson<String>(json['schoolLevelId']),
+      schoolLevelAccess: serializer.fromJson<String>(json['schoolLevelAccess']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -5952,8 +6031,9 @@ class Subject extends DataClass implements Insertable<Subject> {
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'name': serializer.toJson<String>(name),
+      'subName': serializer.toJson<String>(subName),
       'schoolId': serializer.toJson<String>(schoolId),
-      'schoolLevelId': serializer.toJson<String>(schoolLevelId),
+      'schoolLevelAccess': serializer.toJson<String>(schoolLevelAccess),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -5962,15 +6042,17 @@ class Subject extends DataClass implements Insertable<Subject> {
   Subject copyWith({
     String? id,
     String? name,
+    String? subName,
     String? schoolId,
-    String? schoolLevelId,
+    String? schoolLevelAccess,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => Subject(
     id: id ?? this.id,
     name: name ?? this.name,
+    subName: subName ?? this.subName,
     schoolId: schoolId ?? this.schoolId,
-    schoolLevelId: schoolLevelId ?? this.schoolLevelId,
+    schoolLevelAccess: schoolLevelAccess ?? this.schoolLevelAccess,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -5978,10 +6060,11 @@ class Subject extends DataClass implements Insertable<Subject> {
     return Subject(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
+      subName: data.subName.present ? data.subName.value : this.subName,
       schoolId: data.schoolId.present ? data.schoolId.value : this.schoolId,
-      schoolLevelId: data.schoolLevelId.present
-          ? data.schoolLevelId.value
-          : this.schoolLevelId,
+      schoolLevelAccess: data.schoolLevelAccess.present
+          ? data.schoolLevelAccess.value
+          : this.schoolLevelAccess,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -5992,8 +6075,9 @@ class Subject extends DataClass implements Insertable<Subject> {
     return (StringBuffer('Subject(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('subName: $subName, ')
           ..write('schoolId: $schoolId, ')
-          ..write('schoolLevelId: $schoolLevelId, ')
+          ..write('schoolLevelAccess: $schoolLevelAccess, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -6001,16 +6085,24 @@ class Subject extends DataClass implements Insertable<Subject> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, name, schoolId, schoolLevelId, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+    id,
+    name,
+    subName,
+    schoolId,
+    schoolLevelAccess,
+    createdAt,
+    updatedAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Subject &&
           other.id == this.id &&
           other.name == this.name &&
+          other.subName == this.subName &&
           other.schoolId == this.schoolId &&
-          other.schoolLevelId == this.schoolLevelId &&
+          other.schoolLevelAccess == this.schoolLevelAccess &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -6018,16 +6110,18 @@ class Subject extends DataClass implements Insertable<Subject> {
 class SubjectsCompanion extends UpdateCompanion<Subject> {
   final Value<String> id;
   final Value<String> name;
+  final Value<String> subName;
   final Value<String> schoolId;
-  final Value<String> schoolLevelId;
+  final Value<String> schoolLevelAccess;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
   const SubjectsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
+    this.subName = const Value.absent(),
     this.schoolId = const Value.absent(),
-    this.schoolLevelId = const Value.absent(),
+    this.schoolLevelAccess = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -6035,22 +6129,25 @@ class SubjectsCompanion extends UpdateCompanion<Subject> {
   SubjectsCompanion.insert({
     required String id,
     required String name,
+    required String subName,
     required String schoolId,
-    required String schoolLevelId,
+    required String schoolLevelAccess,
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        name = Value(name),
+       subName = Value(subName),
        schoolId = Value(schoolId),
-       schoolLevelId = Value(schoolLevelId),
+       schoolLevelAccess = Value(schoolLevelAccess),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
   static Insertable<Subject> custom({
     Expression<String>? id,
     Expression<String>? name,
+    Expression<String>? subName,
     Expression<String>? schoolId,
-    Expression<String>? schoolLevelId,
+    Expression<String>? schoolLevelAccess,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -6058,8 +6155,9 @@ class SubjectsCompanion extends UpdateCompanion<Subject> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      if (subName != null) 'sub_name': subName,
       if (schoolId != null) 'school_id': schoolId,
-      if (schoolLevelId != null) 'school_level_id': schoolLevelId,
+      if (schoolLevelAccess != null) 'school_level_access': schoolLevelAccess,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -6069,8 +6167,9 @@ class SubjectsCompanion extends UpdateCompanion<Subject> {
   SubjectsCompanion copyWith({
     Value<String>? id,
     Value<String>? name,
+    Value<String>? subName,
     Value<String>? schoolId,
-    Value<String>? schoolLevelId,
+    Value<String>? schoolLevelAccess,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<int>? rowid,
@@ -6078,8 +6177,9 @@ class SubjectsCompanion extends UpdateCompanion<Subject> {
     return SubjectsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
+      subName: subName ?? this.subName,
       schoolId: schoolId ?? this.schoolId,
-      schoolLevelId: schoolLevelId ?? this.schoolLevelId,
+      schoolLevelAccess: schoolLevelAccess ?? this.schoolLevelAccess,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -6095,11 +6195,14 @@ class SubjectsCompanion extends UpdateCompanion<Subject> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (subName.present) {
+      map['sub_name'] = Variable<String>(subName.value);
+    }
     if (schoolId.present) {
       map['school_id'] = Variable<String>(schoolId.value);
     }
-    if (schoolLevelId.present) {
-      map['school_level_id'] = Variable<String>(schoolLevelId.value);
+    if (schoolLevelAccess.present) {
+      map['school_level_access'] = Variable<String>(schoolLevelAccess.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -6118,8 +6221,9 @@ class SubjectsCompanion extends UpdateCompanion<Subject> {
     return (StringBuffer('SubjectsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('subName: $subName, ')
           ..write('schoolId: $schoolId, ')
-          ..write('schoolLevelId: $schoolLevelId, ')
+          ..write('schoolLevelAccess: $schoolLevelAccess, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -6154,21 +6258,34 @@ class $SubCurriculumSubjectsTable extends SubCurriculumSubjects
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _subjectNameMeta = const VerificationMeta(
+    'subjectName',
+  );
+  @override
+  late final GeneratedColumn<String> subjectName = GeneratedColumn<String>(
+    'subject_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _hoursPerWeekMeta = const VerificationMeta(
+    'hoursPerWeek',
+  );
+  @override
+  late final GeneratedColumn<int> hoursPerWeek = GeneratedColumn<int>(
+    'hours_per_week',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _subCurriculumIdMeta = const VerificationMeta(
     'subCurriculumId',
   );
   @override
   late final GeneratedColumn<String> subCurriculumId = GeneratedColumn<String>(
     'sub_curriculum_id',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _gradeMeta = const VerificationMeta('grade');
-  @override
-  late final GeneratedColumn<String> grade = GeneratedColumn<String>(
-    'grade',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -6211,8 +6328,9 @@ class $SubCurriculumSubjectsTable extends SubCurriculumSubjects
   List<GeneratedColumn> get $columns => [
     id,
     subjectId,
+    subjectName,
+    hoursPerWeek,
     subCurriculumId,
-    grade,
     syllabus,
     createdAt,
     updatedAt,
@@ -6242,6 +6360,28 @@ class $SubCurriculumSubjectsTable extends SubCurriculumSubjects
     } else if (isInserting) {
       context.missing(_subjectIdMeta);
     }
+    if (data.containsKey('subject_name')) {
+      context.handle(
+        _subjectNameMeta,
+        subjectName.isAcceptableOrUnknown(
+          data['subject_name']!,
+          _subjectNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_subjectNameMeta);
+    }
+    if (data.containsKey('hours_per_week')) {
+      context.handle(
+        _hoursPerWeekMeta,
+        hoursPerWeek.isAcceptableOrUnknown(
+          data['hours_per_week']!,
+          _hoursPerWeekMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_hoursPerWeekMeta);
+    }
     if (data.containsKey('sub_curriculum_id')) {
       context.handle(
         _subCurriculumIdMeta,
@@ -6252,14 +6392,6 @@ class $SubCurriculumSubjectsTable extends SubCurriculumSubjects
       );
     } else if (isInserting) {
       context.missing(_subCurriculumIdMeta);
-    }
-    if (data.containsKey('grade')) {
-      context.handle(
-        _gradeMeta,
-        grade.isAcceptableOrUnknown(data['grade']!, _gradeMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_gradeMeta);
     }
     if (data.containsKey('syllabus')) {
       context.handle(
@@ -6300,13 +6432,17 @@ class $SubCurriculumSubjectsTable extends SubCurriculumSubjects
         DriftSqlType.string,
         data['${effectivePrefix}subject_id'],
       )!,
+      subjectName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}subject_name'],
+      )!,
+      hoursPerWeek: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}hours_per_week'],
+      )!,
       subCurriculumId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}sub_curriculum_id'],
-      )!,
-      grade: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}grade'],
       )!,
       syllabus: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -6333,16 +6469,18 @@ class SubCurriculumSubject extends DataClass
     implements Insertable<SubCurriculumSubject> {
   final String id;
   final String subjectId;
+  final String subjectName;
+  final int hoursPerWeek;
   final String subCurriculumId;
-  final String grade;
   final String? syllabus;
   final DateTime createdAt;
   final DateTime updatedAt;
   const SubCurriculumSubject({
     required this.id,
     required this.subjectId,
+    required this.subjectName,
+    required this.hoursPerWeek,
     required this.subCurriculumId,
-    required this.grade,
     this.syllabus,
     required this.createdAt,
     required this.updatedAt,
@@ -6352,8 +6490,9 @@ class SubCurriculumSubject extends DataClass
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['subject_id'] = Variable<String>(subjectId);
+    map['subject_name'] = Variable<String>(subjectName);
+    map['hours_per_week'] = Variable<int>(hoursPerWeek);
     map['sub_curriculum_id'] = Variable<String>(subCurriculumId);
-    map['grade'] = Variable<String>(grade);
     if (!nullToAbsent || syllabus != null) {
       map['syllabus'] = Variable<String>(syllabus);
     }
@@ -6366,8 +6505,9 @@ class SubCurriculumSubject extends DataClass
     return SubCurriculumSubjectsCompanion(
       id: Value(id),
       subjectId: Value(subjectId),
+      subjectName: Value(subjectName),
+      hoursPerWeek: Value(hoursPerWeek),
       subCurriculumId: Value(subCurriculumId),
-      grade: Value(grade),
       syllabus: syllabus == null && nullToAbsent
           ? const Value.absent()
           : Value(syllabus),
@@ -6384,8 +6524,9 @@ class SubCurriculumSubject extends DataClass
     return SubCurriculumSubject(
       id: serializer.fromJson<String>(json['id']),
       subjectId: serializer.fromJson<String>(json['subjectId']),
+      subjectName: serializer.fromJson<String>(json['subjectName']),
+      hoursPerWeek: serializer.fromJson<int>(json['hoursPerWeek']),
       subCurriculumId: serializer.fromJson<String>(json['subCurriculumId']),
-      grade: serializer.fromJson<String>(json['grade']),
       syllabus: serializer.fromJson<String?>(json['syllabus']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -6397,8 +6538,9 @@ class SubCurriculumSubject extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'subjectId': serializer.toJson<String>(subjectId),
+      'subjectName': serializer.toJson<String>(subjectName),
+      'hoursPerWeek': serializer.toJson<int>(hoursPerWeek),
       'subCurriculumId': serializer.toJson<String>(subCurriculumId),
-      'grade': serializer.toJson<String>(grade),
       'syllabus': serializer.toJson<String?>(syllabus),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -6408,16 +6550,18 @@ class SubCurriculumSubject extends DataClass
   SubCurriculumSubject copyWith({
     String? id,
     String? subjectId,
+    String? subjectName,
+    int? hoursPerWeek,
     String? subCurriculumId,
-    String? grade,
     Value<String?> syllabus = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => SubCurriculumSubject(
     id: id ?? this.id,
     subjectId: subjectId ?? this.subjectId,
+    subjectName: subjectName ?? this.subjectName,
+    hoursPerWeek: hoursPerWeek ?? this.hoursPerWeek,
     subCurriculumId: subCurriculumId ?? this.subCurriculumId,
-    grade: grade ?? this.grade,
     syllabus: syllabus.present ? syllabus.value : this.syllabus,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -6426,10 +6570,15 @@ class SubCurriculumSubject extends DataClass
     return SubCurriculumSubject(
       id: data.id.present ? data.id.value : this.id,
       subjectId: data.subjectId.present ? data.subjectId.value : this.subjectId,
+      subjectName: data.subjectName.present
+          ? data.subjectName.value
+          : this.subjectName,
+      hoursPerWeek: data.hoursPerWeek.present
+          ? data.hoursPerWeek.value
+          : this.hoursPerWeek,
       subCurriculumId: data.subCurriculumId.present
           ? data.subCurriculumId.value
           : this.subCurriculumId,
-      grade: data.grade.present ? data.grade.value : this.grade,
       syllabus: data.syllabus.present ? data.syllabus.value : this.syllabus,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -6441,8 +6590,9 @@ class SubCurriculumSubject extends DataClass
     return (StringBuffer('SubCurriculumSubject(')
           ..write('id: $id, ')
           ..write('subjectId: $subjectId, ')
+          ..write('subjectName: $subjectName, ')
+          ..write('hoursPerWeek: $hoursPerWeek, ')
           ..write('subCurriculumId: $subCurriculumId, ')
-          ..write('grade: $grade, ')
           ..write('syllabus: $syllabus, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -6454,8 +6604,9 @@ class SubCurriculumSubject extends DataClass
   int get hashCode => Object.hash(
     id,
     subjectId,
+    subjectName,
+    hoursPerWeek,
     subCurriculumId,
-    grade,
     syllabus,
     createdAt,
     updatedAt,
@@ -6466,8 +6617,9 @@ class SubCurriculumSubject extends DataClass
       (other is SubCurriculumSubject &&
           other.id == this.id &&
           other.subjectId == this.subjectId &&
+          other.subjectName == this.subjectName &&
+          other.hoursPerWeek == this.hoursPerWeek &&
           other.subCurriculumId == this.subCurriculumId &&
-          other.grade == this.grade &&
           other.syllabus == this.syllabus &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -6477,8 +6629,9 @@ class SubCurriculumSubjectsCompanion
     extends UpdateCompanion<SubCurriculumSubject> {
   final Value<String> id;
   final Value<String> subjectId;
+  final Value<String> subjectName;
+  final Value<int> hoursPerWeek;
   final Value<String> subCurriculumId;
-  final Value<String> grade;
   final Value<String?> syllabus;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -6486,8 +6639,9 @@ class SubCurriculumSubjectsCompanion
   const SubCurriculumSubjectsCompanion({
     this.id = const Value.absent(),
     this.subjectId = const Value.absent(),
+    this.subjectName = const Value.absent(),
+    this.hoursPerWeek = const Value.absent(),
     this.subCurriculumId = const Value.absent(),
-    this.grade = const Value.absent(),
     this.syllabus = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -6496,23 +6650,26 @@ class SubCurriculumSubjectsCompanion
   SubCurriculumSubjectsCompanion.insert({
     required String id,
     required String subjectId,
+    required String subjectName,
+    required int hoursPerWeek,
     required String subCurriculumId,
-    required String grade,
     this.syllabus = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        subjectId = Value(subjectId),
+       subjectName = Value(subjectName),
+       hoursPerWeek = Value(hoursPerWeek),
        subCurriculumId = Value(subCurriculumId),
-       grade = Value(grade),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
   static Insertable<SubCurriculumSubject> custom({
     Expression<String>? id,
     Expression<String>? subjectId,
+    Expression<String>? subjectName,
+    Expression<int>? hoursPerWeek,
     Expression<String>? subCurriculumId,
-    Expression<String>? grade,
     Expression<String>? syllabus,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -6521,8 +6678,9 @@ class SubCurriculumSubjectsCompanion
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (subjectId != null) 'subject_id': subjectId,
+      if (subjectName != null) 'subject_name': subjectName,
+      if (hoursPerWeek != null) 'hours_per_week': hoursPerWeek,
       if (subCurriculumId != null) 'sub_curriculum_id': subCurriculumId,
-      if (grade != null) 'grade': grade,
       if (syllabus != null) 'syllabus': syllabus,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -6533,8 +6691,9 @@ class SubCurriculumSubjectsCompanion
   SubCurriculumSubjectsCompanion copyWith({
     Value<String>? id,
     Value<String>? subjectId,
+    Value<String>? subjectName,
+    Value<int>? hoursPerWeek,
     Value<String>? subCurriculumId,
-    Value<String>? grade,
     Value<String?>? syllabus,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -6543,8 +6702,9 @@ class SubCurriculumSubjectsCompanion
     return SubCurriculumSubjectsCompanion(
       id: id ?? this.id,
       subjectId: subjectId ?? this.subjectId,
+      subjectName: subjectName ?? this.subjectName,
+      hoursPerWeek: hoursPerWeek ?? this.hoursPerWeek,
       subCurriculumId: subCurriculumId ?? this.subCurriculumId,
-      grade: grade ?? this.grade,
       syllabus: syllabus ?? this.syllabus,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -6561,11 +6721,14 @@ class SubCurriculumSubjectsCompanion
     if (subjectId.present) {
       map['subject_id'] = Variable<String>(subjectId.value);
     }
+    if (subjectName.present) {
+      map['subject_name'] = Variable<String>(subjectName.value);
+    }
+    if (hoursPerWeek.present) {
+      map['hours_per_week'] = Variable<int>(hoursPerWeek.value);
+    }
     if (subCurriculumId.present) {
       map['sub_curriculum_id'] = Variable<String>(subCurriculumId.value);
-    }
-    if (grade.present) {
-      map['grade'] = Variable<String>(grade.value);
     }
     if (syllabus.present) {
       map['syllabus'] = Variable<String>(syllabus.value);
@@ -6587,8 +6750,9 @@ class SubCurriculumSubjectsCompanion
     return (StringBuffer('SubCurriculumSubjectsCompanion(')
           ..write('id: $id, ')
           ..write('subjectId: $subjectId, ')
+          ..write('subjectName: $subjectName, ')
+          ..write('hoursPerWeek: $hoursPerWeek, ')
           ..write('subCurriculumId: $subCurriculumId, ')
-          ..write('grade: $grade, ')
           ..write('syllabus: $syllabus, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -6598,12 +6762,12 @@ class SubCurriculumSubjectsCompanion
   }
 }
 
-class $TeacherSubjectConfigsTable extends TeacherSubjectConfigs
-    with TableInfo<$TeacherSubjectConfigsTable, TeacherSubjectConfig> {
+class $TeacherSubjectsTable extends TeacherSubjects
+    with TableInfo<$TeacherSubjectsTable, TeacherSubject> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $TeacherSubjectConfigsTable(this.attachedDatabase, [this._alias]);
+  $TeacherSubjectsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
@@ -6624,17 +6788,72 @@ class $TeacherSubjectConfigsTable extends TeacherSubjectConfigs
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _subCurriculumSubjectIdMeta =
-      const VerificationMeta('subCurriculumSubjectId');
+  static const VerificationMeta _teacherNameMeta = const VerificationMeta(
+    'teacherName',
+  );
   @override
-  late final GeneratedColumn<String> subCurriculumSubjectId =
-      GeneratedColumn<String>(
-        'sub_curriculum_subject_id',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: true,
-      );
+  late final GeneratedColumn<String> teacherName = GeneratedColumn<String>(
+    'teacher_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _subjectIdMeta = const VerificationMeta(
+    'subjectId',
+  );
+  @override
+  late final GeneratedColumn<String> subjectId = GeneratedColumn<String>(
+    'subject_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _subjectNameMeta = const VerificationMeta(
+    'subjectName',
+  );
+  @override
+  late final GeneratedColumn<String> subjectName = GeneratedColumn<String>(
+    'subject_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _subjectSubNameMeta = const VerificationMeta(
+    'subjectSubName',
+  );
+  @override
+  late final GeneratedColumn<String> subjectSubName = GeneratedColumn<String>(
+    'subject_sub_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _parentIdMeta = const VerificationMeta(
+    'parentId',
+  );
+  @override
+  late final GeneratedColumn<String> parentId = GeneratedColumn<String>(
+    'parent_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _childrenRawMeta = const VerificationMeta(
+    'childrenRaw',
+  );
+  @override
+  late final GeneratedColumn<String> childrenRaw = GeneratedColumn<String>(
+    'children_raw',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -6661,7 +6880,12 @@ class $TeacherSubjectConfigsTable extends TeacherSubjectConfigs
   List<GeneratedColumn> get $columns => [
     id,
     teacherId,
-    subCurriculumSubjectId,
+    teacherName,
+    subjectId,
+    subjectName,
+    subjectSubName,
+    parentId,
+    childrenRaw,
     createdAt,
     updatedAt,
   ];
@@ -6669,10 +6893,10 @@ class $TeacherSubjectConfigsTable extends TeacherSubjectConfigs
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'teacher_subject_configs';
+  static const String $name = 'teacher_subjects';
   @override
   VerificationContext validateIntegrity(
-    Insertable<TeacherSubjectConfig> instance, {
+    Insertable<TeacherSubject> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -6690,16 +6914,63 @@ class $TeacherSubjectConfigsTable extends TeacherSubjectConfigs
     } else if (isInserting) {
       context.missing(_teacherIdMeta);
     }
-    if (data.containsKey('sub_curriculum_subject_id')) {
+    if (data.containsKey('teacher_name')) {
       context.handle(
-        _subCurriculumSubjectIdMeta,
-        subCurriculumSubjectId.isAcceptableOrUnknown(
-          data['sub_curriculum_subject_id']!,
-          _subCurriculumSubjectIdMeta,
+        _teacherNameMeta,
+        teacherName.isAcceptableOrUnknown(
+          data['teacher_name']!,
+          _teacherNameMeta,
         ),
       );
     } else if (isInserting) {
-      context.missing(_subCurriculumSubjectIdMeta);
+      context.missing(_teacherNameMeta);
+    }
+    if (data.containsKey('subject_id')) {
+      context.handle(
+        _subjectIdMeta,
+        subjectId.isAcceptableOrUnknown(data['subject_id']!, _subjectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_subjectIdMeta);
+    }
+    if (data.containsKey('subject_name')) {
+      context.handle(
+        _subjectNameMeta,
+        subjectName.isAcceptableOrUnknown(
+          data['subject_name']!,
+          _subjectNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_subjectNameMeta);
+    }
+    if (data.containsKey('subject_sub_name')) {
+      context.handle(
+        _subjectSubNameMeta,
+        subjectSubName.isAcceptableOrUnknown(
+          data['subject_sub_name']!,
+          _subjectSubNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_subjectSubNameMeta);
+    }
+    if (data.containsKey('parent_id')) {
+      context.handle(
+        _parentIdMeta,
+        parentId.isAcceptableOrUnknown(data['parent_id']!, _parentIdMeta),
+      );
+    }
+    if (data.containsKey('children_raw')) {
+      context.handle(
+        _childrenRawMeta,
+        childrenRaw.isAcceptableOrUnknown(
+          data['children_raw']!,
+          _childrenRawMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_childrenRawMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(
@@ -6723,9 +6994,9 @@ class $TeacherSubjectConfigsTable extends TeacherSubjectConfigs
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  TeacherSubjectConfig map(Map<String, dynamic> data, {String? tablePrefix}) {
+  TeacherSubject map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return TeacherSubjectConfig(
+    return TeacherSubject(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}id'],
@@ -6734,9 +7005,29 @@ class $TeacherSubjectConfigsTable extends TeacherSubjectConfigs
         DriftSqlType.string,
         data['${effectivePrefix}teacher_id'],
       )!,
-      subCurriculumSubjectId: attachedDatabase.typeMapping.read(
+      teacherName: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}sub_curriculum_subject_id'],
+        data['${effectivePrefix}teacher_name'],
+      )!,
+      subjectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}subject_id'],
+      )!,
+      subjectName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}subject_name'],
+      )!,
+      subjectSubName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}subject_sub_name'],
+      )!,
+      parentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}parent_id'],
+      ),
+      childrenRaw: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}children_raw'],
       )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
@@ -6750,22 +7041,31 @@ class $TeacherSubjectConfigsTable extends TeacherSubjectConfigs
   }
 
   @override
-  $TeacherSubjectConfigsTable createAlias(String alias) {
-    return $TeacherSubjectConfigsTable(attachedDatabase, alias);
+  $TeacherSubjectsTable createAlias(String alias) {
+    return $TeacherSubjectsTable(attachedDatabase, alias);
   }
 }
 
-class TeacherSubjectConfig extends DataClass
-    implements Insertable<TeacherSubjectConfig> {
+class TeacherSubject extends DataClass implements Insertable<TeacherSubject> {
   final String id;
   final String teacherId;
-  final String subCurriculumSubjectId;
+  final String teacherName;
+  final String subjectId;
+  final String subjectName;
+  final String subjectSubName;
+  final String? parentId;
+  final String childrenRaw;
   final DateTime createdAt;
   final DateTime updatedAt;
-  const TeacherSubjectConfig({
+  const TeacherSubject({
     required this.id,
     required this.teacherId,
-    required this.subCurriculumSubjectId,
+    required this.teacherName,
+    required this.subjectId,
+    required this.subjectName,
+    required this.subjectSubName,
+    this.parentId,
+    required this.childrenRaw,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -6774,33 +7074,50 @@ class TeacherSubjectConfig extends DataClass
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['teacher_id'] = Variable<String>(teacherId);
-    map['sub_curriculum_subject_id'] = Variable<String>(subCurriculumSubjectId);
+    map['teacher_name'] = Variable<String>(teacherName);
+    map['subject_id'] = Variable<String>(subjectId);
+    map['subject_name'] = Variable<String>(subjectName);
+    map['subject_sub_name'] = Variable<String>(subjectSubName);
+    if (!nullToAbsent || parentId != null) {
+      map['parent_id'] = Variable<String>(parentId);
+    }
+    map['children_raw'] = Variable<String>(childrenRaw);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
   }
 
-  TeacherSubjectConfigsCompanion toCompanion(bool nullToAbsent) {
-    return TeacherSubjectConfigsCompanion(
+  TeacherSubjectsCompanion toCompanion(bool nullToAbsent) {
+    return TeacherSubjectsCompanion(
       id: Value(id),
       teacherId: Value(teacherId),
-      subCurriculumSubjectId: Value(subCurriculumSubjectId),
+      teacherName: Value(teacherName),
+      subjectId: Value(subjectId),
+      subjectName: Value(subjectName),
+      subjectSubName: Value(subjectSubName),
+      parentId: parentId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(parentId),
+      childrenRaw: Value(childrenRaw),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
   }
 
-  factory TeacherSubjectConfig.fromJson(
+  factory TeacherSubject.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return TeacherSubjectConfig(
+    return TeacherSubject(
       id: serializer.fromJson<String>(json['id']),
       teacherId: serializer.fromJson<String>(json['teacherId']),
-      subCurriculumSubjectId: serializer.fromJson<String>(
-        json['subCurriculumSubjectId'],
-      ),
+      teacherName: serializer.fromJson<String>(json['teacherName']),
+      subjectId: serializer.fromJson<String>(json['subjectId']),
+      subjectName: serializer.fromJson<String>(json['subjectName']),
+      subjectSubName: serializer.fromJson<String>(json['subjectSubName']),
+      parentId: serializer.fromJson<String?>(json['parentId']),
+      childrenRaw: serializer.fromJson<String>(json['childrenRaw']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -6811,35 +7128,58 @@ class TeacherSubjectConfig extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'teacherId': serializer.toJson<String>(teacherId),
-      'subCurriculumSubjectId': serializer.toJson<String>(
-        subCurriculumSubjectId,
-      ),
+      'teacherName': serializer.toJson<String>(teacherName),
+      'subjectId': serializer.toJson<String>(subjectId),
+      'subjectName': serializer.toJson<String>(subjectName),
+      'subjectSubName': serializer.toJson<String>(subjectSubName),
+      'parentId': serializer.toJson<String?>(parentId),
+      'childrenRaw': serializer.toJson<String>(childrenRaw),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
-  TeacherSubjectConfig copyWith({
+  TeacherSubject copyWith({
     String? id,
     String? teacherId,
-    String? subCurriculumSubjectId,
+    String? teacherName,
+    String? subjectId,
+    String? subjectName,
+    String? subjectSubName,
+    Value<String?> parentId = const Value.absent(),
+    String? childrenRaw,
     DateTime? createdAt,
     DateTime? updatedAt,
-  }) => TeacherSubjectConfig(
+  }) => TeacherSubject(
     id: id ?? this.id,
     teacherId: teacherId ?? this.teacherId,
-    subCurriculumSubjectId:
-        subCurriculumSubjectId ?? this.subCurriculumSubjectId,
+    teacherName: teacherName ?? this.teacherName,
+    subjectId: subjectId ?? this.subjectId,
+    subjectName: subjectName ?? this.subjectName,
+    subjectSubName: subjectSubName ?? this.subjectSubName,
+    parentId: parentId.present ? parentId.value : this.parentId,
+    childrenRaw: childrenRaw ?? this.childrenRaw,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
-  TeacherSubjectConfig copyWithCompanion(TeacherSubjectConfigsCompanion data) {
-    return TeacherSubjectConfig(
+  TeacherSubject copyWithCompanion(TeacherSubjectsCompanion data) {
+    return TeacherSubject(
       id: data.id.present ? data.id.value : this.id,
       teacherId: data.teacherId.present ? data.teacherId.value : this.teacherId,
-      subCurriculumSubjectId: data.subCurriculumSubjectId.present
-          ? data.subCurriculumSubjectId.value
-          : this.subCurriculumSubjectId,
+      teacherName: data.teacherName.present
+          ? data.teacherName.value
+          : this.teacherName,
+      subjectId: data.subjectId.present ? data.subjectId.value : this.subjectId,
+      subjectName: data.subjectName.present
+          ? data.subjectName.value
+          : this.subjectName,
+      subjectSubName: data.subjectSubName.present
+          ? data.subjectSubName.value
+          : this.subjectSubName,
+      parentId: data.parentId.present ? data.parentId.value : this.parentId,
+      childrenRaw: data.childrenRaw.present
+          ? data.childrenRaw.value
+          : this.childrenRaw,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -6847,10 +7187,15 @@ class TeacherSubjectConfig extends DataClass
 
   @override
   String toString() {
-    return (StringBuffer('TeacherSubjectConfig(')
+    return (StringBuffer('TeacherSubject(')
           ..write('id: $id, ')
           ..write('teacherId: $teacherId, ')
-          ..write('subCurriculumSubjectId: $subCurriculumSubjectId, ')
+          ..write('teacherName: $teacherName, ')
+          ..write('subjectId: $subjectId, ')
+          ..write('subjectName: $subjectName, ')
+          ..write('subjectSubName: $subjectSubName, ')
+          ..write('parentId: $parentId, ')
+          ..write('childrenRaw: $childrenRaw, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -6858,51 +7203,89 @@ class TeacherSubjectConfig extends DataClass
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, teacherId, subCurriculumSubjectId, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+    id,
+    teacherId,
+    teacherName,
+    subjectId,
+    subjectName,
+    subjectSubName,
+    parentId,
+    childrenRaw,
+    createdAt,
+    updatedAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is TeacherSubjectConfig &&
+      (other is TeacherSubject &&
           other.id == this.id &&
           other.teacherId == this.teacherId &&
-          other.subCurriculumSubjectId == this.subCurriculumSubjectId &&
+          other.teacherName == this.teacherName &&
+          other.subjectId == this.subjectId &&
+          other.subjectName == this.subjectName &&
+          other.subjectSubName == this.subjectSubName &&
+          other.parentId == this.parentId &&
+          other.childrenRaw == this.childrenRaw &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
 
-class TeacherSubjectConfigsCompanion
-    extends UpdateCompanion<TeacherSubjectConfig> {
+class TeacherSubjectsCompanion extends UpdateCompanion<TeacherSubject> {
   final Value<String> id;
   final Value<String> teacherId;
-  final Value<String> subCurriculumSubjectId;
+  final Value<String> teacherName;
+  final Value<String> subjectId;
+  final Value<String> subjectName;
+  final Value<String> subjectSubName;
+  final Value<String?> parentId;
+  final Value<String> childrenRaw;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
-  const TeacherSubjectConfigsCompanion({
+  const TeacherSubjectsCompanion({
     this.id = const Value.absent(),
     this.teacherId = const Value.absent(),
-    this.subCurriculumSubjectId = const Value.absent(),
+    this.teacherName = const Value.absent(),
+    this.subjectId = const Value.absent(),
+    this.subjectName = const Value.absent(),
+    this.subjectSubName = const Value.absent(),
+    this.parentId = const Value.absent(),
+    this.childrenRaw = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  TeacherSubjectConfigsCompanion.insert({
+  TeacherSubjectsCompanion.insert({
     required String id,
     required String teacherId,
-    required String subCurriculumSubjectId,
+    required String teacherName,
+    required String subjectId,
+    required String subjectName,
+    required String subjectSubName,
+    this.parentId = const Value.absent(),
+    required String childrenRaw,
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        teacherId = Value(teacherId),
-       subCurriculumSubjectId = Value(subCurriculumSubjectId),
+       teacherName = Value(teacherName),
+       subjectId = Value(subjectId),
+       subjectName = Value(subjectName),
+       subjectSubName = Value(subjectSubName),
+       childrenRaw = Value(childrenRaw),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
-  static Insertable<TeacherSubjectConfig> custom({
+  static Insertable<TeacherSubject> custom({
     Expression<String>? id,
     Expression<String>? teacherId,
-    Expression<String>? subCurriculumSubjectId,
+    Expression<String>? teacherName,
+    Expression<String>? subjectId,
+    Expression<String>? subjectName,
+    Expression<String>? subjectSubName,
+    Expression<String>? parentId,
+    Expression<String>? childrenRaw,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -6910,27 +7293,40 @@ class TeacherSubjectConfigsCompanion
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (teacherId != null) 'teacher_id': teacherId,
-      if (subCurriculumSubjectId != null)
-        'sub_curriculum_subject_id': subCurriculumSubjectId,
+      if (teacherName != null) 'teacher_name': teacherName,
+      if (subjectId != null) 'subject_id': subjectId,
+      if (subjectName != null) 'subject_name': subjectName,
+      if (subjectSubName != null) 'subject_sub_name': subjectSubName,
+      if (parentId != null) 'parent_id': parentId,
+      if (childrenRaw != null) 'children_raw': childrenRaw,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
-  TeacherSubjectConfigsCompanion copyWith({
+  TeacherSubjectsCompanion copyWith({
     Value<String>? id,
     Value<String>? teacherId,
-    Value<String>? subCurriculumSubjectId,
+    Value<String>? teacherName,
+    Value<String>? subjectId,
+    Value<String>? subjectName,
+    Value<String>? subjectSubName,
+    Value<String?>? parentId,
+    Value<String>? childrenRaw,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<int>? rowid,
   }) {
-    return TeacherSubjectConfigsCompanion(
+    return TeacherSubjectsCompanion(
       id: id ?? this.id,
       teacherId: teacherId ?? this.teacherId,
-      subCurriculumSubjectId:
-          subCurriculumSubjectId ?? this.subCurriculumSubjectId,
+      teacherName: teacherName ?? this.teacherName,
+      subjectId: subjectId ?? this.subjectId,
+      subjectName: subjectName ?? this.subjectName,
+      subjectSubName: subjectSubName ?? this.subjectSubName,
+      parentId: parentId ?? this.parentId,
+      childrenRaw: childrenRaw ?? this.childrenRaw,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -6946,10 +7342,23 @@ class TeacherSubjectConfigsCompanion
     if (teacherId.present) {
       map['teacher_id'] = Variable<String>(teacherId.value);
     }
-    if (subCurriculumSubjectId.present) {
-      map['sub_curriculum_subject_id'] = Variable<String>(
-        subCurriculumSubjectId.value,
-      );
+    if (teacherName.present) {
+      map['teacher_name'] = Variable<String>(teacherName.value);
+    }
+    if (subjectId.present) {
+      map['subject_id'] = Variable<String>(subjectId.value);
+    }
+    if (subjectName.present) {
+      map['subject_name'] = Variable<String>(subjectName.value);
+    }
+    if (subjectSubName.present) {
+      map['subject_sub_name'] = Variable<String>(subjectSubName.value);
+    }
+    if (parentId.present) {
+      map['parent_id'] = Variable<String>(parentId.value);
+    }
+    if (childrenRaw.present) {
+      map['children_raw'] = Variable<String>(childrenRaw.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -6965,10 +7374,15 @@ class TeacherSubjectConfigsCompanion
 
   @override
   String toString() {
-    return (StringBuffer('TeacherSubjectConfigsCompanion(')
+    return (StringBuffer('TeacherSubjectsCompanion(')
           ..write('id: $id, ')
           ..write('teacherId: $teacherId, ')
-          ..write('subCurriculumSubjectId: $subCurriculumSubjectId, ')
+          ..write('teacherName: $teacherName, ')
+          ..write('subjectId: $subjectId, ')
+          ..write('subjectName: $subjectName, ')
+          ..write('subjectSubName: $subjectSubName, ')
+          ..write('parentId: $parentId, ')
+          ..write('childrenRaw: $childrenRaw, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -6990,8 +7404,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $SubjectsTable subjects = $SubjectsTable(this);
   late final $SubCurriculumSubjectsTable subCurriculumSubjects =
       $SubCurriculumSubjectsTable(this);
-  late final $TeacherSubjectConfigsTable teacherSubjectConfigs =
-      $TeacherSubjectConfigsTable(this);
+  late final $TeacherSubjectsTable teacherSubjects = $TeacherSubjectsTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -7006,7 +7421,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     subCurriculums,
     subjects,
     subCurriculumSubjects,
-    teacherSubjectConfigs,
+    teacherSubjects,
   ];
 }
 
@@ -9422,6 +9837,7 @@ typedef $$SubCurriculumsTableCreateCompanionBuilder =
       required String curriculumId,
       required String schoolLevelId,
       required String schoolLevelName,
+      required int minutesPerJp,
       required String name,
       required DateTime createdAt,
       required DateTime updatedAt,
@@ -9433,6 +9849,7 @@ typedef $$SubCurriculumsTableUpdateCompanionBuilder =
       Value<String> curriculumId,
       Value<String> schoolLevelId,
       Value<String> schoolLevelName,
+      Value<int> minutesPerJp,
       Value<String> name,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -9465,6 +9882,11 @@ class $$SubCurriculumsTableFilterComposer
 
   ColumnFilters<String> get schoolLevelName => $composableBuilder(
     column: $table.schoolLevelName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get minutesPerJp => $composableBuilder(
+    column: $table.minutesPerJp,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -9513,6 +9935,11 @@ class $$SubCurriculumsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get minutesPerJp => $composableBuilder(
+    column: $table.minutesPerJp,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get name => $composableBuilder(
     column: $table.name,
     builder: (column) => ColumnOrderings(column),
@@ -9553,6 +9980,11 @@ class $$SubCurriculumsTableAnnotationComposer
 
   GeneratedColumn<String> get schoolLevelName => $composableBuilder(
     column: $table.schoolLevelName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get minutesPerJp => $composableBuilder(
+    column: $table.minutesPerJp,
     builder: (column) => column,
   );
 
@@ -9603,6 +10035,7 @@ class $$SubCurriculumsTableTableManager
                 Value<String> curriculumId = const Value.absent(),
                 Value<String> schoolLevelId = const Value.absent(),
                 Value<String> schoolLevelName = const Value.absent(),
+                Value<int> minutesPerJp = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -9612,6 +10045,7 @@ class $$SubCurriculumsTableTableManager
                 curriculumId: curriculumId,
                 schoolLevelId: schoolLevelId,
                 schoolLevelName: schoolLevelName,
+                minutesPerJp: minutesPerJp,
                 name: name,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -9623,6 +10057,7 @@ class $$SubCurriculumsTableTableManager
                 required String curriculumId,
                 required String schoolLevelId,
                 required String schoolLevelName,
+                required int minutesPerJp,
                 required String name,
                 required DateTime createdAt,
                 required DateTime updatedAt,
@@ -9632,6 +10067,7 @@ class $$SubCurriculumsTableTableManager
                 curriculumId: curriculumId,
                 schoolLevelId: schoolLevelId,
                 schoolLevelName: schoolLevelName,
+                minutesPerJp: minutesPerJp,
                 name: name,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -9666,8 +10102,9 @@ typedef $$SubjectsTableCreateCompanionBuilder =
     SubjectsCompanion Function({
       required String id,
       required String name,
+      required String subName,
       required String schoolId,
-      required String schoolLevelId,
+      required String schoolLevelAccess,
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<int> rowid,
@@ -9676,8 +10113,9 @@ typedef $$SubjectsTableUpdateCompanionBuilder =
     SubjectsCompanion Function({
       Value<String> id,
       Value<String> name,
+      Value<String> subName,
       Value<String> schoolId,
-      Value<String> schoolLevelId,
+      Value<String> schoolLevelAccess,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<int> rowid,
@@ -9702,13 +10140,18 @@ class $$SubjectsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get subName => $composableBuilder(
+    column: $table.subName,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get schoolId => $composableBuilder(
     column: $table.schoolId,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get schoolLevelId => $composableBuilder(
-    column: $table.schoolLevelId,
+  ColumnFilters<String> get schoolLevelAccess => $composableBuilder(
+    column: $table.schoolLevelAccess,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -9742,13 +10185,18 @@ class $$SubjectsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get subName => $composableBuilder(
+    column: $table.subName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get schoolId => $composableBuilder(
     column: $table.schoolId,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get schoolLevelId => $composableBuilder(
-    column: $table.schoolLevelId,
+  ColumnOrderings<String> get schoolLevelAccess => $composableBuilder(
+    column: $table.schoolLevelAccess,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -9778,11 +10226,14 @@ class $$SubjectsTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
+  GeneratedColumn<String> get subName =>
+      $composableBuilder(column: $table.subName, builder: (column) => column);
+
   GeneratedColumn<String> get schoolId =>
       $composableBuilder(column: $table.schoolId, builder: (column) => column);
 
-  GeneratedColumn<String> get schoolLevelId => $composableBuilder(
-    column: $table.schoolLevelId,
+  GeneratedColumn<String> get schoolLevelAccess => $composableBuilder(
+    column: $table.schoolLevelAccess,
     builder: (column) => column,
   );
 
@@ -9823,16 +10274,18 @@ class $$SubjectsTableTableManager
               ({
                 Value<String> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
+                Value<String> subName = const Value.absent(),
                 Value<String> schoolId = const Value.absent(),
-                Value<String> schoolLevelId = const Value.absent(),
+                Value<String> schoolLevelAccess = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => SubjectsCompanion(
                 id: id,
                 name: name,
+                subName: subName,
                 schoolId: schoolId,
-                schoolLevelId: schoolLevelId,
+                schoolLevelAccess: schoolLevelAccess,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -9841,16 +10294,18 @@ class $$SubjectsTableTableManager
               ({
                 required String id,
                 required String name,
+                required String subName,
                 required String schoolId,
-                required String schoolLevelId,
+                required String schoolLevelAccess,
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<int> rowid = const Value.absent(),
               }) => SubjectsCompanion.insert(
                 id: id,
                 name: name,
+                subName: subName,
                 schoolId: schoolId,
-                schoolLevelId: schoolLevelId,
+                schoolLevelAccess: schoolLevelAccess,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -9881,8 +10336,9 @@ typedef $$SubCurriculumSubjectsTableCreateCompanionBuilder =
     SubCurriculumSubjectsCompanion Function({
       required String id,
       required String subjectId,
+      required String subjectName,
+      required int hoursPerWeek,
       required String subCurriculumId,
-      required String grade,
       Value<String?> syllabus,
       required DateTime createdAt,
       required DateTime updatedAt,
@@ -9892,8 +10348,9 @@ typedef $$SubCurriculumSubjectsTableUpdateCompanionBuilder =
     SubCurriculumSubjectsCompanion Function({
       Value<String> id,
       Value<String> subjectId,
+      Value<String> subjectName,
+      Value<int> hoursPerWeek,
       Value<String> subCurriculumId,
-      Value<String> grade,
       Value<String?> syllabus,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -9919,13 +10376,18 @@ class $$SubCurriculumSubjectsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get subCurriculumId => $composableBuilder(
-    column: $table.subCurriculumId,
+  ColumnFilters<String> get subjectName => $composableBuilder(
+    column: $table.subjectName,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get grade => $composableBuilder(
-    column: $table.grade,
+  ColumnFilters<int> get hoursPerWeek => $composableBuilder(
+    column: $table.hoursPerWeek,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get subCurriculumId => $composableBuilder(
+    column: $table.subCurriculumId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -9964,13 +10426,18 @@ class $$SubCurriculumSubjectsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get subCurriculumId => $composableBuilder(
-    column: $table.subCurriculumId,
+  ColumnOrderings<String> get subjectName => $composableBuilder(
+    column: $table.subjectName,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get grade => $composableBuilder(
-    column: $table.grade,
+  ColumnOrderings<int> get hoursPerWeek => $composableBuilder(
+    column: $table.hoursPerWeek,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get subCurriculumId => $composableBuilder(
+    column: $table.subCurriculumId,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -10005,13 +10472,20 @@ class $$SubCurriculumSubjectsTableAnnotationComposer
   GeneratedColumn<String> get subjectId =>
       $composableBuilder(column: $table.subjectId, builder: (column) => column);
 
+  GeneratedColumn<String> get subjectName => $composableBuilder(
+    column: $table.subjectName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get hoursPerWeek => $composableBuilder(
+    column: $table.hoursPerWeek,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get subCurriculumId => $composableBuilder(
     column: $table.subCurriculumId,
     builder: (column) => column,
   );
-
-  GeneratedColumn<String> get grade =>
-      $composableBuilder(column: $table.grade, builder: (column) => column);
 
   GeneratedColumn<String> get syllabus =>
       $composableBuilder(column: $table.syllabus, builder: (column) => column);
@@ -10071,8 +10545,9 @@ class $$SubCurriculumSubjectsTableTableManager
               ({
                 Value<String> id = const Value.absent(),
                 Value<String> subjectId = const Value.absent(),
+                Value<String> subjectName = const Value.absent(),
+                Value<int> hoursPerWeek = const Value.absent(),
                 Value<String> subCurriculumId = const Value.absent(),
-                Value<String> grade = const Value.absent(),
                 Value<String?> syllabus = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -10080,8 +10555,9 @@ class $$SubCurriculumSubjectsTableTableManager
               }) => SubCurriculumSubjectsCompanion(
                 id: id,
                 subjectId: subjectId,
+                subjectName: subjectName,
+                hoursPerWeek: hoursPerWeek,
                 subCurriculumId: subCurriculumId,
-                grade: grade,
                 syllabus: syllabus,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -10091,8 +10567,9 @@ class $$SubCurriculumSubjectsTableTableManager
               ({
                 required String id,
                 required String subjectId,
+                required String subjectName,
+                required int hoursPerWeek,
                 required String subCurriculumId,
-                required String grade,
                 Value<String?> syllabus = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
@@ -10100,8 +10577,9 @@ class $$SubCurriculumSubjectsTableTableManager
               }) => SubCurriculumSubjectsCompanion.insert(
                 id: id,
                 subjectId: subjectId,
+                subjectName: subjectName,
+                hoursPerWeek: hoursPerWeek,
                 subCurriculumId: subCurriculumId,
-                grade: grade,
                 syllabus: syllabus,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -10136,28 +10614,38 @@ typedef $$SubCurriculumSubjectsTableProcessedTableManager =
       SubCurriculumSubject,
       PrefetchHooks Function()
     >;
-typedef $$TeacherSubjectConfigsTableCreateCompanionBuilder =
-    TeacherSubjectConfigsCompanion Function({
+typedef $$TeacherSubjectsTableCreateCompanionBuilder =
+    TeacherSubjectsCompanion Function({
       required String id,
       required String teacherId,
-      required String subCurriculumSubjectId,
+      required String teacherName,
+      required String subjectId,
+      required String subjectName,
+      required String subjectSubName,
+      Value<String?> parentId,
+      required String childrenRaw,
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<int> rowid,
     });
-typedef $$TeacherSubjectConfigsTableUpdateCompanionBuilder =
-    TeacherSubjectConfigsCompanion Function({
+typedef $$TeacherSubjectsTableUpdateCompanionBuilder =
+    TeacherSubjectsCompanion Function({
       Value<String> id,
       Value<String> teacherId,
-      Value<String> subCurriculumSubjectId,
+      Value<String> teacherName,
+      Value<String> subjectId,
+      Value<String> subjectName,
+      Value<String> subjectSubName,
+      Value<String?> parentId,
+      Value<String> childrenRaw,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<int> rowid,
     });
 
-class $$TeacherSubjectConfigsTableFilterComposer
-    extends Composer<_$AppDatabase, $TeacherSubjectConfigsTable> {
-  $$TeacherSubjectConfigsTableFilterComposer({
+class $$TeacherSubjectsTableFilterComposer
+    extends Composer<_$AppDatabase, $TeacherSubjectsTable> {
+  $$TeacherSubjectsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -10174,8 +10662,33 @@ class $$TeacherSubjectConfigsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get subCurriculumSubjectId => $composableBuilder(
-    column: $table.subCurriculumSubjectId,
+  ColumnFilters<String> get teacherName => $composableBuilder(
+    column: $table.teacherName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get subjectId => $composableBuilder(
+    column: $table.subjectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get subjectName => $composableBuilder(
+    column: $table.subjectName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get subjectSubName => $composableBuilder(
+    column: $table.subjectSubName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get parentId => $composableBuilder(
+    column: $table.parentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get childrenRaw => $composableBuilder(
+    column: $table.childrenRaw,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -10190,9 +10703,9 @@ class $$TeacherSubjectConfigsTableFilterComposer
   );
 }
 
-class $$TeacherSubjectConfigsTableOrderingComposer
-    extends Composer<_$AppDatabase, $TeacherSubjectConfigsTable> {
-  $$TeacherSubjectConfigsTableOrderingComposer({
+class $$TeacherSubjectsTableOrderingComposer
+    extends Composer<_$AppDatabase, $TeacherSubjectsTable> {
+  $$TeacherSubjectsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -10209,8 +10722,33 @@ class $$TeacherSubjectConfigsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get subCurriculumSubjectId => $composableBuilder(
-    column: $table.subCurriculumSubjectId,
+  ColumnOrderings<String> get teacherName => $composableBuilder(
+    column: $table.teacherName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get subjectId => $composableBuilder(
+    column: $table.subjectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get subjectName => $composableBuilder(
+    column: $table.subjectName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get subjectSubName => $composableBuilder(
+    column: $table.subjectSubName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get parentId => $composableBuilder(
+    column: $table.parentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get childrenRaw => $composableBuilder(
+    column: $table.childrenRaw,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -10225,9 +10763,9 @@ class $$TeacherSubjectConfigsTableOrderingComposer
   );
 }
 
-class $$TeacherSubjectConfigsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $TeacherSubjectConfigsTable> {
-  $$TeacherSubjectConfigsTableAnnotationComposer({
+class $$TeacherSubjectsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TeacherSubjectsTable> {
+  $$TeacherSubjectsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -10240,8 +10778,29 @@ class $$TeacherSubjectConfigsTableAnnotationComposer
   GeneratedColumn<String> get teacherId =>
       $composableBuilder(column: $table.teacherId, builder: (column) => column);
 
-  GeneratedColumn<String> get subCurriculumSubjectId => $composableBuilder(
-    column: $table.subCurriculumSubjectId,
+  GeneratedColumn<String> get teacherName => $composableBuilder(
+    column: $table.teacherName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get subjectId =>
+      $composableBuilder(column: $table.subjectId, builder: (column) => column);
+
+  GeneratedColumn<String> get subjectName => $composableBuilder(
+    column: $table.subjectName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get subjectSubName => $composableBuilder(
+    column: $table.subjectSubName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get parentId =>
+      $composableBuilder(column: $table.parentId, builder: (column) => column);
+
+  GeneratedColumn<String> get childrenRaw => $composableBuilder(
+    column: $table.childrenRaw,
     builder: (column) => column,
   );
 
@@ -10252,62 +10811,63 @@ class $$TeacherSubjectConfigsTableAnnotationComposer
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 }
 
-class $$TeacherSubjectConfigsTableTableManager
+class $$TeacherSubjectsTableTableManager
     extends
         RootTableManager<
           _$AppDatabase,
-          $TeacherSubjectConfigsTable,
-          TeacherSubjectConfig,
-          $$TeacherSubjectConfigsTableFilterComposer,
-          $$TeacherSubjectConfigsTableOrderingComposer,
-          $$TeacherSubjectConfigsTableAnnotationComposer,
-          $$TeacherSubjectConfigsTableCreateCompanionBuilder,
-          $$TeacherSubjectConfigsTableUpdateCompanionBuilder,
+          $TeacherSubjectsTable,
+          TeacherSubject,
+          $$TeacherSubjectsTableFilterComposer,
+          $$TeacherSubjectsTableOrderingComposer,
+          $$TeacherSubjectsTableAnnotationComposer,
+          $$TeacherSubjectsTableCreateCompanionBuilder,
+          $$TeacherSubjectsTableUpdateCompanionBuilder,
           (
-            TeacherSubjectConfig,
+            TeacherSubject,
             BaseReferences<
               _$AppDatabase,
-              $TeacherSubjectConfigsTable,
-              TeacherSubjectConfig
+              $TeacherSubjectsTable,
+              TeacherSubject
             >,
           ),
-          TeacherSubjectConfig,
+          TeacherSubject,
           PrefetchHooks Function()
         > {
-  $$TeacherSubjectConfigsTableTableManager(
+  $$TeacherSubjectsTableTableManager(
     _$AppDatabase db,
-    $TeacherSubjectConfigsTable table,
+    $TeacherSubjectsTable table,
   ) : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$TeacherSubjectConfigsTableFilterComposer(
-                $db: db,
-                $table: table,
-              ),
+              $$TeacherSubjectsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$TeacherSubjectConfigsTableOrderingComposer(
-                $db: db,
-                $table: table,
-              ),
+              $$TeacherSubjectsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$TeacherSubjectConfigsTableAnnotationComposer(
-                $db: db,
-                $table: table,
-              ),
+              $$TeacherSubjectsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
                 Value<String> teacherId = const Value.absent(),
-                Value<String> subCurriculumSubjectId = const Value.absent(),
+                Value<String> teacherName = const Value.absent(),
+                Value<String> subjectId = const Value.absent(),
+                Value<String> subjectName = const Value.absent(),
+                Value<String> subjectSubName = const Value.absent(),
+                Value<String?> parentId = const Value.absent(),
+                Value<String> childrenRaw = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
-              }) => TeacherSubjectConfigsCompanion(
+              }) => TeacherSubjectsCompanion(
                 id: id,
                 teacherId: teacherId,
-                subCurriculumSubjectId: subCurriculumSubjectId,
+                teacherName: teacherName,
+                subjectId: subjectId,
+                subjectName: subjectName,
+                subjectSubName: subjectSubName,
+                parentId: parentId,
+                childrenRaw: childrenRaw,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -10316,14 +10876,24 @@ class $$TeacherSubjectConfigsTableTableManager
               ({
                 required String id,
                 required String teacherId,
-                required String subCurriculumSubjectId,
+                required String teacherName,
+                required String subjectId,
+                required String subjectName,
+                required String subjectSubName,
+                Value<String?> parentId = const Value.absent(),
+                required String childrenRaw,
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<int> rowid = const Value.absent(),
-              }) => TeacherSubjectConfigsCompanion.insert(
+              }) => TeacherSubjectsCompanion.insert(
                 id: id,
                 teacherId: teacherId,
-                subCurriculumSubjectId: subCurriculumSubjectId,
+                teacherName: teacherName,
+                subjectId: subjectId,
+                subjectName: subjectName,
+                subjectSubName: subjectSubName,
+                parentId: parentId,
+                childrenRaw: childrenRaw,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -10336,25 +10906,21 @@ class $$TeacherSubjectConfigsTableTableManager
       );
 }
 
-typedef $$TeacherSubjectConfigsTableProcessedTableManager =
+typedef $$TeacherSubjectsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
-      $TeacherSubjectConfigsTable,
-      TeacherSubjectConfig,
-      $$TeacherSubjectConfigsTableFilterComposer,
-      $$TeacherSubjectConfigsTableOrderingComposer,
-      $$TeacherSubjectConfigsTableAnnotationComposer,
-      $$TeacherSubjectConfigsTableCreateCompanionBuilder,
-      $$TeacherSubjectConfigsTableUpdateCompanionBuilder,
+      $TeacherSubjectsTable,
+      TeacherSubject,
+      $$TeacherSubjectsTableFilterComposer,
+      $$TeacherSubjectsTableOrderingComposer,
+      $$TeacherSubjectsTableAnnotationComposer,
+      $$TeacherSubjectsTableCreateCompanionBuilder,
+      $$TeacherSubjectsTableUpdateCompanionBuilder,
       (
-        TeacherSubjectConfig,
-        BaseReferences<
-          _$AppDatabase,
-          $TeacherSubjectConfigsTable,
-          TeacherSubjectConfig
-        >,
+        TeacherSubject,
+        BaseReferences<_$AppDatabase, $TeacherSubjectsTable, TeacherSubject>,
       ),
-      TeacherSubjectConfig,
+      TeacherSubject,
       PrefetchHooks Function()
     >;
 
@@ -10379,6 +10945,6 @@ class $AppDatabaseManager {
       $$SubjectsTableTableManager(_db, _db.subjects);
   $$SubCurriculumSubjectsTableTableManager get subCurriculumSubjects =>
       $$SubCurriculumSubjectsTableTableManager(_db, _db.subCurriculumSubjects);
-  $$TeacherSubjectConfigsTableTableManager get teacherSubjectConfigs =>
-      $$TeacherSubjectConfigsTableTableManager(_db, _db.teacherSubjectConfigs);
+  $$TeacherSubjectsTableTableManager get teacherSubjects =>
+      $$TeacherSubjectsTableTableManager(_db, _db.teacherSubjects);
 }

@@ -45,6 +45,7 @@ class SubCurriculumService extends GetxService {
         final apiResults = list
             .map((item) => SubCurriculumResponse.fromJson(item))
             .toList();
+        print(response);
 
         // Simpan hasil API ke DB Lokal (Gunakan fungsi bulk yang baru)
         _localService
@@ -103,14 +104,12 @@ class SubCurriculumService extends GetxService {
   Future<void> create(CreateSubCurriculumRequest request) async {
     await _api.dio.post('/sub-curriculums', data: request.toJson());
     // Refresh data lokal setelah create sukses
-    await getAll(forceRefresh: true);
   }
 
   /// UPDATE
   Future<void> update(String id, UpdateSubCurriculumRequest request) async {
     await _api.dio.put('/sub-curriculums/$id', data: request.toJson());
     // Refresh data lokal setelah update sukses
-    await getAll(forceRefresh: true);
   }
 
   Future<SubCurriculumResponse?> getSubByIdLocal(String id) async {

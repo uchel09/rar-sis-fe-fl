@@ -11,7 +11,7 @@ import 'tables/curriculum_table.dart';
 import 'tables/sub_curriculum_table.dart';
 import 'tables/subject_table.dart';
 import 'tables/sub_curriculum_subject_table.dart';
-import 'tables/teacher_subject_config_table.dart';
+import 'tables/teacher_subject_table.dart';
 import 'tables/teacher_table.dart';
 import 'tables/staff_table.dart';
 import 'tables/staff_position_table.dart';
@@ -30,7 +30,7 @@ part 'database.g.dart';
     SubCurriculums,
     Subjects,
     SubCurriculumSubjects,
-    TeacherSubjectConfigs,
+    TeacherSubjects,
   ],
 ) // Tambahkan semua class tabel di sini
 class AppDatabase extends _$AppDatabase {

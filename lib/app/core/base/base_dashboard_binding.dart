@@ -3,6 +3,7 @@ import 'package:rar_sis_fe_fl/app/services/staff/staff_service.dart';
 import 'package:rar_sis_fe_fl/app/services/staff_position/staff_position_service.dart';
 import 'package:rar_sis_fe_fl/app/services/student-draft/student_draft_service.dart';
 import 'package:rar_sis_fe_fl/app/services/sub_curriculum/sub_curriculum_service.dart';
+import 'package:rar_sis_fe_fl/app/services/subject/subject_service.dart';
 import '../../modules/profile/controllers/profile_controller.dart';
 import 'package:rar_sis_fe_fl/app/services/school_admin/school_admin_service.dart';
 import 'package:rar_sis_fe_fl/app/services/curriculum/curriculum_service.dart';
@@ -23,6 +24,7 @@ abstract class BaseDashboardBinding extends Bindings {
     Get.lazyPut<TeacherService>(() => TeacherService());
     Get.lazyPut<StaffPositionService>(() => StaffPositionService());
     Get.lazyPut<StaffService>(() => StaffService());
+    Get.lazyPut<SubjectService>(() => SubjectService());
     Get.put(MasterController());
     injectController(); // Panggil method abstrak
   }
