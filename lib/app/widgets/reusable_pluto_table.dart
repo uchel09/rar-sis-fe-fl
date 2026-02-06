@@ -8,6 +8,7 @@ class ReusablePlutoTable extends StatefulWidget {
   final List<PlutoRow> rows;
   final bool isLoading;
   final String searchPlaceholder;
+  final int defaultRowPerPage;
   final bool canCreate;
   final VoidCallback? onCreate;
   final bool canExport;
@@ -22,6 +23,7 @@ class ReusablePlutoTable extends StatefulWidget {
     required this.rows,
     this.isLoading = false,
     this.searchPlaceholder = 'Search ...',
+    this.defaultRowPerPage = 20,
     this.canCreate = true,
     this.onCreate,
     this.canExport = true,
@@ -169,6 +171,7 @@ class _ReusablePlutoTableState extends State<ReusablePlutoTable> {
       width: isMobile ? null : 80,
       child: ShadInput(
         placeholder: const Text("Rows"),
+        initialValue: widget.defaultRowPerPage.toString(),
         keyboardType: TextInputType.number,
         onChanged: _executePageSize,
       ),
@@ -336,8 +339,32 @@ class _ReusablePlutoTableState extends State<ReusablePlutoTable> {
           }
         },
         createFooter: (state) {
-          state.setPageSize(10, notify: true);
-          return PlutoPagination(state, pageSizeToMove: 1);
+          state.setPageSize(widget.defaultRowPerPage, notify: true);
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Gunakan ListenableBuilder dan dengerin state-nya langsung
+                ListenableBuilder(
+                  listenable: state,
+                  builder: (context, _) {
+                    return Text(
+                      "Total Data: ${state.iterateAllRow.length}",
+                      style: TextStyle(
+                        color: const Color(0xFF64748B),
+                        fontWeight: FontWeight.w600,
+                        fontSize: isMobile ? 12 : 13,
+                      ),
+                    );
+                  },
+                ),
+
+                Expanded(child: PlutoPagination(state, pageSizeToMove: 1)),
+              ],
+            ),
+          );
         },
         configuration: PlutoGridConfiguration(
           columnFilter: const PlutoGridColumnFilterConfig(filters: []),

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rar_sis_fe_fl/app/services/school_level/school_level_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../controllers/sub_curriculum_controller.dart';
 import '../../../../../widgets/reusable_pluto_table.dart';
 import '../../../../../widgets/right_form_drawer.dart';
 import 'package:flutter/services.dart';
 import 'package:rar_sis_fe_fl/app/services/sub_curriculum/sub_curriculum_model.dart';
+import '../../../../../widgets/form/single_select.dart';
 
 class SubCurriculumView extends GetView<SubCurriculumController> {
   const SubCurriculumView({super.key});
@@ -216,38 +218,28 @@ class SubCurriculumView extends GetView<SubCurriculumController> {
                 ],
               ),
               const SizedBox(height: 16),
-
-              // Field Jenjang (School Level)
               ShadFormBuilderField<String>(
-                id: 'schoolLevelId',
+                id: 'schoolLevelId', // Cukup satu ID saja
                 label: const Text('Jenjang Sekolah'),
                 initialValue: controller.selectedSchoolLevelId.value,
                 validator: (v) =>
-                    (v == null || v.isEmpty) ? 'Pilih Jenjang' : null,
-                builder: (field) => ShadSelect<String>(
-                  placeholder: const Text('Pilih Jenjang'),
-                  options: controller.masterController.profileSchoolLevels
-                      .map(
-                        (lvl) =>
-                            ShadOption(value: lvl.id, child: Text(lvl.name)),
-                      )
-                      .toList(),
-                  selectedOptionBuilder: (context, value) {
-                    // Cari data secara aman
-                    final selected = controller
-                        .masterController
-                        .profileSchoolLevels
-                        .firstWhereOrNull((e) => e.id == value);
-
-                    // Jika ketemu tampilkan nama, jika tidak tampilkan placeholder sementara
-                    return Text(selected?.name ?? 'Pilih Jenjang');
-                  },
+                    (v == null || v.isEmpty) ? 'Pilih Jenjang Sekolah' : null,
+                builder: (field) => ShadSelectSingle<SchoolLevelResponse>(
+                  // Tipe data itemnya
+                  label: "Jenjang",
+                  items: controller.masterController.profileSchoolLevels,
+                  selectedId: field.value, // Ini akan ambil String ID
+                  idBuilder: (v) => v.id,
+                  labelBuilder: (v) => v.name,
                   onChanged: (val) {
-                    field.didChange(val);
-                    controller.selectedSchoolLevelId.value = val!;
+                    field.didChange(val); // Update ke Form
+                    controller.selectedSchoolLevelId.value =
+                        val ?? ""; // Update ke Controller
                   },
                 ),
               ),
+
+              // Field Jenjang (School Level)
               const SizedBox(height: 32),
 
               // Action Buttons

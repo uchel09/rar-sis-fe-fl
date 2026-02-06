@@ -158,6 +158,29 @@ class SubjectView extends GetView<SubjectController> {
                 },
               ),
               const SizedBox(height: 16),
+              ShadSwitchFormField(
+                id: 'isParent',
+                initialValue: controller.isParent.value,
+                inputLabel: const Text('Jadikan Subjek Induk'),
+                inputSublabel: Column(
+                  children: [
+                    Text(
+                      'Jadikan referensi untuk Pelajaran yang memiliki sub Nama',
+                    ),
+                    Text(
+                      'misal agama kristen referensi ke islam, berarti mapel agama Islam jadi subject induk',
+                    ),
+                  ],
+                ),
+                onChanged: (v) {
+                  print(v);
+                  // Update state di GetX Controller kamu
+                  controller.isParent.value = v;
+
+                  // Jika jadi Parent, maka pilihan 'parentSubjectId' harusnya di-disable atau di-clear
+                },
+              ),
+              const SizedBox(height: 16),
 
               // Multi-Select Jenjang karena satu Mapel bisa untuk banyak Jenjang
               ShadFormBuilderField<List<String>>(

@@ -60,6 +60,45 @@ class TeacherService extends GetxService {
     }
   }
 
+  Future<List<TeacherResponse>> getAllBySchoolLevelId({
+    bool forceRefresh = false,
+    String schoolLevelId = "",
+  }) async {
+    // 1. Coba ambil dari DB Lokal dulu (selalu)
+    List<TeacherResponse> localData = [];
+
+    if (forceRefresh) {
+      try {
+        print("INFO: Mengambil data dari API...");
+        final response = await _api.dio.get(
+          '/teachers/$currentSchoolId/school/$schoolLevelId/level',
+        );
+        final List list = response.data['data'];
+        final apiResults = list
+            .map((item) => TeacherResponse.fromJson(item))
+            .toList();
+
+        // Simpan hasil API ke DB Lokal (Background process)
+        _localService
+            .bulkInsertBySchoolLevel(apiResults, schoolLevelId)
+            .catchError((e) => print("DB INSERT ERROR: $e"));
+
+        return apiResults; // Return data segar dari API
+      } catch (apiError) {
+        print("API ERROR: $apiError");
+        return localData;
+      }
+    } else {
+      try {
+        localData = await _localService.getAllBySchoolLevelLocal(schoolLevelId);
+        print("INFO: Mengambil data dari Lokal...");
+      } catch (e) {
+        print("LOKAL DB READ ERROR: $e");
+      }
+      return localData;
+    }
+  }
+
   /// CREATE
   Future<void> create(CreateTeacherRequest request) async {
     var res = await _api.dio.post('/teachers', data: request.toJson());

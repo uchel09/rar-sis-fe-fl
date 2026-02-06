@@ -23,6 +23,26 @@ class TeacherLocalService {
     });
   }
 
+  Future<void> bulkInsertBySchoolLevel(
+    List<TeacherResponse> teachers,
+    String schoolLevelId,
+  ) async {
+    await _db.transaction(() async {
+      // 1. Bersihkan tabel
+
+      await (_db.delete(
+        _db.teachers,
+      )..where((t) => t.schoolLevelAccess.like('%$schoolLevelId%'))).go();
+
+      // 2. Batch insert data baru
+      await _db.batch((batch) {
+        for (final teacher in teachers) {
+          batch.insert(_db.teachers, _mapToCompanion(teacher));
+        }
+      });
+    });
+  }
+
   /// MANUAL MAPPING: Response API -> Drift Companion
   TeachersCompanion _mapToCompanion(TeacherResponse res) {
     return TeachersCompanion.insert(
@@ -113,6 +133,20 @@ class TeacherLocalService {
     final rows = await _db.select(_db.teachers).get();
 
     // Tinggal panggil fungsi mapping yang sudah dibuat
+    return rows.map(_mapToResponse).toList();
+  }
+
+  Future<List<TeacherResponse>> getAllBySchoolLevelLocal(
+    String schoolLevelId,
+  ) async {
+    // ✅ 1. Buat Query-nya dulu
+    final query = _db.select(_db.teachers)
+      ..where((t) => t.schoolLevelAccess.like('%$schoolLevelId%'));
+
+    // ✅ 2. Baru panggil .get() untuk eksekusi ke DB
+    final rows = await query.get();
+
+    // 3. Mapping hasil
     return rows.map(_mapToResponse).toList();
   }
 

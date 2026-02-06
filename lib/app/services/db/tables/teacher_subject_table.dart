@@ -7,6 +7,9 @@ class TeacherSubjects extends Table {
   TextColumn get subjectId => text()();
   TextColumn get subjectName => text()();
   TextColumn get subjectSubName => text()();
+  BoolColumn get subjectIsParent => boolean()();
+
+  TextColumn get schoolLevelId => text()();
   TextColumn get parentId => text().nullable()();
 
   // ✅ Simpan seluruh array children sebagai JSON String

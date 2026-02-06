@@ -5854,6 +5854,20 @@ class $SubjectsTable extends Subjects with TableInfo<$SubjectsTable, Subject> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _isParentMeta = const VerificationMeta(
+    'isParent',
+  );
+  @override
+  late final GeneratedColumn<bool> isParent = GeneratedColumn<bool>(
+    'is_parent',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_parent" IN (0, 1))',
+    ),
+  );
   static const VerificationMeta _schoolLevelAccessMeta = const VerificationMeta(
     'schoolLevelAccess',
   );
@@ -5894,6 +5908,7 @@ class $SubjectsTable extends Subjects with TableInfo<$SubjectsTable, Subject> {
     name,
     subName,
     schoolId,
+    isParent,
     schoolLevelAccess,
     createdAt,
     updatedAt,
@@ -5938,6 +5953,14 @@ class $SubjectsTable extends Subjects with TableInfo<$SubjectsTable, Subject> {
       );
     } else if (isInserting) {
       context.missing(_schoolIdMeta);
+    }
+    if (data.containsKey('is_parent')) {
+      context.handle(
+        _isParentMeta,
+        isParent.isAcceptableOrUnknown(data['is_parent']!, _isParentMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_isParentMeta);
     }
     if (data.containsKey('school_level_access')) {
       context.handle(
@@ -5991,6 +6014,10 @@ class $SubjectsTable extends Subjects with TableInfo<$SubjectsTable, Subject> {
         DriftSqlType.string,
         data['${effectivePrefix}school_id'],
       )!,
+      isParent: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_parent'],
+      )!,
       schoolLevelAccess: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}school_level_access'],
@@ -6017,6 +6044,7 @@ class Subject extends DataClass implements Insertable<Subject> {
   final String name;
   final String subName;
   final String schoolId;
+  final bool isParent;
   final String schoolLevelAccess;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -6025,6 +6053,7 @@ class Subject extends DataClass implements Insertable<Subject> {
     required this.name,
     required this.subName,
     required this.schoolId,
+    required this.isParent,
     required this.schoolLevelAccess,
     required this.createdAt,
     required this.updatedAt,
@@ -6036,6 +6065,7 @@ class Subject extends DataClass implements Insertable<Subject> {
     map['name'] = Variable<String>(name);
     map['sub_name'] = Variable<String>(subName);
     map['school_id'] = Variable<String>(schoolId);
+    map['is_parent'] = Variable<bool>(isParent);
     map['school_level_access'] = Variable<String>(schoolLevelAccess);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -6048,6 +6078,7 @@ class Subject extends DataClass implements Insertable<Subject> {
       name: Value(name),
       subName: Value(subName),
       schoolId: Value(schoolId),
+      isParent: Value(isParent),
       schoolLevelAccess: Value(schoolLevelAccess),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -6064,6 +6095,7 @@ class Subject extends DataClass implements Insertable<Subject> {
       name: serializer.fromJson<String>(json['name']),
       subName: serializer.fromJson<String>(json['subName']),
       schoolId: serializer.fromJson<String>(json['schoolId']),
+      isParent: serializer.fromJson<bool>(json['isParent']),
       schoolLevelAccess: serializer.fromJson<String>(json['schoolLevelAccess']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -6077,6 +6109,7 @@ class Subject extends DataClass implements Insertable<Subject> {
       'name': serializer.toJson<String>(name),
       'subName': serializer.toJson<String>(subName),
       'schoolId': serializer.toJson<String>(schoolId),
+      'isParent': serializer.toJson<bool>(isParent),
       'schoolLevelAccess': serializer.toJson<String>(schoolLevelAccess),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -6088,6 +6121,7 @@ class Subject extends DataClass implements Insertable<Subject> {
     String? name,
     String? subName,
     String? schoolId,
+    bool? isParent,
     String? schoolLevelAccess,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -6096,6 +6130,7 @@ class Subject extends DataClass implements Insertable<Subject> {
     name: name ?? this.name,
     subName: subName ?? this.subName,
     schoolId: schoolId ?? this.schoolId,
+    isParent: isParent ?? this.isParent,
     schoolLevelAccess: schoolLevelAccess ?? this.schoolLevelAccess,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -6106,6 +6141,7 @@ class Subject extends DataClass implements Insertable<Subject> {
       name: data.name.present ? data.name.value : this.name,
       subName: data.subName.present ? data.subName.value : this.subName,
       schoolId: data.schoolId.present ? data.schoolId.value : this.schoolId,
+      isParent: data.isParent.present ? data.isParent.value : this.isParent,
       schoolLevelAccess: data.schoolLevelAccess.present
           ? data.schoolLevelAccess.value
           : this.schoolLevelAccess,
@@ -6121,6 +6157,7 @@ class Subject extends DataClass implements Insertable<Subject> {
           ..write('name: $name, ')
           ..write('subName: $subName, ')
           ..write('schoolId: $schoolId, ')
+          ..write('isParent: $isParent, ')
           ..write('schoolLevelAccess: $schoolLevelAccess, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -6134,6 +6171,7 @@ class Subject extends DataClass implements Insertable<Subject> {
     name,
     subName,
     schoolId,
+    isParent,
     schoolLevelAccess,
     createdAt,
     updatedAt,
@@ -6146,6 +6184,7 @@ class Subject extends DataClass implements Insertable<Subject> {
           other.name == this.name &&
           other.subName == this.subName &&
           other.schoolId == this.schoolId &&
+          other.isParent == this.isParent &&
           other.schoolLevelAccess == this.schoolLevelAccess &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -6156,6 +6195,7 @@ class SubjectsCompanion extends UpdateCompanion<Subject> {
   final Value<String> name;
   final Value<String> subName;
   final Value<String> schoolId;
+  final Value<bool> isParent;
   final Value<String> schoolLevelAccess;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -6165,6 +6205,7 @@ class SubjectsCompanion extends UpdateCompanion<Subject> {
     this.name = const Value.absent(),
     this.subName = const Value.absent(),
     this.schoolId = const Value.absent(),
+    this.isParent = const Value.absent(),
     this.schoolLevelAccess = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -6175,6 +6216,7 @@ class SubjectsCompanion extends UpdateCompanion<Subject> {
     required String name,
     required String subName,
     required String schoolId,
+    required bool isParent,
     required String schoolLevelAccess,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -6183,6 +6225,7 @@ class SubjectsCompanion extends UpdateCompanion<Subject> {
        name = Value(name),
        subName = Value(subName),
        schoolId = Value(schoolId),
+       isParent = Value(isParent),
        schoolLevelAccess = Value(schoolLevelAccess),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
@@ -6191,6 +6234,7 @@ class SubjectsCompanion extends UpdateCompanion<Subject> {
     Expression<String>? name,
     Expression<String>? subName,
     Expression<String>? schoolId,
+    Expression<bool>? isParent,
     Expression<String>? schoolLevelAccess,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -6201,6 +6245,7 @@ class SubjectsCompanion extends UpdateCompanion<Subject> {
       if (name != null) 'name': name,
       if (subName != null) 'sub_name': subName,
       if (schoolId != null) 'school_id': schoolId,
+      if (isParent != null) 'is_parent': isParent,
       if (schoolLevelAccess != null) 'school_level_access': schoolLevelAccess,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -6213,6 +6258,7 @@ class SubjectsCompanion extends UpdateCompanion<Subject> {
     Value<String>? name,
     Value<String>? subName,
     Value<String>? schoolId,
+    Value<bool>? isParent,
     Value<String>? schoolLevelAccess,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -6223,6 +6269,7 @@ class SubjectsCompanion extends UpdateCompanion<Subject> {
       name: name ?? this.name,
       subName: subName ?? this.subName,
       schoolId: schoolId ?? this.schoolId,
+      isParent: isParent ?? this.isParent,
       schoolLevelAccess: schoolLevelAccess ?? this.schoolLevelAccess,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -6244,6 +6291,9 @@ class SubjectsCompanion extends UpdateCompanion<Subject> {
     }
     if (schoolId.present) {
       map['school_id'] = Variable<String>(schoolId.value);
+    }
+    if (isParent.present) {
+      map['is_parent'] = Variable<bool>(isParent.value);
     }
     if (schoolLevelAccess.present) {
       map['school_level_access'] = Variable<String>(schoolLevelAccess.value);
@@ -6267,6 +6317,7 @@ class SubjectsCompanion extends UpdateCompanion<Subject> {
           ..write('name: $name, ')
           ..write('subName: $subName, ')
           ..write('schoolId: $schoolId, ')
+          ..write('isParent: $isParent, ')
           ..write('schoolLevelAccess: $schoolLevelAccess, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -6876,6 +6927,31 @@ class $TeacherSubjectsTable extends TeacherSubjects
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _subjectIsParentMeta = const VerificationMeta(
+    'subjectIsParent',
+  );
+  @override
+  late final GeneratedColumn<bool> subjectIsParent = GeneratedColumn<bool>(
+    'subject_is_parent',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("subject_is_parent" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _schoolLevelIdMeta = const VerificationMeta(
+    'schoolLevelId',
+  );
+  @override
+  late final GeneratedColumn<String> schoolLevelId = GeneratedColumn<String>(
+    'school_level_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _parentIdMeta = const VerificationMeta(
     'parentId',
   );
@@ -6928,6 +7004,8 @@ class $TeacherSubjectsTable extends TeacherSubjects
     subjectId,
     subjectName,
     subjectSubName,
+    subjectIsParent,
+    schoolLevelId,
     parentId,
     childrenRaw,
     createdAt,
@@ -6999,6 +7077,28 @@ class $TeacherSubjectsTable extends TeacherSubjects
     } else if (isInserting) {
       context.missing(_subjectSubNameMeta);
     }
+    if (data.containsKey('subject_is_parent')) {
+      context.handle(
+        _subjectIsParentMeta,
+        subjectIsParent.isAcceptableOrUnknown(
+          data['subject_is_parent']!,
+          _subjectIsParentMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_subjectIsParentMeta);
+    }
+    if (data.containsKey('school_level_id')) {
+      context.handle(
+        _schoolLevelIdMeta,
+        schoolLevelId.isAcceptableOrUnknown(
+          data['school_level_id']!,
+          _schoolLevelIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_schoolLevelIdMeta);
+    }
     if (data.containsKey('parent_id')) {
       context.handle(
         _parentIdMeta,
@@ -7065,6 +7165,14 @@ class $TeacherSubjectsTable extends TeacherSubjects
         DriftSqlType.string,
         data['${effectivePrefix}subject_sub_name'],
       )!,
+      subjectIsParent: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}subject_is_parent'],
+      )!,
+      schoolLevelId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}school_level_id'],
+      )!,
       parentId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}parent_id'],
@@ -7097,6 +7205,8 @@ class TeacherSubject extends DataClass implements Insertable<TeacherSubject> {
   final String subjectId;
   final String subjectName;
   final String subjectSubName;
+  final bool subjectIsParent;
+  final String schoolLevelId;
   final String? parentId;
   final String childrenRaw;
   final DateTime createdAt;
@@ -7108,6 +7218,8 @@ class TeacherSubject extends DataClass implements Insertable<TeacherSubject> {
     required this.subjectId,
     required this.subjectName,
     required this.subjectSubName,
+    required this.subjectIsParent,
+    required this.schoolLevelId,
     this.parentId,
     required this.childrenRaw,
     required this.createdAt,
@@ -7122,6 +7234,8 @@ class TeacherSubject extends DataClass implements Insertable<TeacherSubject> {
     map['subject_id'] = Variable<String>(subjectId);
     map['subject_name'] = Variable<String>(subjectName);
     map['subject_sub_name'] = Variable<String>(subjectSubName);
+    map['subject_is_parent'] = Variable<bool>(subjectIsParent);
+    map['school_level_id'] = Variable<String>(schoolLevelId);
     if (!nullToAbsent || parentId != null) {
       map['parent_id'] = Variable<String>(parentId);
     }
@@ -7139,6 +7253,8 @@ class TeacherSubject extends DataClass implements Insertable<TeacherSubject> {
       subjectId: Value(subjectId),
       subjectName: Value(subjectName),
       subjectSubName: Value(subjectSubName),
+      subjectIsParent: Value(subjectIsParent),
+      schoolLevelId: Value(schoolLevelId),
       parentId: parentId == null && nullToAbsent
           ? const Value.absent()
           : Value(parentId),
@@ -7160,6 +7276,8 @@ class TeacherSubject extends DataClass implements Insertable<TeacherSubject> {
       subjectId: serializer.fromJson<String>(json['subjectId']),
       subjectName: serializer.fromJson<String>(json['subjectName']),
       subjectSubName: serializer.fromJson<String>(json['subjectSubName']),
+      subjectIsParent: serializer.fromJson<bool>(json['subjectIsParent']),
+      schoolLevelId: serializer.fromJson<String>(json['schoolLevelId']),
       parentId: serializer.fromJson<String?>(json['parentId']),
       childrenRaw: serializer.fromJson<String>(json['childrenRaw']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -7176,6 +7294,8 @@ class TeacherSubject extends DataClass implements Insertable<TeacherSubject> {
       'subjectId': serializer.toJson<String>(subjectId),
       'subjectName': serializer.toJson<String>(subjectName),
       'subjectSubName': serializer.toJson<String>(subjectSubName),
+      'subjectIsParent': serializer.toJson<bool>(subjectIsParent),
+      'schoolLevelId': serializer.toJson<String>(schoolLevelId),
       'parentId': serializer.toJson<String?>(parentId),
       'childrenRaw': serializer.toJson<String>(childrenRaw),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -7190,6 +7310,8 @@ class TeacherSubject extends DataClass implements Insertable<TeacherSubject> {
     String? subjectId,
     String? subjectName,
     String? subjectSubName,
+    bool? subjectIsParent,
+    String? schoolLevelId,
     Value<String?> parentId = const Value.absent(),
     String? childrenRaw,
     DateTime? createdAt,
@@ -7201,6 +7323,8 @@ class TeacherSubject extends DataClass implements Insertable<TeacherSubject> {
     subjectId: subjectId ?? this.subjectId,
     subjectName: subjectName ?? this.subjectName,
     subjectSubName: subjectSubName ?? this.subjectSubName,
+    subjectIsParent: subjectIsParent ?? this.subjectIsParent,
+    schoolLevelId: schoolLevelId ?? this.schoolLevelId,
     parentId: parentId.present ? parentId.value : this.parentId,
     childrenRaw: childrenRaw ?? this.childrenRaw,
     createdAt: createdAt ?? this.createdAt,
@@ -7220,6 +7344,12 @@ class TeacherSubject extends DataClass implements Insertable<TeacherSubject> {
       subjectSubName: data.subjectSubName.present
           ? data.subjectSubName.value
           : this.subjectSubName,
+      subjectIsParent: data.subjectIsParent.present
+          ? data.subjectIsParent.value
+          : this.subjectIsParent,
+      schoolLevelId: data.schoolLevelId.present
+          ? data.schoolLevelId.value
+          : this.schoolLevelId,
       parentId: data.parentId.present ? data.parentId.value : this.parentId,
       childrenRaw: data.childrenRaw.present
           ? data.childrenRaw.value
@@ -7238,6 +7368,8 @@ class TeacherSubject extends DataClass implements Insertable<TeacherSubject> {
           ..write('subjectId: $subjectId, ')
           ..write('subjectName: $subjectName, ')
           ..write('subjectSubName: $subjectSubName, ')
+          ..write('subjectIsParent: $subjectIsParent, ')
+          ..write('schoolLevelId: $schoolLevelId, ')
           ..write('parentId: $parentId, ')
           ..write('childrenRaw: $childrenRaw, ')
           ..write('createdAt: $createdAt, ')
@@ -7254,6 +7386,8 @@ class TeacherSubject extends DataClass implements Insertable<TeacherSubject> {
     subjectId,
     subjectName,
     subjectSubName,
+    subjectIsParent,
+    schoolLevelId,
     parentId,
     childrenRaw,
     createdAt,
@@ -7269,6 +7403,8 @@ class TeacherSubject extends DataClass implements Insertable<TeacherSubject> {
           other.subjectId == this.subjectId &&
           other.subjectName == this.subjectName &&
           other.subjectSubName == this.subjectSubName &&
+          other.subjectIsParent == this.subjectIsParent &&
+          other.schoolLevelId == this.schoolLevelId &&
           other.parentId == this.parentId &&
           other.childrenRaw == this.childrenRaw &&
           other.createdAt == this.createdAt &&
@@ -7282,6 +7418,8 @@ class TeacherSubjectsCompanion extends UpdateCompanion<TeacherSubject> {
   final Value<String> subjectId;
   final Value<String> subjectName;
   final Value<String> subjectSubName;
+  final Value<bool> subjectIsParent;
+  final Value<String> schoolLevelId;
   final Value<String?> parentId;
   final Value<String> childrenRaw;
   final Value<DateTime> createdAt;
@@ -7294,6 +7432,8 @@ class TeacherSubjectsCompanion extends UpdateCompanion<TeacherSubject> {
     this.subjectId = const Value.absent(),
     this.subjectName = const Value.absent(),
     this.subjectSubName = const Value.absent(),
+    this.subjectIsParent = const Value.absent(),
+    this.schoolLevelId = const Value.absent(),
     this.parentId = const Value.absent(),
     this.childrenRaw = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -7307,6 +7447,8 @@ class TeacherSubjectsCompanion extends UpdateCompanion<TeacherSubject> {
     required String subjectId,
     required String subjectName,
     required String subjectSubName,
+    required bool subjectIsParent,
+    required String schoolLevelId,
     this.parentId = const Value.absent(),
     required String childrenRaw,
     required DateTime createdAt,
@@ -7318,6 +7460,8 @@ class TeacherSubjectsCompanion extends UpdateCompanion<TeacherSubject> {
        subjectId = Value(subjectId),
        subjectName = Value(subjectName),
        subjectSubName = Value(subjectSubName),
+       subjectIsParent = Value(subjectIsParent),
+       schoolLevelId = Value(schoolLevelId),
        childrenRaw = Value(childrenRaw),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
@@ -7328,6 +7472,8 @@ class TeacherSubjectsCompanion extends UpdateCompanion<TeacherSubject> {
     Expression<String>? subjectId,
     Expression<String>? subjectName,
     Expression<String>? subjectSubName,
+    Expression<bool>? subjectIsParent,
+    Expression<String>? schoolLevelId,
     Expression<String>? parentId,
     Expression<String>? childrenRaw,
     Expression<DateTime>? createdAt,
@@ -7341,6 +7487,8 @@ class TeacherSubjectsCompanion extends UpdateCompanion<TeacherSubject> {
       if (subjectId != null) 'subject_id': subjectId,
       if (subjectName != null) 'subject_name': subjectName,
       if (subjectSubName != null) 'subject_sub_name': subjectSubName,
+      if (subjectIsParent != null) 'subject_is_parent': subjectIsParent,
+      if (schoolLevelId != null) 'school_level_id': schoolLevelId,
       if (parentId != null) 'parent_id': parentId,
       if (childrenRaw != null) 'children_raw': childrenRaw,
       if (createdAt != null) 'created_at': createdAt,
@@ -7356,6 +7504,8 @@ class TeacherSubjectsCompanion extends UpdateCompanion<TeacherSubject> {
     Value<String>? subjectId,
     Value<String>? subjectName,
     Value<String>? subjectSubName,
+    Value<bool>? subjectIsParent,
+    Value<String>? schoolLevelId,
     Value<String?>? parentId,
     Value<String>? childrenRaw,
     Value<DateTime>? createdAt,
@@ -7369,6 +7519,8 @@ class TeacherSubjectsCompanion extends UpdateCompanion<TeacherSubject> {
       subjectId: subjectId ?? this.subjectId,
       subjectName: subjectName ?? this.subjectName,
       subjectSubName: subjectSubName ?? this.subjectSubName,
+      subjectIsParent: subjectIsParent ?? this.subjectIsParent,
+      schoolLevelId: schoolLevelId ?? this.schoolLevelId,
       parentId: parentId ?? this.parentId,
       childrenRaw: childrenRaw ?? this.childrenRaw,
       createdAt: createdAt ?? this.createdAt,
@@ -7398,6 +7550,12 @@ class TeacherSubjectsCompanion extends UpdateCompanion<TeacherSubject> {
     if (subjectSubName.present) {
       map['subject_sub_name'] = Variable<String>(subjectSubName.value);
     }
+    if (subjectIsParent.present) {
+      map['subject_is_parent'] = Variable<bool>(subjectIsParent.value);
+    }
+    if (schoolLevelId.present) {
+      map['school_level_id'] = Variable<String>(schoolLevelId.value);
+    }
     if (parentId.present) {
       map['parent_id'] = Variable<String>(parentId.value);
     }
@@ -7425,6 +7583,8 @@ class TeacherSubjectsCompanion extends UpdateCompanion<TeacherSubject> {
           ..write('subjectId: $subjectId, ')
           ..write('subjectName: $subjectName, ')
           ..write('subjectSubName: $subjectSubName, ')
+          ..write('subjectIsParent: $subjectIsParent, ')
+          ..write('schoolLevelId: $schoolLevelId, ')
           ..write('parentId: $parentId, ')
           ..write('childrenRaw: $childrenRaw, ')
           ..write('createdAt: $createdAt, ')
@@ -10167,6 +10327,7 @@ typedef $$SubjectsTableCreateCompanionBuilder =
       required String name,
       required String subName,
       required String schoolId,
+      required bool isParent,
       required String schoolLevelAccess,
       required DateTime createdAt,
       required DateTime updatedAt,
@@ -10178,6 +10339,7 @@ typedef $$SubjectsTableUpdateCompanionBuilder =
       Value<String> name,
       Value<String> subName,
       Value<String> schoolId,
+      Value<bool> isParent,
       Value<String> schoolLevelAccess,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -10210,6 +10372,11 @@ class $$SubjectsTableFilterComposer
 
   ColumnFilters<String> get schoolId => $composableBuilder(
     column: $table.schoolId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isParent => $composableBuilder(
+    column: $table.isParent,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -10258,6 +10425,11 @@ class $$SubjectsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get isParent => $composableBuilder(
+    column: $table.isParent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get schoolLevelAccess => $composableBuilder(
     column: $table.schoolLevelAccess,
     builder: (column) => ColumnOrderings(column),
@@ -10294,6 +10466,9 @@ class $$SubjectsTableAnnotationComposer
 
   GeneratedColumn<String> get schoolId =>
       $composableBuilder(column: $table.schoolId, builder: (column) => column);
+
+  GeneratedColumn<bool> get isParent =>
+      $composableBuilder(column: $table.isParent, builder: (column) => column);
 
   GeneratedColumn<String> get schoolLevelAccess => $composableBuilder(
     column: $table.schoolLevelAccess,
@@ -10339,6 +10514,7 @@ class $$SubjectsTableTableManager
                 Value<String> name = const Value.absent(),
                 Value<String> subName = const Value.absent(),
                 Value<String> schoolId = const Value.absent(),
+                Value<bool> isParent = const Value.absent(),
                 Value<String> schoolLevelAccess = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -10348,6 +10524,7 @@ class $$SubjectsTableTableManager
                 name: name,
                 subName: subName,
                 schoolId: schoolId,
+                isParent: isParent,
                 schoolLevelAccess: schoolLevelAccess,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -10359,6 +10536,7 @@ class $$SubjectsTableTableManager
                 required String name,
                 required String subName,
                 required String schoolId,
+                required bool isParent,
                 required String schoolLevelAccess,
                 required DateTime createdAt,
                 required DateTime updatedAt,
@@ -10368,6 +10546,7 @@ class $$SubjectsTableTableManager
                 name: name,
                 subName: subName,
                 schoolId: schoolId,
+                isParent: isParent,
                 schoolLevelAccess: schoolLevelAccess,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -10685,6 +10864,8 @@ typedef $$TeacherSubjectsTableCreateCompanionBuilder =
       required String subjectId,
       required String subjectName,
       required String subjectSubName,
+      required bool subjectIsParent,
+      required String schoolLevelId,
       Value<String?> parentId,
       required String childrenRaw,
       required DateTime createdAt,
@@ -10699,6 +10880,8 @@ typedef $$TeacherSubjectsTableUpdateCompanionBuilder =
       Value<String> subjectId,
       Value<String> subjectName,
       Value<String> subjectSubName,
+      Value<bool> subjectIsParent,
+      Value<String> schoolLevelId,
       Value<String?> parentId,
       Value<String> childrenRaw,
       Value<DateTime> createdAt,
@@ -10742,6 +10925,16 @@ class $$TeacherSubjectsTableFilterComposer
 
   ColumnFilters<String> get subjectSubName => $composableBuilder(
     column: $table.subjectSubName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get subjectIsParent => $composableBuilder(
+    column: $table.subjectIsParent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get schoolLevelId => $composableBuilder(
+    column: $table.schoolLevelId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -10805,6 +10998,16 @@ class $$TeacherSubjectsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get subjectIsParent => $composableBuilder(
+    column: $table.subjectIsParent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get schoolLevelId => $composableBuilder(
+    column: $table.schoolLevelId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get parentId => $composableBuilder(
     column: $table.parentId,
     builder: (column) => ColumnOrderings(column),
@@ -10856,6 +11059,16 @@ class $$TeacherSubjectsTableAnnotationComposer
 
   GeneratedColumn<String> get subjectSubName => $composableBuilder(
     column: $table.subjectSubName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get subjectIsParent => $composableBuilder(
+    column: $table.subjectIsParent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get schoolLevelId => $composableBuilder(
+    column: $table.schoolLevelId,
     builder: (column) => column,
   );
 
@@ -10917,6 +11130,8 @@ class $$TeacherSubjectsTableTableManager
                 Value<String> subjectId = const Value.absent(),
                 Value<String> subjectName = const Value.absent(),
                 Value<String> subjectSubName = const Value.absent(),
+                Value<bool> subjectIsParent = const Value.absent(),
+                Value<String> schoolLevelId = const Value.absent(),
                 Value<String?> parentId = const Value.absent(),
                 Value<String> childrenRaw = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -10929,6 +11144,8 @@ class $$TeacherSubjectsTableTableManager
                 subjectId: subjectId,
                 subjectName: subjectName,
                 subjectSubName: subjectSubName,
+                subjectIsParent: subjectIsParent,
+                schoolLevelId: schoolLevelId,
                 parentId: parentId,
                 childrenRaw: childrenRaw,
                 createdAt: createdAt,
@@ -10943,6 +11160,8 @@ class $$TeacherSubjectsTableTableManager
                 required String subjectId,
                 required String subjectName,
                 required String subjectSubName,
+                required bool subjectIsParent,
+                required String schoolLevelId,
                 Value<String?> parentId = const Value.absent(),
                 required String childrenRaw,
                 required DateTime createdAt,
@@ -10955,6 +11174,8 @@ class $$TeacherSubjectsTableTableManager
                 subjectId: subjectId,
                 subjectName: subjectName,
                 subjectSubName: subjectSubName,
+                subjectIsParent: subjectIsParent,
+                schoolLevelId: schoolLevelId,
                 parentId: parentId,
                 childrenRaw: childrenRaw,
                 createdAt: createdAt,

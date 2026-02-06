@@ -64,6 +64,7 @@ class SubCurriculumSubject {
   final String id; // Ini ID Pivot
   final String subjectId; // Ini ID Master
   final String subjectName;
+  final String subjectSubName;
   final int hoursPerWeek;
   final dynamic syllabus; // Pakai dynamic karena tipe Json di backend
 
@@ -71,6 +72,7 @@ class SubCurriculumSubject {
     required this.id,
     required this.subjectId,
     required this.subjectName,
+    required this.subjectSubName,
     required this.hoursPerWeek,
     this.syllabus,
   });
@@ -80,6 +82,7 @@ class SubCurriculumSubject {
         id: json["id"],
         subjectId: json["subjectId"],
         subjectName: json["subjectName"],
+        subjectSubName: json["subjectSubName"],
         hoursPerWeek: json["hoursPerWeek"],
         syllabus: json["syllabus"],
       );
@@ -88,6 +91,7 @@ class SubCurriculumSubject {
     "id": id,
     "subjectId": subjectId,
     "subjectName": subjectName,
+    "subjectSubName": subjectSubName,
     "hoursPerWeek": hoursPerWeek,
     "syllabus": syllabus,
   };

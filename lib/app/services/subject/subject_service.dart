@@ -86,7 +86,7 @@ class SubjectService extends GetxService {
         final apiResults = list
             .map((item) => SubjectResponse.fromJson(item))
             .toList();
-        print(response.data);
+
         // Simpan hasil API ke DB Lokal (Gunakan fungsi bulk yang baru)
         await _localService
             .bulkInsertBySchoolLevel(apiResults, schoolLevelId)

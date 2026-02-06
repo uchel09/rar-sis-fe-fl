@@ -7,6 +7,8 @@ class TeacherSubjectResponse {
   final String subjectId;
   final String subjectName; // Dari mapping manual NestJS
   final String subjectSubName; // Dari mapping manual NestJS
+  final bool subjectIsParent; // Dari mapping manual NestJS
+  final String schoolLevelId;
   final String? parentId; // Bisa null sesuai update terakhir Anda
   final List<TeacherSubjectResponse> children; // Mapping recursive
   final DateTime createdAt;
@@ -18,7 +20,9 @@ class TeacherSubjectResponse {
     required this.teacherName,
     required this.subjectId,
     required this.subjectName,
+    required this.subjectIsParent,
     required this.subjectSubName,
+    required this.schoolLevelId,
     this.parentId,
     required this.children,
     required this.createdAt,
@@ -33,7 +37,9 @@ class TeacherSubjectResponse {
       teacherName: json['teacherName'] ?? "",
       subjectId: json['subjectId'],
       subjectName: json['subjectName'] ?? "",
+      subjectIsParent: json['subjectIsParent'] ?? false,
       subjectSubName: json['subjectSubName'] ?? "",
+      schoolLevelId: json['schoolLevelId'] ?? "",
       parentId: json['parentId'], // Biarkan null jika dari backend null
       // Handle rekursi untuk children
       children: (json['children'] as List? ?? [])
@@ -51,7 +57,9 @@ class TeacherSubjectResponse {
       'teacherName': teacherName,
       'subjectId': subjectId,
       'subjectName': subjectName,
+      'subjectIsParent': subjectIsParent,
       'subjectSubName': subjectSubName,
+      'schoolLevelId': schoolLevelId,
       'parentId': parentId,
       'children': children.map((v) => v.toJson()).toList(),
       'createdAt': createdAt.toIso8601String(),
@@ -63,17 +71,20 @@ class TeacherSubjectResponse {
 class CreateTeacherSubjectRequest {
   final String teacherId;
   final String subjectId;
+  final String schoolLevelId;
   final String? parentId;
 
   CreateTeacherSubjectRequest({
     required this.teacherId,
     required this.subjectId,
+    required this.schoolLevelId,
     this.parentId,
   });
 
   Map<String, dynamic> toJson() => {
     'teacherId': teacherId,
     'subjectId': subjectId,
+    'schoolLevelId': schoolLevelId,
     'parentId': parentId,
   };
 }
@@ -81,14 +92,21 @@ class CreateTeacherSubjectRequest {
 class UpdateTeacherSubjectRequest {
   final String? teacherId;
   final String? subjectId;
+  final String? schoolLevelId;
   final String? parentId;
 
-  UpdateTeacherSubjectRequest({this.teacherId, this.subjectId, this.parentId});
+  UpdateTeacherSubjectRequest({
+    this.teacherId,
+    this.subjectId,
+    this.parentId,
+    this.schoolLevelId,
+  });
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
     if (teacherId != null) data['teacherId'] = teacherId;
     if (subjectId != null) data['subjectId'] = subjectId;
+    if (schoolLevelId != null) data['schoolLevelId'] = schoolLevelId;
     data['parentId'] = parentId;
     return data;
   }

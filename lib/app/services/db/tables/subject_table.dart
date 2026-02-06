@@ -6,6 +6,7 @@ class Subjects extends Table {
   TextColumn get name => text()();
   TextColumn get subName => text()();
   TextColumn get schoolId => text()();
+  BoolColumn get isParent => boolean()();
 
   // Menyimpan list object schoolLevelAccess sebagai JSON String (manual mapping)
   // Contoh isi: '[{"id": "...", "name": "..."}]'

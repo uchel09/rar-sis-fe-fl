@@ -9,6 +9,7 @@ import 'package:rar_sis_fe_fl/app/services/school_admin/school_admin_service.dar
 import 'package:rar_sis_fe_fl/app/services/curriculum/curriculum_service.dart';
 import 'package:rar_sis_fe_fl/app/services/teacher/teacher_service.dart';
 import 'package:rar_sis_fe_fl/app/services/school_level/school_level_service.dart';
+import 'package:rar_sis_fe_fl/app/services/teacher_subject/teacher_subject_service.dart';
 import "master_controller.dart";
 
 // Base-nya lu buat sekali aja di folder core/base
@@ -25,6 +26,7 @@ abstract class BaseDashboardBinding extends Bindings {
     Get.lazyPut<TeacherService>(() => TeacherService());
     Get.lazyPut<StaffPositionService>(() => StaffPositionService());
     Get.lazyPut<StaffService>(() => StaffService());
+    Get.lazyPut<TeacherSubjectService>(() => TeacherSubjectService());
     Get.put(MasterController());
     injectController(); // Panggil method abstrak
   }

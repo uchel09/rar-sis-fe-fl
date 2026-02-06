@@ -13,6 +13,7 @@ class SubjectLocalService {
       id: row.id,
       name: row.name,
       subName: row.subName,
+      isParent: row.isParent,
       schoolId: row.schoolId,
       // Decode JSON string dari database kembali ke List<SchoolLevelAccess>
       schoolLevelAccess: (jsonDecode(row.schoolLevelAccess) as List)
@@ -36,6 +37,7 @@ class SubjectLocalService {
               id: item.id,
               name: item.name,
               subName: item.subName,
+              isParent: item.isParent,
               schoolId: item.schoolId,
               // Encode List Object menjadi JSON String sebelum masuk ke DB
               schoolLevelAccess: jsonEncode(
@@ -71,6 +73,7 @@ class SubjectLocalService {
               id: item.id,
               name: item.name,
               subName: item.subName,
+              isParent: item.isParent,
               schoolId: item.schoolId,
               schoolLevelAccess: jsonEncode(
                 item.schoolLevelAccess.map((e) => e.toJson()).toList(),

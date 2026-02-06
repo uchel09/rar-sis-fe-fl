@@ -3,11 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rar_sis_fe_fl/app/services/school_level/school_level_model.dart';
+import 'package:rar_sis_fe_fl/app/services/staff_position/staff_position_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../controllers/staff_controller.dart'; // Sesuaikan ke StaffController
 import '../../../../../widgets/reusable_pluto_table.dart';
 import '../../../../../widgets/right_form_drawer.dart';
 import '../../../../../widgets/form/multi_select.dart';
+import '../../../../../widgets/form/single_select.dart';
 import '../../../../../widgets/form/select.dart';
 import '../../../../../widgets/form/app_date_picker.dart';
 import 'package:rar_sis_fe_fl/app/core/enum.dart';
@@ -139,26 +141,24 @@ class StaffView extends GetView<StaffController> {
               // Penambahan Field JABATAN (STAFF POSITION)
               ShadFormBuilderField<String>(
                 id: 'staffPositionId',
-                label: const Text('Jabatan / Posisi'),
+                initialValue: controller.selectedStaffPositionId.value,
                 validator: (v) =>
                     (v == null || v.isEmpty) ? 'Pilih Jabatan' : null,
-                builder: (field) => ShadSelect<String>(
-                  placeholder: const Text('Pilih Jabatan'),
-                  options: controller.masterController.allStaffPositions
-                      .map(
-                        (pos) =>
-                            ShadOption(value: pos.id, child: Text(pos.name)),
-                      )
-                      .toList(),
-                  selectedOptionBuilder: (context, value) => Text(
-                    controller.masterController.allStaffPositions
-                        .firstWhere((e) => e.id == value)
-                        .name,
+                builder: (field) => ShadFormBuilderField<String>(
+                  id: 'staffPositionId',
+                  label: const Text('Jabatan / Posisi'),
+                  initialValue: controller.selectedStaffPositionId.value,
+                  builder: (field) => ShadSelectSingle<StaffPositionResponse>(
+                    label: "Jabatan",
+                    items: controller.masterController.allStaffPositions,
+                    selectedId: field.value, // Ambil nilai dari FormField
+                    idBuilder: (v) => v.id,
+                    labelBuilder: (v) => v.name,
+                    onChanged: (val) {
+                      field.didChange(val);
+                      controller.selectedStaffPositionId.value = val ?? "";
+                    },
                   ),
-                  onChanged: (val) {
-                    field.didChange(val);
-                    controller.selectedStaffPositionId.value = val;
-                  },
                 ),
               ),
 

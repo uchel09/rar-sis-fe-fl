@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get.dart' as g;
 import 'package:get_storage/get_storage.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:rar_sis_fe_fl/app/core/base/master_controller.dart';
@@ -18,6 +19,7 @@ class SubjectController extends GetxController {
   var dropdownItems = <DropdownMenuItem<String>>[].obs;
   final isCreate = true.obs;
   final subjectId = "".obs;
+  final isParent = false.obs;
   var box = GetStorage();
   final schoolId = "".obs;
 
@@ -91,6 +93,12 @@ class SubjectController extends GetxController {
         width: 250,
       ),
       PlutoColumn(
+        title: 'Subject Induk',
+        field: 'isParent',
+        type: PlutoColumnType.text(),
+        width: 250,
+      ),
+      PlutoColumn(
         title: 'Akses Jenjang',
         field: 'schoolLevelAccess',
         type: PlutoColumnType.text(),
@@ -118,6 +126,15 @@ class SubjectController extends GetxController {
               IconButton(
                 icon: const Icon(Icons.edit, size: 18, color: Colors.blue),
                 onPressed: () => onUpdate(rendererContext.row.toJson()),
+              ),
+              IconButton(
+                icon: const Icon(
+                  Icons.delete,
+                  size: 18,
+                  color: Colors.red,
+                ), // Ubah ke delete
+                onPressed: () =>
+                    confirmDelete(rendererContext.row.cells['id']?.value),
               ),
             ],
           );
@@ -173,6 +190,7 @@ class SubjectController extends GetxController {
           'no': PlutoCell(value: ''),
           'id': PlutoCell(value: item.id),
           'name': PlutoCell(value: item.name),
+          'isParent': PlutoCell(value: item.isParent),
           'subName': PlutoCell(
             value: item.subName.isEmpty ? '-' : item.subName,
           ),
@@ -203,8 +221,11 @@ class SubjectController extends GetxController {
         name: nameController.text.trim(),
         subName: subNameController.text.trim(),
         schoolId: schoolId.value,
+        isParent: isParent.value,
         schoolLevelAccessIds: selectedAccessLevelIds,
       );
+      print("Create Subject====================");
+      print(request.subName);
 
       await _service.create(request);
       await fetchBySchoolLevel(forceRefresh: true);
@@ -225,6 +246,7 @@ class SubjectController extends GetxController {
 
     if (data != null) {
       isCreate.value = false;
+      isParent.value = data.isParent;
       nameController.text = data.name;
       subNameController.text = data.subName;
       selectedAccessLevelIds.assignAll(data.schoolLevelAccess.map((e) => e.id));
@@ -251,9 +273,10 @@ class SubjectController extends GetxController {
       final request = UpdateSubjectRequest(
         name: nameController.text.trim(),
         subName: subNameController.text.trim(),
+        isParent: isParent.value,
         schoolLevelAccessIds: selectedAccessLevelIds,
       );
-
+      print(request.toJson());
       await _service.updateSubject(subjectId.value, request);
       await fetchBySchoolLevel(forceRefresh: true);
 
@@ -262,6 +285,31 @@ class SubjectController extends GetxController {
     } catch (e) {
       debugPrint("Update Error: $e");
     }
+  }
+
+  void confirmDelete(String? id) {
+    if (id == null || id.isEmpty) return;
+    showShadDialog(
+      context: g.Get.context!,
+      barrierDismissible: false,
+      builder: (context) => ShadDialog(
+        title: const Text("Delete Subject"),
+        description: const Text("Apakah anda yakin menghapus data ini?"),
+        actions: [
+          ShadButton.outline(
+            child: const Text('Batal'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          ShadButton.destructive(
+            child: const Text('Hapus Sekarang'),
+            onPressed: () async {
+              await doDelete(id); // Jalankan fungsi delete
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> doDelete(String id) async {
@@ -276,6 +324,8 @@ class SubjectController extends GetxController {
   void clearForm() {
     nameController.clear();
     selectedAccessLevelIds.clear();
+    isParent.value = false;
+    subNameController.clear();
     formKey.currentState?.reset();
   }
 }

@@ -164,7 +164,10 @@ class SubCurriculumController extends GetxController {
           final String tooltipText = subjects.isEmpty
               ? "Belum ada mapel"
               : subjects
-                    .map((s) => "• ${s.subjectName} (${s.hoursPerWeek} JP)")
+                    .map(
+                      (s) =>
+                          "• ${s.subjectName} ${s.subjectSubName}  (${s.hoursPerWeek} JP)",
+                    )
                     .join("\n");
 
           return Tooltip(

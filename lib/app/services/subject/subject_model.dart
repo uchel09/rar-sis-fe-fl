@@ -2,6 +2,7 @@ class SubjectResponse {
   final String id;
   final String name;
   final String subName;
+  final bool isParent;
   final String schoolId;
   final List<SchoolLevelAccess> schoolLevelAccess;
   final DateTime createdAt;
@@ -11,6 +12,7 @@ class SubjectResponse {
     required this.id,
     required this.name,
     required this.subName,
+    required this.isParent,
     required this.schoolId,
     required this.schoolLevelAccess,
     required this.createdAt,
@@ -22,6 +24,7 @@ class SubjectResponse {
       id: json['id'],
       name: json['name'],
       subName: json['subName'],
+      isParent: json['isParent'],
       schoolId: json['schoolId'],
       schoolLevelAccess: (json['schoolLevelAccess'] as List)
           .map((item) => SchoolLevelAccess.fromJson(item))
@@ -36,6 +39,7 @@ class SubjectResponse {
       'id': id,
       'name': name,
       'subName': subName,
+      'isParent': isParent,
       'schoolId': schoolId,
       'schoolLevelAccess': schoolLevelAccess.map((e) => e.toJson()).toList(),
       'createdAt': createdAt.toIso8601String(),
@@ -62,12 +66,14 @@ class SchoolLevelAccess {
 class CreateSubjectRequest {
   final String name;
   final String subName;
+  final bool isParent;
   final String schoolId;
   final List<String> schoolLevelAccessIds;
 
   CreateSubjectRequest({
     required this.name,
     required this.subName,
+    required this.isParent,
     required this.schoolId,
     required this.schoolLevelAccessIds,
   });
@@ -76,6 +82,7 @@ class CreateSubjectRequest {
     return {
       'name': name,
       'subName': subName,
+      'isParent': isParent,
       'schoolId': schoolId,
       'schoolLevelAccessIds': schoolLevelAccessIds,
     };
@@ -85,14 +92,16 @@ class CreateSubjectRequest {
 class UpdateSubjectRequest {
   final String? name;
   final String? subName;
+  final bool? isParent;
   final List<String>? schoolLevelAccessIds;
 
-  UpdateSubjectRequest({this.name, this.schoolLevelAccessIds, this.subName});
+  UpdateSubjectRequest({this.name, this.schoolLevelAccessIds, this.subName, this.isParent});
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
     if (name != null) data['name'] = name;
     if (subName != null) data['subName'] = subName;
+    if (isParent != null) data['isParent'] = isParent;
     if (schoolLevelAccessIds != null)
       data['schoolLevelAccessIds'] = schoolLevelAccessIds;
     return data;
