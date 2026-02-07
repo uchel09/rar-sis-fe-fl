@@ -54,7 +54,7 @@ class BaseApiService extends g.GetxService {
           return handler.next(response);
         },
         onError: (DioException e, handler) {
-          String errorMessage = "Terjadi kesalahan sistem";
+          String errorMessage = " Sesi anda Telah Berakhir";
           final bool isLoginPath = e.requestOptions.path.contains(
             '/auth/login',
           );

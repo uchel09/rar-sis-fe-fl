@@ -93,10 +93,68 @@ class SubjectController extends GetxController {
         width: 250,
       ),
       PlutoColumn(
-        title: 'Subject Induk',
+        title: 'Tipe Mapel',
         field: 'isParent',
         type: PlutoColumnType.text(),
-        width: 250,
+        width: 180,
+        renderer: (rendererContext) {
+          final bool isParent = rendererContext.cell.value == true;
+          final String? subName = rendererContext.row.cells['subName']?.value;
+
+          // Deklarasi dulu variabelnya
+          String label = '';
+          Color bg = Colors.transparent;
+          Color fg = Colors.black;
+          Color border = Colors.transparent;
+
+          // --- SESUAI KONDISI KAMU ---
+
+          // 1. Kondisi NORMAL: subName ada tapi kosong
+          if (subName == "-") {
+            label = 'Mapel';
+
+            bg = const Color(0xFFEFF6FF);
+            fg = const Color(0xFF1E40AF);
+            border = const Color(0xFF3B82F6);
+          }
+
+          // 2. Kondisi SUB-SUBJECT: bukan parent DAN subName ada isinya
+          if (!isParent && subName != "-") {
+            label = 'Mapel-Relasi';
+            bg = const Color(0xFFFFF7ED); // Orange sangat muda
+            fg = const Color.fromARGB(255, 212, 152, 0); // Orange tua (teks)
+            border = const Color(0xFFF97316); // Orange terang (border)
+          }
+
+          // 3. Kondisi INDUK: parent DAN subName ada isinya
+          if (isParent && subName != "-") {
+            label = 'Mapel-Induk';
+            bg = const Color(0xFFDCFCE7);
+            fg = const Color(0xFF166534);
+            border = const Color(0xFF22C55E);
+          }
+
+          // Render ShadBadge
+          return Center(
+            child: ShadBadge(
+              backgroundColor: bg,
+              foregroundColor: fg,
+              hoverBackgroundColor: bg,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6),
+                side: BorderSide(color: border),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+              child: Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          );
+        },
       ),
       PlutoColumn(
         title: 'Akses Jenjang',

@@ -99,13 +99,23 @@ class HomeStaffDashboardView extends GetView<HomeStaffDashboardController> {
     required String label,
     required List<Widget> children,
   }) {
-    return DashboardComponents.expansionMenu(
-      id: "akademik_menu",
-      icon: icon,
-      label: label,
-      isCollapsed: controller.isCollapsed.value,
-      controller: controller,
-      children: children,
+    return Builder(
+      builder: (context) {
+        // Cek lebar layar lewat context builder
+        final double width = MediaQuery.of(context).size.width;
+        final bool forceExpanded = width < 1024
+            ? false
+            : controller.isCollapsed.value;
+
+        return DashboardComponents.expansionMenu(
+          id: label, // Pake label biar unik (Kurikulum, Manajemen User, dll)
+          icon: icon,
+          label: label,
+          isCollapsed: forceExpanded,
+          controller: controller,
+          children: children,
+        );
+      },
     );
   }
 }

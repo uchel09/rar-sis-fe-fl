@@ -9,6 +9,13 @@ abstract class BaseDashboardController extends GetxController {
   // kita panggil di sini supaya logout() bisa akses .dio
   ProfileController get profile => Get.find<ProfileController>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  var profileOffset = const Offset(16, 16).obs;
+  var parentActive = "".obs;
+  var isHovered = false.obs();
+  void updateOffset(Offset newPos) {
+    profileOffset.value = newPos;
+  }
+
   @override
   void onInit() {
     super.onInit();

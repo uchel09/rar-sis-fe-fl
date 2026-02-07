@@ -1,3 +1,5 @@
+import 'package:rar_sis_fe_fl/app/core/enum.dart';
+
 import '../db/database.dart';
 import 'school_level_model.dart';
 
@@ -11,6 +13,8 @@ class SchoolLevelLocalService {
       id: row.id,
       schoolId: row.schoolId,
       name: row.name,
+      identity: SchoolLevelIdentity.values.byName(row.identity),
+      totalLevel: row.totalLevel,
       isActive: row.isActive,
       isMajor: row.isMajor,
       isEnrollmentNumber: row.isEnrollmentNumber,
@@ -31,6 +35,8 @@ class SchoolLevelLocalService {
               id: level.id,
               schoolId: level.schoolId,
               name: level.name,
+              identity: level.identity.name,
+              totalLevel: level.totalLevel,
               isActive: level.isActive,
               isMajor: level.isMajor,
               isEnrollmentNumber: level.isEnrollmentNumber,

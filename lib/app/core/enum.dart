@@ -13,6 +13,8 @@ enum Role {
   STAFF,
 }
 
+enum SchoolLevelIdentity { KB, TK, SD, SMP, SMA, SMK }
+
 /// Status kehadiran
 enum AttendanceStatus { PRESENT, ABSENT, SICK, EXCUSED }
 

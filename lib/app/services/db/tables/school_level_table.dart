@@ -7,6 +7,10 @@ class SchoolLevels extends Table {
   BoolColumn get isActive => boolean()();
   BoolColumn get isMajor => boolean()();
   BoolColumn get isEnrollmentNumber => boolean()();
+  IntColumn get totalLevel => integer()();
+
+  // Menggunakan textEnum agar tersimpan sebagai String di SQLite (sinkron dengan Prisma)
+  TextColumn get identity => text()();
 
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();

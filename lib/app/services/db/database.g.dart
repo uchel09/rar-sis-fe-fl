@@ -1317,6 +1317,28 @@ class $SchoolLevelsTable extends SchoolLevels
       'CHECK ("is_enrollment_number" IN (0, 1))',
     ),
   );
+  static const VerificationMeta _totalLevelMeta = const VerificationMeta(
+    'totalLevel',
+  );
+  @override
+  late final GeneratedColumn<int> totalLevel = GeneratedColumn<int>(
+    'total_level',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _identityMeta = const VerificationMeta(
+    'identity',
+  );
+  @override
+  late final GeneratedColumn<String> identity = GeneratedColumn<String>(
+    'identity',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -1347,6 +1369,8 @@ class $SchoolLevelsTable extends SchoolLevels
     isActive,
     isMajor,
     isEnrollmentNumber,
+    totalLevel,
+    identity,
     createdAt,
     updatedAt,
   ];
@@ -1410,6 +1434,22 @@ class $SchoolLevelsTable extends SchoolLevels
     } else if (isInserting) {
       context.missing(_isEnrollmentNumberMeta);
     }
+    if (data.containsKey('total_level')) {
+      context.handle(
+        _totalLevelMeta,
+        totalLevel.isAcceptableOrUnknown(data['total_level']!, _totalLevelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_totalLevelMeta);
+    }
+    if (data.containsKey('identity')) {
+      context.handle(
+        _identityMeta,
+        identity.isAcceptableOrUnknown(data['identity']!, _identityMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_identityMeta);
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -1459,6 +1499,14 @@ class $SchoolLevelsTable extends SchoolLevels
         DriftSqlType.bool,
         data['${effectivePrefix}is_enrollment_number'],
       )!,
+      totalLevel: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_level'],
+      )!,
+      identity: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}identity'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -1483,6 +1531,8 @@ class SchoolLevel extends DataClass implements Insertable<SchoolLevel> {
   final bool isActive;
   final bool isMajor;
   final bool isEnrollmentNumber;
+  final int totalLevel;
+  final String identity;
   final DateTime createdAt;
   final DateTime updatedAt;
   const SchoolLevel({
@@ -1492,6 +1542,8 @@ class SchoolLevel extends DataClass implements Insertable<SchoolLevel> {
     required this.isActive,
     required this.isMajor,
     required this.isEnrollmentNumber,
+    required this.totalLevel,
+    required this.identity,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -1504,6 +1556,8 @@ class SchoolLevel extends DataClass implements Insertable<SchoolLevel> {
     map['is_active'] = Variable<bool>(isActive);
     map['is_major'] = Variable<bool>(isMajor);
     map['is_enrollment_number'] = Variable<bool>(isEnrollmentNumber);
+    map['total_level'] = Variable<int>(totalLevel);
+    map['identity'] = Variable<String>(identity);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -1517,6 +1571,8 @@ class SchoolLevel extends DataClass implements Insertable<SchoolLevel> {
       isActive: Value(isActive),
       isMajor: Value(isMajor),
       isEnrollmentNumber: Value(isEnrollmentNumber),
+      totalLevel: Value(totalLevel),
+      identity: Value(identity),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -1534,6 +1590,8 @@ class SchoolLevel extends DataClass implements Insertable<SchoolLevel> {
       isActive: serializer.fromJson<bool>(json['isActive']),
       isMajor: serializer.fromJson<bool>(json['isMajor']),
       isEnrollmentNumber: serializer.fromJson<bool>(json['isEnrollmentNumber']),
+      totalLevel: serializer.fromJson<int>(json['totalLevel']),
+      identity: serializer.fromJson<String>(json['identity']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -1548,6 +1606,8 @@ class SchoolLevel extends DataClass implements Insertable<SchoolLevel> {
       'isActive': serializer.toJson<bool>(isActive),
       'isMajor': serializer.toJson<bool>(isMajor),
       'isEnrollmentNumber': serializer.toJson<bool>(isEnrollmentNumber),
+      'totalLevel': serializer.toJson<int>(totalLevel),
+      'identity': serializer.toJson<String>(identity),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -1560,6 +1620,8 @@ class SchoolLevel extends DataClass implements Insertable<SchoolLevel> {
     bool? isActive,
     bool? isMajor,
     bool? isEnrollmentNumber,
+    int? totalLevel,
+    String? identity,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => SchoolLevel(
@@ -1569,6 +1631,8 @@ class SchoolLevel extends DataClass implements Insertable<SchoolLevel> {
     isActive: isActive ?? this.isActive,
     isMajor: isMajor ?? this.isMajor,
     isEnrollmentNumber: isEnrollmentNumber ?? this.isEnrollmentNumber,
+    totalLevel: totalLevel ?? this.totalLevel,
+    identity: identity ?? this.identity,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -1582,6 +1646,10 @@ class SchoolLevel extends DataClass implements Insertable<SchoolLevel> {
       isEnrollmentNumber: data.isEnrollmentNumber.present
           ? data.isEnrollmentNumber.value
           : this.isEnrollmentNumber,
+      totalLevel: data.totalLevel.present
+          ? data.totalLevel.value
+          : this.totalLevel,
+      identity: data.identity.present ? data.identity.value : this.identity,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -1596,6 +1664,8 @@ class SchoolLevel extends DataClass implements Insertable<SchoolLevel> {
           ..write('isActive: $isActive, ')
           ..write('isMajor: $isMajor, ')
           ..write('isEnrollmentNumber: $isEnrollmentNumber, ')
+          ..write('totalLevel: $totalLevel, ')
+          ..write('identity: $identity, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -1610,6 +1680,8 @@ class SchoolLevel extends DataClass implements Insertable<SchoolLevel> {
     isActive,
     isMajor,
     isEnrollmentNumber,
+    totalLevel,
+    identity,
     createdAt,
     updatedAt,
   );
@@ -1623,6 +1695,8 @@ class SchoolLevel extends DataClass implements Insertable<SchoolLevel> {
           other.isActive == this.isActive &&
           other.isMajor == this.isMajor &&
           other.isEnrollmentNumber == this.isEnrollmentNumber &&
+          other.totalLevel == this.totalLevel &&
+          other.identity == this.identity &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -1634,6 +1708,8 @@ class SchoolLevelsCompanion extends UpdateCompanion<SchoolLevel> {
   final Value<bool> isActive;
   final Value<bool> isMajor;
   final Value<bool> isEnrollmentNumber;
+  final Value<int> totalLevel;
+  final Value<String> identity;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
@@ -1644,6 +1720,8 @@ class SchoolLevelsCompanion extends UpdateCompanion<SchoolLevel> {
     this.isActive = const Value.absent(),
     this.isMajor = const Value.absent(),
     this.isEnrollmentNumber = const Value.absent(),
+    this.totalLevel = const Value.absent(),
+    this.identity = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1655,6 +1733,8 @@ class SchoolLevelsCompanion extends UpdateCompanion<SchoolLevel> {
     required bool isActive,
     required bool isMajor,
     required bool isEnrollmentNumber,
+    required int totalLevel,
+    required String identity,
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
@@ -1664,6 +1744,8 @@ class SchoolLevelsCompanion extends UpdateCompanion<SchoolLevel> {
        isActive = Value(isActive),
        isMajor = Value(isMajor),
        isEnrollmentNumber = Value(isEnrollmentNumber),
+       totalLevel = Value(totalLevel),
+       identity = Value(identity),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
   static Insertable<SchoolLevel> custom({
@@ -1673,6 +1755,8 @@ class SchoolLevelsCompanion extends UpdateCompanion<SchoolLevel> {
     Expression<bool>? isActive,
     Expression<bool>? isMajor,
     Expression<bool>? isEnrollmentNumber,
+    Expression<int>? totalLevel,
+    Expression<String>? identity,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -1685,6 +1769,8 @@ class SchoolLevelsCompanion extends UpdateCompanion<SchoolLevel> {
       if (isMajor != null) 'is_major': isMajor,
       if (isEnrollmentNumber != null)
         'is_enrollment_number': isEnrollmentNumber,
+      if (totalLevel != null) 'total_level': totalLevel,
+      if (identity != null) 'identity': identity,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -1698,6 +1784,8 @@ class SchoolLevelsCompanion extends UpdateCompanion<SchoolLevel> {
     Value<bool>? isActive,
     Value<bool>? isMajor,
     Value<bool>? isEnrollmentNumber,
+    Value<int>? totalLevel,
+    Value<String>? identity,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<int>? rowid,
@@ -1709,6 +1797,8 @@ class SchoolLevelsCompanion extends UpdateCompanion<SchoolLevel> {
       isActive: isActive ?? this.isActive,
       isMajor: isMajor ?? this.isMajor,
       isEnrollmentNumber: isEnrollmentNumber ?? this.isEnrollmentNumber,
+      totalLevel: totalLevel ?? this.totalLevel,
+      identity: identity ?? this.identity,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -1736,6 +1826,12 @@ class SchoolLevelsCompanion extends UpdateCompanion<SchoolLevel> {
     if (isEnrollmentNumber.present) {
       map['is_enrollment_number'] = Variable<bool>(isEnrollmentNumber.value);
     }
+    if (totalLevel.present) {
+      map['total_level'] = Variable<int>(totalLevel.value);
+    }
+    if (identity.present) {
+      map['identity'] = Variable<String>(identity.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1757,6 +1853,8 @@ class SchoolLevelsCompanion extends UpdateCompanion<SchoolLevel> {
           ..write('isActive: $isActive, ')
           ..write('isMajor: $isMajor, ')
           ..write('isEnrollmentNumber: $isEnrollmentNumber, ')
+          ..write('totalLevel: $totalLevel, ')
+          ..write('identity: $identity, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -8189,6 +8287,8 @@ typedef $$SchoolLevelsTableCreateCompanionBuilder =
       required bool isActive,
       required bool isMajor,
       required bool isEnrollmentNumber,
+      required int totalLevel,
+      required String identity,
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<int> rowid,
@@ -8201,6 +8301,8 @@ typedef $$SchoolLevelsTableUpdateCompanionBuilder =
       Value<bool> isActive,
       Value<bool> isMajor,
       Value<bool> isEnrollmentNumber,
+      Value<int> totalLevel,
+      Value<String> identity,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<int> rowid,
@@ -8242,6 +8344,16 @@ class $$SchoolLevelsTableFilterComposer
 
   ColumnFilters<bool> get isEnrollmentNumber => $composableBuilder(
     column: $table.isEnrollmentNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get totalLevel => $composableBuilder(
+    column: $table.totalLevel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get identity => $composableBuilder(
+    column: $table.identity,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -8295,6 +8407,16 @@ class $$SchoolLevelsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get totalLevel => $composableBuilder(
+    column: $table.totalLevel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get identity => $composableBuilder(
+    column: $table.identity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -8334,6 +8456,14 @@ class $$SchoolLevelsTableAnnotationComposer
     column: $table.isEnrollmentNumber,
     builder: (column) => column,
   );
+
+  GeneratedColumn<int> get totalLevel => $composableBuilder(
+    column: $table.totalLevel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get identity =>
+      $composableBuilder(column: $table.identity, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -8379,6 +8509,8 @@ class $$SchoolLevelsTableTableManager
                 Value<bool> isActive = const Value.absent(),
                 Value<bool> isMajor = const Value.absent(),
                 Value<bool> isEnrollmentNumber = const Value.absent(),
+                Value<int> totalLevel = const Value.absent(),
+                Value<String> identity = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -8389,6 +8521,8 @@ class $$SchoolLevelsTableTableManager
                 isActive: isActive,
                 isMajor: isMajor,
                 isEnrollmentNumber: isEnrollmentNumber,
+                totalLevel: totalLevel,
+                identity: identity,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -8401,6 +8535,8 @@ class $$SchoolLevelsTableTableManager
                 required bool isActive,
                 required bool isMajor,
                 required bool isEnrollmentNumber,
+                required int totalLevel,
+                required String identity,
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<int> rowid = const Value.absent(),
@@ -8411,6 +8547,8 @@ class $$SchoolLevelsTableTableManager
                 isActive: isActive,
                 isMajor: isMajor,
                 isEnrollmentNumber: isEnrollmentNumber,
+                totalLevel: totalLevel,
+                identity: identity,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,

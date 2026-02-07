@@ -2,11 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rar_sis_fe_fl/app/core/enum.dart';
+import 'package:rar_sis_fe_fl/app/widgets/form/select.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import '../controllers/supad_school_level_controller.dart';
 import '../../../../../widgets/reusable_pluto_table.dart';
 import '../../../../../widgets/right_form_drawer.dart';
-import '../../../../../widgets/form/multi_select.dart';
+import 'package:flutter/services.dart';
 
 class SupadSchoolLevelView extends GetView<SupadSchoolLevelController> {
   const SupadSchoolLevelView({super.key});
@@ -60,6 +62,31 @@ class SupadSchoolLevelView extends GetView<SupadSchoolLevelController> {
                 if (v == null || v.isEmpty) return 'Nama wajib diisi';
                 return null;
               },
+            ),
+            const SizedBox(height: 24),
+            ShadFormBuilderField<SchoolLevelIdentity>(
+              id: 'identity',
+              label: const Text('Identitas Jenjang'),
+              validator: (v) => v == null ? 'Wajib' : null,
+              builder: (field) => AppSelectEnumSearch<SchoolLevelIdentity>(
+                label: '',
+                selectedValue: controller.identity.value,
+                values: SchoolLevelIdentity.values,
+                labelBuilder: (v) => v.name.replaceAll('_', ' '),
+                onChanged: (val) {
+                  field.didChange(val);
+                  controller.identity.value = val;
+                },
+              ),
+            ),
+            const SizedBox(height: 24),
+            ShadInputFormField(
+              id: 'totalLevel',
+              label: const Text('totalLevel'),
+              controller: controller.totalLevelController,
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             ),
 
             const SizedBox(height: 24),

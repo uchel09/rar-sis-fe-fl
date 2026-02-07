@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:rar_sis_fe_fl/app/core/base/master_controller.dart';
+import 'package:rar_sis_fe_fl/app/core/enum.dart';
 import 'package:rar_sis_fe_fl/app/services/school_level/school_level_service.dart';
 import 'package:rar_sis_fe_fl/app/services/school_level/school_level_model.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,8 @@ class SupadSchoolLevelController extends GetxController {
   final isCreate = false.obs;
   final schoolId = "".obs;
   final nameController = TextEditingController();
-
+  final totalLevelController = TextEditingController(); // Baru
+  final identity = Rxn<SchoolLevelIdentity>();
   // Boolean States (Default true/false)
   final isActive = true.obs;
   final isMajor = false.obs;
@@ -38,6 +40,8 @@ class SupadSchoolLevelController extends GetxController {
 
   void clearForm() {
     nameController.clear();
+    totalLevelController.clear();
+    identity.value = null;
     isActive.value = true;
     isMajor.value = false;
     isEnrollmentNumber.value = false;
@@ -85,6 +89,22 @@ class SupadSchoolLevelController extends GetxController {
         field: 'name',
         type: PlutoColumnType.text(),
         width: 200,
+      ),
+      PlutoColumn(
+        title: 'Identitas',
+        field: 'identity',
+        type: PlutoColumnType.text(),
+        width: 100,
+        renderer: (rendererContext) => Center(
+          child: ShadBadge(child: Text(rendererContext.cell.value.toString())),
+        ),
+      ),
+      // Kolom Baru: Total Level
+      PlutoColumn(
+        title: 'Total Level',
+        field: 'totalLevel',
+        type: PlutoColumnType.number(),
+        width: 100,
       ),
 
       // 3. Status Aktif (Badge Style)
@@ -219,6 +239,8 @@ class SupadSchoolLevelController extends GetxController {
           'no': PlutoCell(value: ''),
           'id': PlutoCell(value: item.id),
           'name': PlutoCell(value: item.name),
+          'identity': PlutoCell(value: item.identity.name), // String
+          'totalLevel': PlutoCell(value: item.totalLevel),
           'isActive': PlutoCell(value: item.isActive), // Boolean
           'isMajor': PlutoCell(value: item.isMajor), // Boolean
           'isEnrollmentNumber': PlutoCell(
@@ -248,6 +270,9 @@ class SupadSchoolLevelController extends GetxController {
       final request = CreateSchoolLevelRequest(
         schoolId: schoolId.value,
         name: nameController.text.trim(),
+        totalLevel:
+            int.tryParse(totalLevelController.text) ?? 0, // Mapping Baru
+        identity: identity.value!,
         isActive: isActive.value,
         isMajor: isMajor.value,
         isEnrollmentNumber: isEnrollmentNumber.value,
@@ -280,6 +305,8 @@ class SupadSchoolLevelController extends GetxController {
       isCreate.value = false;
       clearForm();
       nameController.text = schoolLevel.name;
+      totalLevelController.text = schoolLevel.totalLevel.toString();
+      identity.value = schoolLevel.identity;
       isActive.value = schoolLevel.isActive;
       isMajor.value = schoolLevel.isMajor;
       isEnrollmentNumber.value = schoolLevel.isEnrollmentNumber;
@@ -293,6 +320,7 @@ class SupadSchoolLevelController extends GetxController {
         final state = formKey.currentState;
         if (state != null) {
           state.fields['name']?.didChange(schoolLevel.name);
+          state.fields['identity']?.didChange(schoolLevel.identity);
           state.fields['isActive']?.didChange(schoolLevel.isActive);
           state.fields['isEnrollmentNumber']?.didChange(
             schoolLevel.isEnrollmentNumber,
@@ -315,6 +343,9 @@ class SupadSchoolLevelController extends GetxController {
       // Kita pakai "!" karena sudah divalidasi oleh ShadForm (tidak mungkin null)
       final request = UpdateSchoolLevelRequest(
         name: nameController.text.trim(),
+        totalLevel:
+            int.tryParse(totalLevelController.text) ?? 0, // Mapping Baru
+        identity: identity.value!,
         isActive: isActive.value,
         isEnrollmentNumber: isEnrollmentNumber.value,
         isMajor: isMajor.value,

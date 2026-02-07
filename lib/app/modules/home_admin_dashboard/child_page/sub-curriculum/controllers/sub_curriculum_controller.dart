@@ -148,6 +148,14 @@ class SubCurriculumController extends GetxController {
         field: 'schoolLevelName',
         type: PlutoColumnType.text(),
         width: 300,
+        renderer: (ctx) {
+          return Wrap(
+            alignment:
+                WrapAlignment.start, // Atur ke center kalau mau di tengah
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [_buildLevelBadge(ctx.cell.value.toString())],
+          );
+        },
       ),
 
       PlutoColumn(
@@ -220,6 +228,27 @@ class SubCurriculumController extends GetxController {
         },
       ),
     ];
+  }
+
+  Widget _buildLevelBadge(String text) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+
+      decoration: BoxDecoration(
+        color: Colors.blue.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.blue.shade200),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 12,
+          color: Colors.blue,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
   }
 
   Future<void> fetchAllData() async {

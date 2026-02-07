@@ -39,35 +39,66 @@ class MainDashboardLayout extends StatelessWidget {
 
   Widget _buildLayout(BuildContext context, {required bool isMobile}) {
     return Obx(() {
-      final theme = controller.currentTheme;
       return Scaffold(
         key: controller.scaffoldKey,
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () {
-        //     // Buka Modal Create Admin (Mapping Manual 11 field)
-        //     Get.toNamed('/login');
-        //   },
-        //   backgroundColor: Colors.blueAccent,
-        //   child: Center(child: const Text("Back")),
-        // ),
-        // Drawer hanya untuk mobile
+        // Drawer tetap ada untuk mobile
         drawer: isMobile ? Drawer(child: _sidebar(isMobile: true)) : null,
-        body: Row(
+        body: Stack(
           children: [
-            // Sidebar untuk Desktop/Tablet
-            if (!isMobile) _sidebar(isMobile: false),
-            Expanded(
-              child: Column(
-                children: [
-                  _appBar(isMobile),
-                  // Background body agar terlihat kontras dengan card
-                  Expanded(
-                    child: Container(
-                      color: const Color(0xFFF8FAFC),
-                      child: body,
-                    ),
+            // LAYER 1: Layout Dasar (Sidebar + Konten)
+            Row(
+              children: [
+                if (!isMobile) _sidebar(isMobile: false),
+                Expanded(
+                  child: Container(
+                    color: const Color(0xFFF8FAFC),
+                    child: body, // Konten dashboard utama
                   ),
-                ],
+                ),
+              ],
+            ),
+
+            // LAYER 2: Fixed IconButton Menu (Hanya Mobile)
+            if (isMobile)
+              Positioned(
+                left: 20,
+                top: (Get.height / 2) - 24,
+                child: IconButton(
+                  icon: const Icon(Icons.menu),
+                  // INI CARA PALING GAMPANG:
+                  hoverColor: controller.currentTheme['selected'],
+                  color:
+                      controller.currentTheme['hovered'], // Warna icon default
+                  onPressed: () =>
+                      controller.scaffoldKey.currentState?.openDrawer(),
+                ),
+              ),
+
+            // LAYER 3: Draggable Profile Dropdown (Fixed Absolute)
+            Positioned(
+              top: controller.profileOffset.value.dy,
+              right: controller.profileOffset.value.dx,
+              child: Draggable(
+                feedback: Material(
+                  color: Colors.transparent,
+                  child: Opacity(opacity: 0.8, child: _buildProfileDropdown()),
+                ),
+                childWhenDragging: Container(),
+                onDragEnd: (details) {
+                  // Hitung koordinat baru agar tetap nempel di kanan
+                  double newRight =
+                      MediaQuery.of(context).size.width -
+                      details.offset.dx -
+                      50;
+                  double newTop = details.offset.dy;
+
+                  // Safety check agar tidak keluar layar
+                  if (newTop < 10) newTop = 16;
+                  if (newRight < 10) newRight = 16;
+
+                  controller.updateOffset(Offset(newRight, newTop));
+                },
+                child: _buildProfileDropdown(),
               ),
             ),
           ],
@@ -78,9 +109,12 @@ class MainDashboardLayout extends StatelessWidget {
 
   Widget _sidebar({required bool isMobile}) {
     final theme = controller.currentTheme;
-    final isCollapsed = controller.isCollapsed.value && !isMobile;
+
+    // FORCE false kalau mobile, jadi sidebar di Drawer nggak bakal menciut
+    final isCollapsed = isMobile ? false : controller.isCollapsed.value;
 
     return Container(
+      // Sekarang lebarnya bakal konsisten 280 kalau mobile
       width: isMobile ? 280 : (isCollapsed ? 80 : 260),
       color: theme['sidebar'],
       child: Column(
@@ -95,17 +129,18 @@ class MainDashboardLayout extends StatelessWidget {
             ),
             alignment: Alignment.center,
             child: Text(
-              isCollapsed ? "S" : "Sekolah",
+              isCollapsed ? "S" : "Sekolah", // Kalau mobile, otomatis "Sekolah"
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
+
           // List Menu
           Expanded(child: ListView(children: menuItems)),
 
-          // Tombol Collapse di bawah (Hanya Desktop)
+          // Tombol Collapse (Hanya muncul di Desktop)
           if (!isMobile)
             Padding(
               padding: const EdgeInsets.all(8.0),

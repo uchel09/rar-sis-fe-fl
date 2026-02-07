@@ -33,31 +33,56 @@ class HomeAdminDashboardView extends GetView<HomeAdminDashboardController> {
             icon: Icons.school_outlined,
             label: "Manajemen User",
             children: [
-              _subMenuItem("Siswa", "2-1", Routes.STUDENT),
-              _subMenuItem("Guru", "2-2", Routes.TEACHER),
-              _subMenuItem("Kelas", "2-3", Routes.CLASS),
-              _subMenuItem("Staff", "2-4", Routes.STAFF),
-              _subMenuItem("Posisi Staff", "2-5", Routes.STAFF_POSITION),
+              _subMenuItem("Manajemen User", "Siswa", "2-1", Routes.STUDENT),
+              _subMenuItem("Manajemen User", "Guru", "2-2", Routes.TEACHER),
+              _subMenuItem("Manajemen User", "Kelas", "2-3", Routes.CLASS),
+              _subMenuItem("Manajemen User", "Staff", "2-4", Routes.STAFF),
+              _subMenuItem(
+                "Manajemen User",
+                "Posisi Staff",
+                "2-5",
+                Routes.STAFF_POSITION,
+              ),
             ],
           ),
           _expansionMenu(
             icon: Icons.school_outlined,
             label: "Kurikulum",
             children: [
-              _subMenuItem("Sub Kurikulum", "3-1", Routes.SUB_CURRICULUM),
-              _subMenuItem("Guru/Mapel", "3-2", Routes.TEACHER_SUBJECT),
-              _subMenuItem("Mapel", "3-3", Routes.SUBJECT),
+              _subMenuItem(
+                "Kurikulum",
+                "Sub Kurikulum",
+                "3-1",
+                Routes.SUB_CURRICULUM,
+              ),
+              _subMenuItem(
+                "Kurikulum",
+                "Guru/Mapel",
+                "3-2",
+                Routes.TEACHER_SUBJECT,
+              ),
+              _subMenuItem("Kurikulum", "Mapel", "3-3", Routes.SUBJECT),
             ],
           ),
           _expansionMenu(
             icon: Icons.app_registration,
             label: "PPDB",
             children: [
-              _subMenuItem("Registrasi", "4-1", Routes.ADMIN_PPDB_REGISTRATION),
-              _subMenuItem("Seleksi", "4-2", Routes.ADMIN_PPDB_SELECTION),
-              _subMenuItem("Pembayaran", "4-4", Routes.CLASS),
-              _subMenuItem("Penentuan Kelas", "4-4", Routes.STAFF),
-              _subMenuItem("Riwayat", "4-5", Routes.STAFF),
+              _subMenuItem(
+                "PPDB",
+                "Registrasi",
+                "4-1",
+                Routes.ADMIN_PPDB_REGISTRATION,
+              ),
+              _subMenuItem(
+                "PPDB",
+                "Seleksi",
+                "4-2",
+                Routes.ADMIN_PPDB_SELECTION,
+              ),
+              _subMenuItem("PPDB", "Pembayaran", "4-4", Routes.CLASS),
+              _subMenuItem("PPDB", "Penentuan Kelas", "4-4", Routes.STAFF),
+              _subMenuItem("PPDB", "Riwayat", "4-5", Routes.STAFF),
             ],
           ),
           // _buildMenuSection("KEUANGAN"),
@@ -106,8 +131,14 @@ class HomeAdminDashboardView extends GetView<HomeAdminDashboardController> {
         : const Divider(height: 30, indent: 20, endIndent: 20);
   }
 
-  Widget _subMenuItem(String label, String id, String route) {
+  Widget _subMenuItem(
+    String parentMenu,
+    String label,
+    String id,
+    String route,
+  ) {
     return DashboardComponents.subMenuItem(
+      parentMenu: parentMenu,
       label: label,
       id: id,
       controller: controller,
@@ -120,13 +151,24 @@ class HomeAdminDashboardView extends GetView<HomeAdminDashboardController> {
     required String label,
     required List<Widget> children,
   }) {
-    return DashboardComponents.expansionMenu(
-      id: "akademik_menu",
-      icon: icon,
-      label: label,
-      isCollapsed: controller.isCollapsed.value,
-      controller: controller,
-      children: children,
+    // Pake Builder atau LayoutBuilder biar dia aware sama perubahan size context
+    return Builder(
+      builder: (context) {
+        // Cek lebar layar lewat context builder
+        final double width = MediaQuery.of(context).size.width;
+        final bool forceExpanded = width < 1024
+            ? false
+            : controller.isCollapsed.value;
+
+        return DashboardComponents.expansionMenu(
+          id: label, // Pake label biar unik (Kurikulum, Manajemen User, dll)
+          icon: icon,
+          label: label,
+          isCollapsed: forceExpanded,
+          controller: controller,
+          children: children,
+        );
+      },
     );
   }
 }
